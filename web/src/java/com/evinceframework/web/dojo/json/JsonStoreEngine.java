@@ -236,10 +236,11 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 		
 		boolean wasWritten = true;
 		while(wasWritten) {
-			writeDeferredObject(context);
+			wasWritten = writeDeferredObject(context);
 		}
 		
 		context.getGenerator().writeEndArray();
+		context.getGenerator().close();
 	}
 	
 	/**
