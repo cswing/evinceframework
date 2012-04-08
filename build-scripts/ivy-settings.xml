@@ -1,0 +1,25 @@
+<ivysettings>
+  <settings defaultResolver="repository-chain"/>
+
+  <resolvers>
+	<chain name="repository-chain">	
+		<filesystem name="local-repository">
+			<ivy pattern="${local.thirdparty.repo.dir}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
+	    <artifact pattern="${local.thirdparty.repo.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
+	  </filesystem>
+		<filesystem name="integration-repository">
+	    <ivy pattern="${local.integration.repo.dir}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
+	    <artifact pattern="${local.integration.repo.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
+	  </filesystem>
+		
+		<ibiblio name="maven.maven2" root="http://repo1.maven.org/maven2/" m2compatible="true" />
+		<ibiblio name="jboss.maven2" root="http://repository.jboss.org/nexus/content/groups/public-jboss/" m2compatible="true" />
+		<ibiblio name="apache.snapshots.maven2" root="http://repository.apache.org/snapshots/" m2compatible="true" />
+		<ibiblio name="springByExample.maven2" root="http://www.springbyexample.org/maven/repo/" m2compatible="true" />
+
+		<!-- deprecated: needs to be updated -->
+		<ibiblio name="jboss.maven2.deprecated" root="http://repository.jboss.com/maven2/" m2compatible="true" />
+
+	</chain>	 	
+  </resolvers>
+</ivysettings>

@@ -1,0 +1,23 @@
+<ivy-module version="2.0">
+    <info organisation="com.evinceframework" module="evf-core"/>
+	<configurations>
+		<conf name="core" visibility="private" />
+		<conf name="compile" extends="core" visibility="private" />
+		<conf name="development" extends="compile" visibility="private" />
+		<conf name="runtime" extends="compile" description="everything needed to run this module" />
+		<conf name="sources" />
+	</configurations>
+	<publications>		
+		<artifact name="evf-core" conf="runtime" />
+	</publications>
+  <dependencies>
+		<dependency org="junit" name="junit" rev="4.8.+" conf="development->default" />
+		<dependency org="emma" name="emma" rev="2.1.5320" conf="development->default" />
+		<dependency org="emma" name="emma_ant" rev="2.1.5320" conf="development->default" />		
+		<dependency org="javancss" name="javancss" rev="32.53" conf="development->default" />
+		<dependency org="log4j" name="log4j" rev="1.2.+" conf="development->default" />
+		
+		<dependency org="commons-logging" name="commons-logging" rev="1.1.+" conf="core->default" />						
+				
+	</dependencies>
+</ivy-module>

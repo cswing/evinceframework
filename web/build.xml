@@ -1,0 +1,16 @@
+<project name="evf-web" default="dev-build" basedir="../">
+	
+	<property name="project.dir" value="web" />
+			
+	<property file="${user.home}/.ant/properties/user.properties"/>	
+	<property name="common.scripts.dir" value="${user.common.scripts.dir}" />
+	<property name="project.common.scripts.dir" value="../${common.scripts.dir}" />	
+	<property file="build.properties"/>		
+	<property file="${project.dir}/build.properties"/>				
+				
+	<import file="../build-scripts/common-build.xml"/>
+	<import file="../build-scripts/ivy-build.xml"/>
+	
+	<target name="dev-build" description="--> project development build" depends="resolve, jar, publish-local" />
+
+</project>

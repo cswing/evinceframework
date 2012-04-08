@@ -1,0 +1,32 @@
+<project name="evince" default="dev-build" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<property file="${user.home}/.ant/properties/user.properties"/>
+	<property file="build.properties"/>
+	<property name="common.scripts.dir" value="${user.common.scripts.dir}" />
+		
+	<import file="${common.scripts.dir}/ivy-build.xml"/>
+	
+	<target name="buildlist" depends="init-ivy"> 
+    <ivy:buildlist reference="project-builders">
+      <fileset dir=".">
+		<patternset>
+			<include name="core/build.xml"/>
+			<include name="web/build.xml"/>	
+		</patternset>      	
+      </fileset>
+    </ivy:buildlist>
+	</target>
+  	
+	<target name="clean" depends="buildlist">
+		<subant target="clean" buildpathref="project-builders" />
+	</target>
+
+	<target name="clean-local-repo">
+
+	</target>
+
+	<target name="dev-build" depends="buildlist">
+		<subant target="dev-build"  buildpathref="project-builders" />
+	</target>
+
+</project>
