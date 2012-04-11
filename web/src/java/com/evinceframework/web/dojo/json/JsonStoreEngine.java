@@ -324,6 +324,7 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 		
 		if (obj == null) {
 			context.getGenerator().writeNull();
+			return;
 		}	
 		
 		if (isPrimitiveObject(obj)) {
