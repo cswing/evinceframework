@@ -78,7 +78,7 @@ public class MapConverter extends AbstractTypedJsonConverter<Map> {
 			}
 		}
 		
-		return String.valueOf(obj.hashCode());
+		return String.valueOf(System.identityHashCode(obj));
 	}
 
 	@Override

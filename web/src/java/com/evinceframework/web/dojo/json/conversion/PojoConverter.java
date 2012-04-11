@@ -189,7 +189,7 @@ public class PojoConverter implements JsonConverter {
 
 	@Override
 	public String determineIdentifier(Object obj) {
-		return String.valueOf(obj.hashCode());
+		return String.valueOf(System.identityHashCode(obj));
 	}
 
 	protected boolean serializeField(String fieldName) {
