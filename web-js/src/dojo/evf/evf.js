@@ -15,6 +15,9 @@
  */
  define([
 	"evf/_lang",
+	"evf/dialog/Dialog",
+  "evf/dialog/util",
+  "evf/layout/Messages",
 	"evf/store/ViewModel"
 ], function(evf){
 
