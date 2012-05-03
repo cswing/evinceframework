@@ -1,0 +1,6 @@
+
+rootProject.name = 'evf'
+
+include 'core'
+include 'web'
+include 'web-js'
