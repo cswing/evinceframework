@@ -56,6 +56,11 @@ configure(subprojects.findAll {it.name != 'web-js'}) { subproject ->
         archives sourcesJar
         archives javadocJar
     }
+    
+    task copyToLib(type: Copy) {
+        into "/lib"
+        from configurations.testCompile
+    }
 }
 
 // configure dojo projects
@@ -88,7 +93,8 @@ project(':web') {
         compile group: 'log4j', name: 'log4j', version: '1.2.+'
         compile group: 'commons-logging', name: 'commons-logging', version: '1.1.+'
         
-        //compile group: 'javax.servlet', name: 'javax.servlet', version: '2.5'
+        //<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="core->default" />		
+        compile group: 'javax.servlet', name: 'servlet-api', version: '2.5'
         compile group: 'org.springframework', name: 'spring-webmvc', version: '3.0.+'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.+'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.+', classifier:'sources'
