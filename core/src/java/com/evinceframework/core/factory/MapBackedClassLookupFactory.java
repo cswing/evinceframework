@@ -36,6 +36,10 @@ public class MapBackedClassLookupFactory<T extends Object> extends AbstractClass
 	public void setLookupMap(Map<Class<?>, T> lookupMap) {
 		this.lookupMap = lookupMap;
 	}
+	
+	public void setAddToLookupMap(Map<Class<?>, T> lookupMap) {
+		this.lookupMap.putAll(lookupMap);
+	}
 
 	@Override
 	protected T create(Class<?> clazz) {
