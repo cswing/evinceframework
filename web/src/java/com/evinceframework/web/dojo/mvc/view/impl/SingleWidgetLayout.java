@@ -42,9 +42,15 @@ public class SingleWidgetLayout implements DojoLayout {
 
 	private static final String HTML5_DOC_TYPE = "<!DOCTYPE html>";
 
+	private static final String LAYOUT_WIDGET = "evf.layout.lob.ApplicationPage";
+	
 	private String pageTitle = null;
 	
 	private String headerContent = null;
+	
+	private String layoutWidget = LAYOUT_WIDGET;
+	
+	private String pageController = null;
 	
 	public String getPageTitle() {
 		return pageTitle;
@@ -60,6 +66,22 @@ public class SingleWidgetLayout implements DojoLayout {
 
 	public void setHeaderContent(String headerContent) {
 		this.headerContent = headerContent;
+	}
+
+	public String getLayoutWidget() {
+		return layoutWidget;
+	}
+
+	public void setLayoutWidget(String layoutWidget) {
+		this.layoutWidget = layoutWidget;
+	}
+
+	public String getPageController() {
+		return pageController;
+	}
+
+	public void setPageController(String pageController) {
+		this.pageController = pageController;
 	}
 
 	@Override
@@ -93,8 +115,13 @@ public class SingleWidgetLayout implements DojoLayout {
 
 	@Override
 	public void renderBodyContent(PrintWriter writer, DojoViewRenderingContext ctx) {
-		// TODO Auto-generated method stub
 		
+		ctx.addRequires(getLayoutWidget());
+		ctx.addRequires(getPageController());
+		
+		writer.write(
+			String.format("\n<div id=\"pageLayout\" dojoType=\"%s\" controller=\"%s\" viewModel=\"viewModel\" >\n</div>\n", 
+			getLayoutWidget(), getPageController() ));
 	}
 
 	@Override

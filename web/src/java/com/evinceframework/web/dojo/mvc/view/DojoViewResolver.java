@@ -21,10 +21,15 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractCachingViewResolver;
 
+import com.evinceframework.web.dojo.json.JsonStoreEngine;
 import com.evinceframework.web.dojo.mvc.view.config.DojoConfigurationResolver;
 
 public class DojoViewResolver extends AbstractCachingViewResolver implements InitializingBean {
 
+	private JsonStoreEngine jsonEngine;
+	
+	private String[] storeNames;
+	
 	private DojoConfigurationResolver configurationResolver;
 	
 	public DojoConfigurationResolver getConfigurationResolver() {
@@ -33,6 +38,22 @@ public class DojoViewResolver extends AbstractCachingViewResolver implements Ini
 
 	public void setConfigurationResolver(DojoConfigurationResolver configurationResolver) {
 		this.configurationResolver = configurationResolver;
+	}
+ 
+	public JsonStoreEngine getJsonEngine() {
+		return jsonEngine;
+	}
+
+	public void setJsonEngine(JsonStoreEngine jsonEngine) {
+		this.jsonEngine = jsonEngine;
+	}
+
+	public String[] getStoreNames() {
+		return storeNames;
+	}
+
+	public void setStoreNames(String[] storeNames) {
+		this.storeNames = storeNames;
 	}
 
 	@Override
@@ -49,7 +70,7 @@ public class DojoViewResolver extends AbstractCachingViewResolver implements Ini
 			return null;
 		}
 		
-		return new DojoView(configurationResolver, layout);
+		return new DojoView(jsonEngine, storeNames, configurationResolver, layout);
 	}
 
 	protected String getViewBeanName(String viewName) {

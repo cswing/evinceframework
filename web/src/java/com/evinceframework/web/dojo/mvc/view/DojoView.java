@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.View;
 
+import com.evinceframework.web.dojo.json.JsonStoreEngine;
 import com.evinceframework.web.dojo.mvc.view.config.DojoConfiguration;
 import com.evinceframework.web.dojo.mvc.view.config.DojoConfigurationResolver;
 
@@ -50,7 +51,11 @@ import com.evinceframework.web.dojo.mvc.view.config.DojoConfigurationResolver;
 public class DojoView implements View {
 	
 	private static final String DEFAULT_CONTENT_TYPE = "text/html";
-		
+	
+	private JsonStoreEngine jsonEngine;
+	
+	private String[] storeNames;
+	
 	private DojoConfigurationResolver configurationResolver;
 	
 	private DojoLayout layout;
@@ -64,11 +69,9 @@ public class DojoView implements View {
 		return configurationResolver;
 	}
 
-	public void setConfigurationResolver(DojoConfigurationResolver configurationResolver) {
-		this.configurationResolver = configurationResolver;
-	}
-
-	public DojoView(DojoConfigurationResolver configurationResolver, DojoLayout layout) {
+	public DojoView(JsonStoreEngine jsonEngine, String[] storeNames, DojoConfigurationResolver configurationResolver, DojoLayout layout) {
+		this.jsonEngine = jsonEngine;
+		this.storeNames = storeNames;
 		this.configurationResolver = configurationResolver;
 		this.layout = layout;
 	}
@@ -83,6 +86,7 @@ public class DojoView implements View {
 		PrintWriter writer = response.getWriter();
 		
 		ctx.addRequires("dojo.parser");
+		ctx.addRequires("evf.store.ViewModel");
 		
 		// add any requires that have been defined in the configuration
 		ctx.getRequires().addAll(cfg.getRequires());
@@ -139,7 +143,7 @@ public class DojoView implements View {
 		writer.write("<script type=\"text/javascript\">\n");
 		
 		// register module paths & requires
-		writer.write("require(['dojo/_base/kernel', 'dojo/ready', 'dojo/parser', 'dojo/_base/loader], function(dojo, ready, parser){\n");
+		writer.write("require(['dojo/_base/kernel', 'dojo/ready', 'dojo/parser', 'dojo/_base/loader'], function(dojo, ready, parser){\n");
 		
 		if (cfg.getModules() != null && cfg.getModules().size() > 0) {
 			for(String k : cfg.getModules().keySet()) {
@@ -161,7 +165,10 @@ public class DojoView implements View {
 		writer.write(String.format("require([%s], function() {\n", requires.toString()));
 		writer.write(String.format("dojo.setObject('contextPath', '%s')\n", ctx.getRequest().getContextPath()));
 		
-		// TODO render the view model
+		for (String storeName : storeNames) {
+			Object obj = ctx.getModel().get(storeName);
+			writer.write(String.format("dojo.setObject('storeName', new evf.store.ViewModel({data: %s}));", jsonEngine.serialize(obj)));
+		}
 		
 		layout.renderPreParseJs(writer, ctx);
 		
