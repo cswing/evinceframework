@@ -1,0 +1,104 @@
+
+.evf2K12 .topBar {
+    left:           0;
+    position:         fixed;
+    top:          0;
+    z-index:        12;
+    background-color:     #F0F1BF;
+    border-width:       0;
+    height:         40px;
+    left:         0px;
+    right:          0px;
+    text-align:       left;    
+    min-width:        1000px;
+    -moz-box-shadow:      0px 1px 3px #CCC;
+    -webkit-box-shadow:   0px 1px 3px #CCC;
+    box-shadow:           0px 1px 3px #CCC;
+}
+
+.evf2K12 .topBar .topBar-outer {
+  margin:         0 auto;
+  width:          1000px;
+}
+
+.evf2K12 .topBar div.logo {
+  
+}
+
+.evf2K12 .topBar .topBarContainer {
+  vertical-align:     bottom;
+    min-width:        1000px;
+    overflow:         hidden;
+    width:          1000px;
+}
+
+.evf2K12 .topBar .topBarContainer table.topBarTable {
+  border-collapse:    collapse;
+    height:         40px;
+    width:          100%;
+}
+
+.evf2K12 .topBar .topBarContainer table.topBarTable td.logo {
+  vertical-align:     top;
+  width:          150px;
+}
+
+.evf2K12 .topBar .topBarContainer table.topBarTable td {
+  vertical-align:     bottom;
+}
+
+/* dijit menubar, menuitem overrides*/
+
+.evf2K12 .topBar .dijitMenuBar {
+  background:       none repeat scroll 0 0 transparent;
+    border:         0 none;
+}
+
+.evf2K12 .topBar .dijitMenuItem,
+.evf2K12 .topBarMenu.dijitMenu .dijitMenuItem {
+  background-image:     none;
+  border:         0 none;
+  color:          #79796C;
+    font-size:        1.25em;
+  padding:        6px 10px 7px; /* sets the hover/active padding to .dijitMenuItem */
+}
+
+.evf2K12 .topBar .dijitMenuItem {
+  background-color:     #F0F1BF;
+  border-radius:      10px 10px 0 0;
+}
+
+.evf2K12 .topBar .dijitMenuItem.dijitHover,
+.evf2K12 .topBar .dijitMenuItem.dijitActive,
+.evf2K12 .topBar .dijitMenuItem.dijitMenuItemSelected {
+  background-color:     #FBFCDC;
+}
+
+/*.evf2K12 .topBar*/ 
+.evf2K12 .topBarMenu.dijitMenu {
+    background-color:     #FBFCDC;
+    border:         0 none; /*1px solid #8D89A7;*/
+    margin:         -1px 0;
+}
+
+/* embedded login form */
+.evf2K12 .topBar .loginForm {
+  margin-bottom:      5px;
+}
+
+.evf2K12 .topBar .loginForm .label {
+  padding:        0 1em;
+}
+
+.evf2K12 .topBar .loginForm .dijitButton {
+  margin-left:      0.5em;
+}
+
+.evf2K12 .topBar a.action {
+  color:          #79796C;
+    text-decoration:    none;
+}
+
+.evf2K12 .topBar a.action:hover {
+  text-decoration:    underline;
+}

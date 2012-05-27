@@ -1,0 +1,42 @@
+
+.evf2K12 .defaultLayout {
+  min-width:              1000px;
+  padding-top:            35px;
+}
+
+.evf2K12 .innerDefaultLayout {
+  position:               relative;
+  text-align:             center;
+  width:                  100%;
+  z-index:                1;
+}
+
+.evf2K12 .innerDefaultLayout .content-outer {
+  margin:                 0 auto;
+  width:                  1000px;
+}
+
+.evf2K12 .innerDefaultLayout .content {
+  border-radius:          5px 5px 5px 5px;
+  overflow:               hidden;
+  position:               relative;
+  text-align:             left;
+  z-index:                1;
+  padding-top:            1em;
+}
+
+.evf2K12 .innerDefaultLayout .content .pageTitle {
+  background-color:       #FBFCDC;
+  border:                 2px solid #F0F1BF;
+  border-radius:          5px;
+  margin:                 0 4px 1em 0;
+  padding:                1em;
+  -moz-box-shadow:        2px 2px 5px #CCC;
+  -webkit-box-shadow:     2px 2px 5px #CCC;
+  box-shadow:             2px 2px 5px #CCC;
+}
+
+.evf2K12 .innerDefaultLayout .content .pageTitle .primaryTitle {
+  font-size:              2em;
+  padding-left:           2em;
+}

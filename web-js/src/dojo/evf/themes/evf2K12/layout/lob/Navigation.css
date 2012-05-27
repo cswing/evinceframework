@@ -1,0 +1,25 @@
+
+.evf2K12 .dijitAccordionContainer.navigation .itemGroup {
+  margin:           0;
+  padding:          0;
+}
+
+.evf2K12 .dijitAccordionContainer.navigation .itemGroup .itemGroupTitle {
+  font-weight:      bold;
+}
+
+.evf2K12 .dijitAccordionContainer.navigation .itemGroup .itemGroup {
+  padding:          0.25em 0 0 2em;
+} 
+
+.evf2K12 .dijitAccordionContainer.navigation .itemGroup .itemGroup .itemGroupTitle {
+  font-weight:      normal;
+}
+
+.evf2K12 .dijitAccordionContainer.navigation a {
+  cursor:           pointer;
+}
+
+.evf2K12 .dijitAccordionContainer.navigation a:hover {
+  text-decoration:  underline;
+}

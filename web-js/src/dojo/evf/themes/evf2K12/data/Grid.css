@@ -1,0 +1,86 @@
+
+.evf2K12 .dijitContentPane.dataGridPane {
+  padding:            0;
+  border-color:       #759DC0;  
+}
+
+.evf2K12 .dataGrid .parentTable {
+  border-collapse:    collapse;
+  border-spacing:     0;
+}
+
+.evf2K12 .dataGrid .innerTableContainer {
+  overflow:           auto;
+}
+
+.evf2K12 .dataGrid .innerTable {
+  border-collapse:    collapse;
+  border-spacing:     0;
+}
+
+.evf2K12 .dataGrid table.parentTable > thead > tr > td {
+  border-bottom:      1px solid #759DC0;
+  background-color:   #CFE5FA;
+}
+
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader {
+  padding:            0.25em 0.75em;
+  border-left:        solid 1px #759DC0;
+}
+
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader:first-child {
+  border-left:        0;
+}
+
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeaderPad {
+  padding:            0;
+  border-left:        0;
+}
+
+.evf2K12 .dataGrid table.innerTable > tbody > tr.dataRow > td {
+  padding:            0.5em 0.75em;
+  border-bottom:      solid 1px #E7E7E7;
+  border-left:        solid 1px #E7E7E7;
+}
+
+.evf2K12 .dataGrid table.innerTable > tbody > tr.dataRow > td:first-child {
+  border-left:        0;
+}
+
+.evf2K12 .dataGrid table.innerTable > tbody > tr.dataRow.even > td {
+  background-color:   #EEEEEE;
+}
+
+/* Menu Cell */
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader.menuCellHeader {
+  padding:            0;
+}
+
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader.menuCellHeader + td {
+  border-left:        0;
+}
+
+.evf2K12 .dataGrid table.innerTable > tbody > tr.dataRow > td.menuCell {
+  padding:            0;
+  height:             16px;
+}
+
+.evf2K12 .dataGrid table.innerTable > tbody > tr.dataRow > td.menuCell .dijitDropDownButton .dijitButtonNode {
+  border:             0;
+  background-image:   none;
+  background-color:   transparent;
+  box-shadow:         none;
+  padding:            0;
+}
+
+.evf2K12 .dataGrid table.innerTable > tbody > tr.dataRow > td.menuCell .gridMenu {
+  height:             16px;
+  width:              16px;
+  background:         url(../images/fchi/16x16/control_eject_blue.png);
+  -moz-transform:     scaleY(-1);
+  -o-transform:       scaleY(-1);
+  -webkit-transform:  scaleY(-1);
+  transform:          scaleY(-1);
+  filter:             FlipV;
+  -ms-filter:         "FlipV";
+}

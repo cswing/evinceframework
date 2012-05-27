@@ -1,0 +1,38 @@
+
+.evf2K12 .pager {
+  padding:            0.5em;
+  background:         #FFFFFF;
+  white-space:        nowrap;
+}
+
+.evf2K12 .pager .pageContainer {
+  vertical-align:     text-bottom;
+}
+
+.evf2K12 .pager .page-numbers .prev,
+.evf2K12 .pager .page-numbers .next {
+  margin:             0 0.5em;
+}
+
+.evf2K12 .pager .page-numbers {
+  margin:             0 0.5em;
+  cursor:             pointer;
+}
+
+.evf2K12 .pager .page-numbers:hover {
+  text-decoration:    underline;  
+}
+
+.evf2K12 .pager .page-numbers.current {
+  cursor:             default;
+  font-weight:        bold;
+  background:         #ABD6FF;
+  text-align:         center;
+  border:             solid 1px #759DC0;
+  border-radius:      1em;
+  padding:            0.25em;
+}
+
+.evf2K12 .pager .page-numbers.current:hover {
+  text-decoration:    none;
+}
