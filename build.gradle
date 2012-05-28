@@ -58,7 +58,7 @@ configure(subprojects.findAll {it.name != 'web-js'}) { subproject ->
     }
     
     task copyToLib(type: Copy) {
-        into "/lib"
+        into "${projectDir}/lib"
         from configurations.testCompile
     }
 }
