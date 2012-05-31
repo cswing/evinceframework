@@ -41,9 +41,11 @@ import com.evinceframework.web.dojo.mvc.view.PathUtils;
 public class SingleWidgetLayout implements DojoLayout {
 
 	private static final String HTML5_DOC_TYPE = "<!DOCTYPE html>";
-
+	
 	private static final String LAYOUT_WIDGET = "evf.layout.lob.ApplicationPage";
 	
+	private String docType = HTML5_DOC_TYPE; 
+			
 	private String pageTitle = null;
 	
 	private String headerContent = null;
@@ -86,9 +88,9 @@ public class SingleWidgetLayout implements DojoLayout {
 
 	@Override
 	public String getDocType(DojoViewRenderingContext ctx) {
-		return HTML5_DOC_TYPE;
+		return docType;
 	}
-
+	
 	@Override
 	public void renderHeadContent(PrintWriter writer, DojoViewRenderingContext ctx) {
 		
@@ -120,7 +122,7 @@ public class SingleWidgetLayout implements DojoLayout {
 		ctx.addRequires(getPageController());
 		
 		writer.write(
-			String.format("\n<div id=\"pageLayout\" dojoType=\"%s\" controller=\"%s\" viewModel=\"viewModel\" >\n</div>\n", 
+			String.format("<div id=\"pageLayout\" dojoType=\"%s\" controller=\"%s\" viewModel=\"viewModel\" ></div>", 
 			getLayoutWidget(), getPageController() ));
 	}
 

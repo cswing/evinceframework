@@ -96,15 +96,18 @@ public class DojoView implements View {
 		
 		layout.renderHeadContent(writer, ctx);
 		
-		writer.write("\n</head>\n");
-		writer.write(String.format("<body class=\"%s\">\n", cfg.getBodyCss()));
+		writer.write("\n\n</head>\n");
+		writer.write(String.format("<body class=\"%s\">\n\n", cfg.getBodyCss()));
 	
 		layout.renderBodyContent(writer, ctx);
 		
 		// Render the main script with the configuration
-		writer.write(String.format(
-				"\n\n<script type=\"text/javascript\" src=\"%s\" data-dojo-config=\"%s\"></script>\n",
-				PathUtils.buildScriptPath(ctx, cfg.getCoreDojoPath()), createDojoConfig(cfg)));
+		writer.write("\n\n<script type=\"text/javascript\" ");
+		writer.write(String.format(" src=\"%s\"", 
+				PathUtils.buildScriptPath(ctx, cfg.getCoreDojoPath())));
+		writer.write(String.format("\n data-dojo-config=\"\n%s\n\" ",
+				createDojoConfig(cfg)));
+		writer.write(">\n</script>\n");
 		
 		for(String path : cfg.getAuxiliaryScriptPaths()) {			
 			writer.write(String.format(
@@ -123,7 +126,7 @@ public class DojoView implements View {
 		Map<String, String> params = cfg.getConfigParameters();
 		
 		StringBuilder dojoConfig = new StringBuilder();
-		dojoConfig.append("parseOnLoad: false");
+		dojoConfig.append("\tparseOnLoad: false");
 		
 		if (params != null) {
 			for(String k : cfg.getConfigParameters().keySet()) {			
@@ -131,8 +134,24 @@ public class DojoView implements View {
 				if ("parseOnLoad".equals(k))
 					continue;
 				
-				dojoConfig.append(String.format(", %s: '%s'", k, params.get(k)));
+				dojoConfig.append(String.format(",\n\t%s: '%s'", k, params.get(k)));
 			}
+		}
+		
+		Map<String, String> modules = cfg.getModules();
+		if (modules != null && modules.size() > 0) {
+			dojoConfig.append(",\n\tpaths: {");
+			boolean needComma = false;
+			for(String key : modules.keySet()) {
+				if (needComma) {
+					dojoConfig.append(",");
+				} else {
+					needComma = true;
+				}
+				
+				dojoConfig.append(String.format("\n\t\t%s: '%s'", key, modules.get(key)));
+			}
+			dojoConfig.append("\n\t}");
 		}
 		
 		return dojoConfig.toString();
@@ -142,41 +161,24 @@ public class DojoView implements View {
 		
 		writer.write("<script type=\"text/javascript\">\n");
 		
-		// register module paths & requires
-		writer.write("require(['dojo/_base/kernel', 'dojo/ready', 'dojo/parser', 'dojo/_base/loader'], function(dojo, ready, parser){\n");
-		
-		if (cfg.getModules() != null && cfg.getModules().size() > 0) {
-			for(String k : cfg.getModules().keySet()) {
-				writer.write(String.format(
-						"dojo.registerModulePath(\"%s\", \"%s\");\n", k, cfg.getModules().get(k)));
-			}
-		}
-		
-		StringBuilder requires = new StringBuilder(); 
+		writer.write("require(['dojo/domReady!'");
 		for(String require : ctx.getRequires()) {
-			if(requires.length() > 0) {
-				requires.append(",");
-			}
-			requires.append("'");
-			requires.append(require.replace('.', '/'));
-			requires.append("'");
+			writer.write(", '");
+			writer.write(require.replace('.', '/'));
+			writer.write("'");
 		}
-		
-		writer.write(String.format("require([%s], function() {\n", requires.toString()));
-		writer.write(String.format("dojo.setObject('contextPath', '%s')\n", ctx.getRequest().getContextPath()));
+		writer.write("], function() {");
+		writer.write(String.format("\n\tdojo.setObject('contextPath', '%s')\n", ctx.getRequest().getContextPath()));
 		
 		for (String storeName : storeNames) {
 			Object obj = ctx.getModel().get(storeName);
-			writer.write(String.format("dojo.setObject('storeName', new evf.store.ViewModel({data: %s}));", jsonEngine.serialize(obj)));
+			writer.write(String.format("\n\tdojo.setObject('%s', new evf.store.ViewModel({data: %s}));", storeName, jsonEngine.serialize(obj)));
 		}
 		
 		layout.renderPreParseJs(writer, ctx);
-		
-		writer.write("\ndojo.parser.parse();\n");		
-		
+		writer.write("\n\t\tdojo.parser.parse();\n");
 		layout.renderPostParseJs(writer, ctx);
 		
-		writer.write("});\n");
 		writer.write("});\n");
 	}
 	
