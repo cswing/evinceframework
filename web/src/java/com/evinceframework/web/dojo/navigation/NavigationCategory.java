@@ -41,7 +41,8 @@ public class NavigationCategory extends NavigationItem {
 
 		@Override
 		protected void onWriteObjectProperties(JsonSerializationContext context, NavigationCategory obj) throws IOException {
-			super.writeObjectProperties(context, obj);
+			super.onWriteObjectProperties(context, obj);
+			
 			context.writeProperty(Navigator.JsonConverter.ITEMS_PROPERTY, obj.getItems());	
 		}
 	}

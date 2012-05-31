@@ -29,7 +29,8 @@ public class NavigationCommand extends NavigationItem {
 
 		@Override
 		protected void onWriteObjectProperties(JsonSerializationContext context, NavigationCommand obj) throws IOException {
-
+			super.onWriteObjectProperties(context, obj);
+			
 		}
 	}
 }

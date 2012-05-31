@@ -67,7 +67,9 @@ define("evf/layout/lob/util", [
     });
     dojo.addClass(accordion.domNode, 'navigation');
     
-    var items = storeUtils.sort(nav.items.clone(), 'order');
+    var items = nav.items || [];
+    items = storeUtils.sort(items.clone(), 'order');
+    
     dojo.forEach(items, function(navItem) {
       // TODO support custom pane
       var pane = new dijit.layout.ContentPane({
@@ -116,7 +118,8 @@ define("evf/layout/lob/util", [
      return menuItem;
     };
     
-    var items = storeUtils.sort(nav.items.clone(), 'order');
+    var items = nav.items || [];
+    items = storeUtils.sort(items.clone(), 'order');
     dojo.forEach(items, function(navItem) {
       
       if (navItem.items) {

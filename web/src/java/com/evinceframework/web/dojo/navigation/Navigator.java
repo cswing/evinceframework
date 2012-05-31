@@ -85,7 +85,7 @@ public class Navigator {
 			if(StringUtils.hasText(nav.getImplementation())) {
 				context.writeProperty(IMPL_PROPERTY, nav.getImplementation());
 			}
-			context.writeProperty(ITEMS_PROPERTY, nav.getImplementation());
+			context.writeProperty(ITEMS_PROPERTY, nav.getItems());
 		}
 	}
 	
