@@ -22,9 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import com.evinceframework.web.dojo.mvc.model.ViewModelUtils;
 
@@ -55,6 +57,10 @@ public class NavigationInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 		super.postHandle(request, response, handler, modelAndView);
+		
+		if (ClassUtils.isAssignableValue(ResourceHttpRequestHandler.class, handler)) {
+            return;
+		}            
 		
 		List<Object> viewModel = 
 				modelUtils.findOrCreateViewModel(modelAndView.getModelMap());
