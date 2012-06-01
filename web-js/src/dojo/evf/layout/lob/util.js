@@ -46,18 +46,22 @@ define("evf/layout/lob/util", [
         var li = domConstruct.create('li', { 'class': 'item' }, parentNode);
         var a = domConstruct.create('a', {}, li);
         a.innerHTML = navItem.title; 
-        
-        accordion.connect(a, 'onclick', function() {
-          dialogUtils.showConfirmation('Are you sure?');
-        });
-        
-        /*
+         
         if (navItem.url) {
-          
-          return;  
+        	var url = navItem.url;
+        	if (!url.startsWith("http")) {
+        		var ctxPath = dojo.getObject('contextPath');
+        		if (ctxPath && ctxPath != '') {
+        			url = dojo.replace("{0}/{1}", [ctxPath, url]).replace('//', '/');
+        		}
+        	}
+        	dojo.attr(a, 'href', url);
+        	
+        } else {
+            accordion.connect(a, 'onclick', function() {
+	          dialogUtils.showConfirmation('Are you sure?');
+	        });
         }
-        */
-        
       });
     };
     
@@ -104,7 +108,7 @@ define("evf/layout/lob/util", [
           label:  navItem.title,
           popup:  subMenu
       });
-    }
+    };
     
     var createMenuItem = function(itm, widget) {
       var menuItem = new widget({

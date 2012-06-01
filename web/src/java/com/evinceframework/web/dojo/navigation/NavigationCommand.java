@@ -17,10 +17,20 @@ package com.evinceframework.web.dojo.navigation;
 
 import java.io.IOException;
 
+import org.springframework.util.StringUtils;
+
 import com.evinceframework.web.dojo.json.JsonSerializationContext;
 
 public class NavigationCommand extends NavigationItem {
-	 		
+	
+	private String url;
+	
+	public NavigationCommand() { }
+	
+	public NavigationCommand(String url) {
+		this.url = url;
+	}
+
 	public static class JsonConverter extends NavigationItem.JsonConverter<NavigationCommand> {
 		
 		public JsonConverter() {
@@ -30,6 +40,10 @@ public class NavigationCommand extends NavigationItem {
 		@Override
 		protected void onWriteObjectProperties(JsonSerializationContext context, NavigationCommand obj) throws IOException {
 			super.onWriteObjectProperties(context, obj);
+			
+			if (StringUtils.hasText(obj.url)) {
+				context.writeProperty("url", obj.url);
+			}
 			
 		}
 	}
