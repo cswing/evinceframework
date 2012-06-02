@@ -15,8 +15,6 @@
  */
 package com.evinceframework.web.dojo.navigation;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -62,14 +60,12 @@ public class NavigationInterceptor extends HandlerInterceptorAdapter {
             return;
 		}            
 		
-		List<Object> viewModel = 
-				modelUtils.findOrCreateViewModel(modelAndView.getModelMap());
-		
 		if (provider == null) {
 			logger.debug("Cannot add a navigator to the view model because no provider was set.");
 		
 		} else {
-			viewModel.add(provider.getNavigator());
+			modelUtils.addToViewModel(
+					modelAndView.getModelMap(), provider.getNavigator());
 		}
 	}	
 }
