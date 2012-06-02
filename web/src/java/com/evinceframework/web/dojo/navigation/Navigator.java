@@ -60,7 +60,7 @@ public class Navigator {
 
 		public static final String SITE_TYPE = "evf.siteNav";
 		
-		public static final String CONTEXT_TYPE = "evf.siteNav";
+		public static final String CONTEXT_TYPE = "evf.contextNav";
 
 		public static final String IMPL_PROPERTY = "impl";
 

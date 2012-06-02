@@ -98,7 +98,7 @@ return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageControl
         dojo.query('.dijitArrowButtonInner, .dijitArrowButtonChar', 
           button.domNode).style('display', 'none');
       }
-    }
+    };
   }
       
 });

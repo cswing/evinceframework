@@ -81,7 +81,7 @@ return dojo.declare("evf.layout.lob.ApplicationPageController", [], {
   
   createContextNavigation: function() {
     var qr = this.viewModel.query({ 
-      _type:          'evf.siteNav'//'evf.contextNav'
+      _type:          'evf.contextNav'
     });
     
     if (qr.length == 0) {
