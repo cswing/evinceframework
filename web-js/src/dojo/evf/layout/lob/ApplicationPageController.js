@@ -15,8 +15,8 @@
  */
 define("evf/layout/lob/ApplicationPageController", [
   "dojo", "dijit", "dojo/dom-construct",
-  "evf/layout/lob/util"
-], function(dojo, dijit, domConstruct, lobUtil) {
+  "evf/layout/lob/util", "evf/layout/navigation/AccordionNavigator"
+], function(dojo, dijit, domConstruct, lobUtil, Navigator) {
 
 return dojo.declare("evf.layout.lob.ApplicationPageController", [], {
   
@@ -74,7 +74,11 @@ return dojo.declare("evf.layout.lob.ApplicationPageController", [], {
     var result = [];
     qr.forEach(function(nav) {
       // TODO support custom creator
-      result.push(lobUtil.createAccordionNavigation(this, nav));  
+      result.push(new Navigator({
+    	  splitter:   	true,
+          minSize:    	20,
+          navigator:	nav
+      }));  
     });
     return result[0];
   },

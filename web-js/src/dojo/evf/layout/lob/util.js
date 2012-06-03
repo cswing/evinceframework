@@ -16,77 +16,16 @@
 define("evf/layout/lob/util", [
   "dojo", "dijit", "dojo/dom-construct",
   "evf/_lang", "evf/store/util", "evf/dialog/util",
+  "dijit/_Widget", "dijit/_Container",
   "dijit/layout/AccordionContainer", "dijit/layout/ContentPane",
   "dijit/MenuBar", "dijit/MenuBarItem", "dijit/PopupMenuBarItem", 
   "dijit/DropDownMenu", "dijit/MenuItem", "dijit/PopupMenuItem"
 ], function(dojo, dijit, domConstruct, eLang, storeUtils, dialogUtils, 
-    AccordionContainer, ContentPane, 
+    Widget, Container, AccordionContainer, ContentPane, 
     MenuBar, MenuBarItem, PopupMenuBarItem, DropDownMenu, MenuItem, PopupMenuItem) {
 
-  var util = dojo.getObject('evf.layout.lob.util', true);
+	var util = dojo.getObject('evf.layout.lob.util', true);
   
-  util.createAccordionNavigation = function(controller, nav) {
-    
-    var processItems = function(accordion, parentItem, parentNode) {
-      var items = storeUtils.sort(parentItem.items.clone(), 'order');
-      dojo.forEach(items, function(navItem) {
-        
-        // three options: children, url, or command
-        if (navItem.items) {
-          
-          var span = domConstruct.create('span', { 'class': 'itemGroupTitle' }, parentNode);
-          span.innerHTML = navItem.title;
-          
-          var ul = domConstruct.create('ul', { 'class': 'itemGroup' }, parentNode);
-          processItems(accordion, navItem, ul);
-          
-          return;
-        }
-        
-        var li = domConstruct.create('li', { 'class': 'item' }, parentNode);
-        var a = domConstruct.create('a', {}, li);
-        a.innerHTML = navItem.title; 
-         
-        if (navItem.url) {
-        	var url = navItem.url;
-        	if (!url.startsWith("http")) {
-        		var ctxPath = dojo.getObject('contextPath');
-        		if (ctxPath && ctxPath != '') {
-        			url = dojo.replace("{0}/{1}", [ctxPath, url]).replace('//', '/');
-        		}
-        	}
-        	dojo.attr(a, 'href', url);
-        	
-        } else {
-            accordion.connect(a, 'onclick', function() {
-	          dialogUtils.showConfirmation('Are you sure?');
-	        });
-        }
-      });
-    };
-    
-    var accordion = new dijit.layout.AccordionContainer({
-      splitter:   true,
-      minSize:    20
-    });
-    dojo.addClass(accordion.domNode, 'navigation');
-    
-    var items = nav.items || [];
-    items = storeUtils.sort(items.clone(), 'order');
-    
-    dojo.forEach(items, function(navItem) {
-      // TODO support custom pane
-      var pane = new dijit.layout.ContentPane({
-        title:      navItem.title
-      });
-      accordion.addChild(pane);
-      
-      var ul = domConstruct.create('ul', { 'class': 'itemGroup' }, pane.domNode);
-      processItems(accordion, navItem, ul);
-    });
-    
-    return accordion;
-  };
   
   util.createMenuNavigation = function(controller, nav) {
     var mnuBar = MenuBar({});
