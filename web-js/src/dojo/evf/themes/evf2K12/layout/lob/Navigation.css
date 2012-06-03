@@ -19,6 +19,7 @@
 .evf2K12 .navigation a {
   cursor:           pointer;
   text-decoration:	none;
+  color:			black;
 }
 
 .evf2K12 .navigation a:hover {

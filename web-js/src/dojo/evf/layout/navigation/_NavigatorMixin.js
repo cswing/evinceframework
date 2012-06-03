@@ -27,9 +27,18 @@ define("evf/layout/navigation/_NavigatorMixin", [
 		postCreate: function() {
 			this.inherited(arguments);
 			
-			var parentNode = domConstruct.create('ul', { 'class': 'itemGroup' }, 
-					this.containerNode || this.domNode);
-			this.processItems(this.navigatorItem, parentNode);
+			// handle custom navigation content			
+			var customWidget = dojo.getObject(this.navigatorItem.impl || ''); 
+			if (customWidget) {
+				new customWidget({
+					navigatorItem: this.navigatorItem
+				}, domConstruct.create('div', {}, this.containerNode || this.domNode));
+				
+			} else {
+				var parentNode = domConstruct.create('ul', { 'class': 'itemGroup' }, 
+						this.containerNode || this.domNode);
+				this.processItems(this.navigatorItem, parentNode);
+			}
 		},
 		
 		processItemWithChildren: function(navItem, parentNode) {
