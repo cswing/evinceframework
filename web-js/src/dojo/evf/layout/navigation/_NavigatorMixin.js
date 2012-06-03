@@ -27,7 +27,8 @@ define("evf/layout/navigation/_NavigatorMixin", [
 		postCreate: function() {
 			this.inherited(arguments);
 			
-			var parentNode = domConstruct.create('ul', { 'class': 'itemGroup' }, this.domNode);
+			var parentNode = domConstruct.create('ul', { 'class': 'itemGroup' }, 
+					this.containerNode || this.domNode);
 			this.processItems(this.navigatorItem, parentNode);
 		},
 		
@@ -85,7 +86,15 @@ define("evf/layout/navigation/_NavigatorMixin", [
 			
 			var items = this.navigator.items || [];
 		    items = storeUtils.sort(items.clone(), 'order');
-		    dojo.forEach(items, this.createTopLevelWidget, this);
+		    dojo.forEach(items, function(navItem, idx) {
+		    	var w = this.createTopLevelWidget(navItem);
+		    	if(idx == 0) {
+		    		dojo.addClass(w.domNode, 'first');
+		    	} else if (idx == items.length -1) {
+		    		dojo.addClass(w.domNode, 'last');
+		    	}
+		    	
+		    }, this);
 		},
 		
 		createTopLevelWidget: function(navItem) {

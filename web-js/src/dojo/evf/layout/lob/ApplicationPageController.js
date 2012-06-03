@@ -15,7 +15,7 @@
  */
 define("evf/layout/lob/ApplicationPageController", [
   "dojo", "dijit", "dojo/dom-construct",
-  "evf/layout/lob/util", "evf/layout/navigation/AccordionNavigator"
+  "evf/layout/lob/util", "evf/layout/navigation/TitlePaneNavigator"
 ], function(dojo, dijit, domConstruct, lobUtil, Navigator) {
 
 return dojo.declare("evf.layout.lob.ApplicationPageController", [], {

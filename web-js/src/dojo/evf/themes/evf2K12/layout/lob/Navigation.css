@@ -23,3 +23,25 @@
 .evf2K12 .dijitAccordionContainer.navigation a:hover {
   text-decoration:  underline;
 }
+
+/* Title Pane Navigation */
+.evf2K12 .navigation .dijitTitlePaneTitle {
+	border-left: 	0;
+	border-right: 	0;	
+}
+
+.evf2K12 .navigation .first .dijitTitlePaneTitle {
+	border-top:		0;
+}
+
+.evf2K12 .navigation .dijitTitlePaneTitleFocus {
+	margin-top: 	0;
+	padding-bottom: 5px;
+	padding-top: 	6px;
+}
+
+.evf2K12 .navigation .dijitTitlePaneContentOuter {
+	border-left: 	0;
+	border-right: 	0;
+	border-bottom: 	0;
+}

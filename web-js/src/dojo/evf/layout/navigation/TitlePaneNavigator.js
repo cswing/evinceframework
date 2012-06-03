@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define("evf/layout/navigation/AccordionNavigator", [
+define("evf/layout/navigation/TitlePaneNavigator", [
   "dojo", "dijit", "dojo/dom-construct",
   "evf/_lang", "evf/store/util", "evf/dialog/util",
-  "evf/layout/navigation/_NavigatorMixin", 
-  "dijit/layout/AccordionContainer", "dijit/layout/ContentPane"
+  "dijit/_Widget", "dijit/_Container", "evf/layout/navigation/_NavigatorMixin", 
+  "dijit/TitlePane"
 ], function(dojo, dijit, domConstruct, eLang, storeUtils, dialogUtils, 
-		_NavigatorMixin, AccordionContainer, ContentPane ) {
+		Widget, Container, _NavigatorMixin, TitlePane ) {
 
-	var Pane = dojo.declare("evf.layout.navigation._AccordionNavigatorPane", [ContentPane, evf.layout.navigation._NavigatorPaneMixin], { });
+	var Pane = dojo.declare("evf.layout.navigation._TitlePaneNavigatorPane", [TitlePane, evf.layout.navigation._NavigatorPaneMixin], { });
 	
-	return dojo.declare("evf.layout.navigation.AccordionNavigator", [AccordionContainer, _NavigatorMixin], { 
+	return dojo.declare("evf.layout.navigation.TitlePaneNavigator", [Widget, Container, _NavigatorMixin], { 
 		
 		postMixInProperties: function() {
 			this.inherited(arguments);
