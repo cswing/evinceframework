@@ -1,26 +1,27 @@
 
-.evf2K12 .dijitAccordionContainer.navigation .itemGroup {
+.evf2K12 .navigation .itemGroup {
   margin:           0;
   padding:          0;
 }
 
-.evf2K12 .dijitAccordionContainer.navigation .itemGroup .itemGroupTitle {
+.evf2K12 .navigation .itemGroup .itemGroupTitle {
   font-weight:      bold;
 }
 
-.evf2K12 .dijitAccordionContainer.navigation .itemGroup .itemGroup {
+.evf2K12 .navigation .itemGroup .itemGroup {
   padding:          0.25em 0 0 2em;
 } 
 
-.evf2K12 .dijitAccordionContainer.navigation .itemGroup .itemGroup .itemGroupTitle {
+.evf2K12 .navigation .itemGroup .itemGroup .itemGroupTitle {
   font-weight:      normal;
 }
 
-.evf2K12 .dijitAccordionContainer.navigation a {
+.evf2K12 .navigation a {
   cursor:           pointer;
+  text-decoration:	none;
 }
 
-.evf2K12 .dijitAccordionContainer.navigation a:hover {
+.evf2K12 .navigation a:hover {
   text-decoration:  underline;
 }
 
