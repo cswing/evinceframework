@@ -1,7 +1,7 @@
 define("example/VetsListPageController", [
   "dojo", "dijit", "dojo/dom-construct",  
   "evf/layout/lob/ListPageController", "dijit/MenuItem",
-  "example/_ControllerMixin"
+  "example/_ControllerMixin", "evf/data/util"
 ], function(dojo, dijit, domConstruct, ListPageController, MenuItem, ControllerMixin) {
 
 	return dojo.declare("example.VetsListPageController", [ListPageController, ControllerMixin], {	
@@ -23,9 +23,17 @@ define("example/VetsListPageController", [
         getStructure: function() {
           return [
             this.createMenuCellDef(),
-            { field: "name",    caption: "Name" },
-            { field: "specialties", caption: "Specialties" }
+            { field: "name",    caption: "Name", renderCell: evf.data.util.fullNameCellRenderer },
+            { field: "specialties", caption: "Specialties", renderCell: this.renderSpecialties }
           ];  
+        },
+        
+        renderSpecialties: function(td, data, rowIdx, colIdx, cellDef) {
+        	var names = [];
+        	dojo.forEach(data.specialties, function(s) {
+        		names.push(s.name);
+        	});
+        	td.innerHTML = names.join(', ');
         }
 	  
 	});
