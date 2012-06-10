@@ -33,6 +33,8 @@ define([
     //    An implementation of the dojo.Store API that supports a graph of data.
     //    
 
+	idProperty: "_id",
+	  
     referenceProperty: null,
         
     setData: function(data){

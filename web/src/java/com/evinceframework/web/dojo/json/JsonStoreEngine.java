@@ -105,7 +105,7 @@ import com.fasterxml.jackson.core.JsonFactory;
  */
 public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> {
 
-	public static final String DEFAULT_IDENTIFIER_NAME = "id";
+	public static final String DEFAULT_IDENTIFIER_NAME = "_id";
 	
 	public static final String DEFAULT_TYPE_NAME = "_type";
 	
