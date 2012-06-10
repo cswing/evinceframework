@@ -174,7 +174,7 @@ public class PojoConverter implements JsonConverter {
 		BeanWrapperImpl bean = new BeanWrapperImpl(obj);		
 		
 		for(PropertyDescriptor prop : bean.getPropertyDescriptors()) {			
-			if(serializeField(prop.getName())) {				
+			if(serializeField(prop)) {				
 				try {
 					
 					context.writeProperty(prop.getName(), bean.getPropertyValue(prop.getName()));
@@ -192,8 +192,10 @@ public class PojoConverter implements JsonConverter {
 		return String.valueOf(System.identityHashCode(obj));
 	}
 
-	protected boolean serializeField(String fieldName) {
-				
+	protected boolean serializeField(PropertyDescriptor prop) {
+		
+		String fieldName = prop.getName();
+		
 		// if fields are included by default, only return false if the overridden fields CONTAINS the field.
 		if(includeFieldsByDefault)
 			return !overriddenFields.contains(fieldName);
