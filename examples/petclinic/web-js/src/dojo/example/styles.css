@@ -1,0 +1,10 @@
+
+html, body, #pageLayout {
+  height:   100%;
+  width:    100%;
+  font:     12px Verdana, Arial, Helvetica, sans-serif;
+}
+
+.evf2K12 .lobAppPage .navigation {
+  width:    250px;
+}

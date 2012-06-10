@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"		
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+">
+	
+	<bean id="data.query.owners" class="com.evinceframework.data.impl.JpaCriteriaQuery">
+		<constructor-arg value="com.evinceframework.examples.petclinic.Owner" />
+		<qualifier value="owners" />
+	</bean>
+
+	<bean id="data.query.pets" class="com.evinceframework.data.impl.JpaCriteriaQuery">
+		<constructor-arg value="com.evinceframework.examples.petclinic.Pet" />
+		<qualifier value="pets" />
+	</bean>
+
+	<bean id="data.query.vets" class="com.evinceframework.data.impl.JpaCriteriaQuery">
+		<constructor-arg value="com.evinceframework.examples.petclinic.Vet" />
+		<qualifier value="vets" />
+	</bean>
+
+	<bean id="data.query.visits" class="com.evinceframework.data.impl.JpaCriteriaQuery">
+		<constructor-arg value="com.evinceframework.examples.petclinic.Visit" />
+		<qualifier value="visits" />
+	</bean>
+	    
+</beans>

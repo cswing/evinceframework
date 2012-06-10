@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"			
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"	
+	xmlns:dojo="http://www.evince.com/web/dojo"		
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd			
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd				
+		http://www.evince.com/web/dojo http://www.evince.com/web/dojo/evf-dojo.xsd
+	">	
+	
+	<util:set id="stylesheets.default">		
+		<value>dojo-release/dojo/resources/dojo.css</value>
+		<value>dojo-release/dijit/themes/dijit.css</value>
+		<value>dojo-release/dijit/themes/claro/claro.css</value>
+		<value>dojo-release/evf/themes/evf2K12/evf2K12.css</value>
+	</util:set>	
+	
+	<util:set id="stylesheets.debug">		
+		<value>static/dojo-source/dojo/resources/dojo.css</value>
+		<value>static/dojo-source/dijit/themes/dijit.css</value>
+		<value>static/dojo-source/dijit/themes/claro/claro.css</value>
+		<value>static/dojo-source/evf/themes/evf2K12/evf2K12.css</value>
+		<value>static/dojo-source/example/styles.css</value>
+	</util:set>	
+	
+	<util:set id="auxiliaryScriptPaths.default">	
+		<value>dojo-release/evf/dojo-evf.js</value>
+		<value>dojo-release/evf/EVF.js</value>				
+		<value>dojo-release/evf/evf.js</value>
+	</util:set>
+	
+	<util:set id="auxiliaryScriptPaths.uncompressed">
+		<value>dojo-release/evf/dojo-evf.js.uncompressed.js</value>
+		<value>dojo-release/evf/EVF.js.uncompressed.js</value>
+		<value>dojo-release/evf/evf.js.uncompressed.js</value>
+	</util:set>
+	
+	<util:set id="auxiliaryScriptPaths.debug">
+	</util:set>
+	
+	<util:set id="requires.debug">
+	</util:set>
+	
+	<util:map id="modules.default">
+		<entry key="evf" value="../evf" />
+		<entry key="example" value="../example" />
+	</util:map>	
+
+	<bean id="dojo.config.default" 
+				class="com.evinceframework.web.dojo.mvc.view.config.DojoConfiguration"
+				p:bodyCss="claro evf2K12"
+				p:coreDojoPath="dojo-release/dojo/dojo.js"
+				p:stylesheets-ref="stylesheets.default"
+				p:auxiliaryScriptPaths-ref="auxiliaryScriptPaths.default"
+				p:modules-ref="modules.default">
+	</bean>			
+							
+	<bean id="dojo.config.uncompressed" 
+				class="com.evinceframework.web.dojo.mvc.view.config.DojoConfiguration"
+				p:bodyCss="claro evf2K12"
+				p:coreDojoPath="dojo-release/dojo/dojo.js.uncompressed.js"
+				p:stylesheets-ref="stylesheets.default"
+				p:auxiliaryScriptPaths-ref="auxiliaryScriptPaths.uncompressed"
+				p:modules-ref="modules.default">
+	</bean>
+	
+	<bean id="dojo.config.debug" 
+				class="com.evinceframework.web.dojo.mvc.view.config.DojoConfiguration"
+				p:bodyCss="claro evf2K12"
+				p:coreDojoPath="static/dojo-source/dojo/dojo.js"
+				p:stylesheets-ref="stylesheets.debug"
+				p:auxiliaryScriptPaths-ref="auxiliaryScriptPaths.debug"
+				p:modules-ref="modules.default"
+				p:requires-ref="requires.debug">		
+		<property name="configParameters">
+			<map>
+				<entry key="debug" value="true" />
+			</map>
+		</property>
+	</bean>
+	
+	<bean class="com.evinceframework.web.dojo.mvc.view.DojoViewResolver">
+	    <property name="jsonEngine" ref="evf.json.storeEngine"/>
+	    <property name="storeNames" value="pageContext, viewModel"></property>
+	    <property name="configurationResolver">
+	    	<bean class="com.evinceframework.web.dojo.mvc.view.config.DojoConfigurationResolver" p:defaultConfiguration-ref="dojo.config.debug">
+	    		<property name="configurations">
+	    			<map>
+	    				<entry key="uncompressed" value-ref="dojo.config.uncompressed" />    					    			
+	    				<entry key="debug" value-ref="dojo.config.debug" />
+	    			</map>
+	    		</property>
+	    	</bean>
+	    </property>
+	</bean>	 
+	
+</beans>
