@@ -1,10 +1,16 @@
 package com.evinceframework.examples.petclinic.web.mvc;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.evinceframework.data.Query;
+import com.evinceframework.data.QueryParameters;
+import com.evinceframework.data.impl.DefaultQueryParametersImpl;
+import com.evinceframework.examples.petclinic.Pet;
 import com.evinceframework.examples.petclinic.web.navigation.SiteNavigationProvider;
 import com.evinceframework.web.dojo.mvc.model.ViewModelUtils;
 import com.evinceframework.web.dojo.navigation.NavigationCommand;
@@ -23,10 +29,19 @@ public class PetsListPageController {
 	
 	private ViewModelUtils modelUtil = new ViewModelUtils();
 	
+	@Autowired
+	@Qualifier(value="pets")
+	private Query<Pet> query;
+	
 	@RequestMapping(method=RequestMethod.GET)
 	public String defaultDisplay(ModelMap model) {
 		
 		modelUtil.addToViewModel(model, contextNavigation.getNavigator()); 
+		
+		QueryParameters params = new DefaultQueryParametersImpl(); 
+		// TODO get defaults from personalization?
+		
+		modelUtil.addToViewModel(model, query.execute(params));
 		
 		return LIST_VIEW;
 	}

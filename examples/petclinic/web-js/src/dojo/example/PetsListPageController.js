@@ -22,8 +22,8 @@ define("example/PetsListPageController", [
           return [
             this.createMenuCellDef(),
             { field: "name",    caption: "Name" },
-            { field: "birthday", caption: "Birthday" },
-            { field: "petType",    caption: "Type" }
+            { field: "birthDate", caption: "Birthday" },
+            { field: "type",    caption: "Type" }
           ];  
         }
 	  

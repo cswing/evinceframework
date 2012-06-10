@@ -1,8 +1,8 @@
 define("example/OwnersListPageController", [
   "dojo", "dijit", "dojo/dom-construct",  
   "evf/layout/lob/ListPageController", "dijit/MenuItem",
-  "example/_ControllerMixin"
-], function(dojo, dijit, domConstruct, ListPageController, MenuItem, ControllerMixin) {
+  "example/_ControllerMixin", "evf/data/util"
+], function(dojo, dijit, domConstruct, ListPageController, MenuItem, ControllerMixin, dataUtil) {
 
 	return dojo.declare("example.OwnersListPageController", [ListPageController, ControllerMixin], {	
 		
@@ -21,12 +21,20 @@ define("example/OwnersListPageController", [
         getStructure: function() {
           return [
             this.createMenuCellDef(),
-            { field: "name",    caption: "Name" },
+            { field: "name",    caption: "Name", renderCell: dataUtil.fullNameCellRenderer },
             { field: "address", caption: "Address" },
             { field: "city",    caption: "City" },
-            { field: "phone",	caption: "Telephone" },
-            { field: "pets",	caption: "Pets" }
+            { field: "telephone", caption: "Telephone" },
+            { field: "pets",	caption: "Pets", renderCell: this.renderPets }
           ];  
+        },
+        
+        renderPets: function(td, data, rowIdx, colIdx, cellDef) {
+        	var names = [];
+        	dojo.forEach(data.pets, function(s) {
+        		names.push(s.name);
+        	});
+        	td.innerHTML = names.join(', ');
         }
 	  
 	});
