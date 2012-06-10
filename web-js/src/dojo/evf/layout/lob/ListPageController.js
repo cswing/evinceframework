@@ -23,30 +23,45 @@ define("evf/layout/lob/ListPageController", [
 
 return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageController], {
   
-  searchPane: null,
+  searchPane: 	null,
   
-  pager:  null,
+  pager:  		null,
+  
+  metadata: 	null,
+  /// com.evinceframework.data.QueryResult
   
   createMainContent: function(page) {
     
     this.searchPane = new ContentPane({ content: 'List Search', region: 'top' });
     dojo.style(this.searchPane.domNode, 'height', '125px'); 
     page.addChild(this.searchPane);
-    
-    this.metadata = {
-      currentPage:    10,
-      totalPages:     999
-    };
-    
+        
     //this.topPager = new Pager({ metadata: this.metadata, region: 'top' });
     //page.addChild(this.topPager);
     
+    var qr = this.getStore().query({ 
+    	_type:          'evf.query.result'
+    });
     
-    //this.grid = new evf.layout.lob._DataGrid({
-    //this.grid = new dojo.declare([Grid])({
+    if (qr.length > 1) {
+    	throw 'multiple query results are not supported.';
+    }
+    
+    if (qr.length == 0) {
+    	this.metadata = {
+    		parameters:		{},
+    		page: 			1,
+    		totalPages: 	1,
+    		totalItems:		0,
+    		items: 			[]
+    	};
+    } else {
+    	this.metadata = qr[0];
+    }
+    
     this.grid = new Grid({
       structure:    this.getStructure(),
-      store:        this.getStore()
+      items:		this.metadata.items || []
     }); 
     
     // wrap in a pane widget, to get proper resize

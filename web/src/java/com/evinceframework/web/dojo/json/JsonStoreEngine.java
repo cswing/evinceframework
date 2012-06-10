@@ -137,8 +137,8 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 		getLookupMap().put(Navigator.class, new Navigator.JsonConverter());
 		getLookupMap().put(NavigationCategory.class, new NavigationCategory.JsonConverter());
 		getLookupMap().put(NavigationCommand.class, new NavigationCommand.JsonConverter());
-		getLookupMap().put(QueryParameters.class, new InterfaceConverter(QueryParameters.class));
-		getLookupMap().put(QueryResult.class, new InterfaceConverter(QueryResult.class));
+		getLookupMap().put(QueryParameters.class, new InterfaceConverter(QueryParameters.class, "evf.query.param"));
+		getLookupMap().put(QueryResult.class, new InterfaceConverter(QueryResult.class, "evf.query.result"));
 	}
 	
 	/**

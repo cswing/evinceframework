@@ -30,6 +30,11 @@ public class InterfaceConverter extends PojoConverter {
 	public InterfaceConverter(Class<?> interfaceClass) {
 		this.interfaceClass = interfaceClass;
 	}
+	
+	public InterfaceConverter(Class<?> interfaceClass, String type) {
+		this.interfaceClass = interfaceClass;
+		this.setType(type);
+	}
 
 	@Override
 	protected boolean serializeField(PropertyDescriptor prop) {

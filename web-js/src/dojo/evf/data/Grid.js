@@ -20,6 +20,8 @@
 
 return dojo.declare("evf.data.Grid", [Widget, Template], {
 
+	items:		null,
+	
   store:          null,
   
   query:          null,
@@ -119,10 +121,13 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
     dojo.style(this._spacerHeadCell, 'width', '16px');
     dojo.attr(this.parentBodyCell, 'colSpan', this.structure.length + 1);
     
-    this.query = this.query || {};
-    var qr = this.store.query(this.query);
-    
-    qr.forEach(this._buildRow, this);
+    if (this.store) {
+    	this.query = this.query || {};
+    	var qr = this.store.query(this.query);
+    	qr.forEach(this._buildRow, this);
+    } else {
+    	dojo.forEach(this.items || [], this._buildRow, this);
+    }
   },
   
   _buildHeaderCell: function(tr, cellDef, colIdx) {

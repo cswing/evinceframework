@@ -46,7 +46,7 @@ return dojo.declare("evf.data.Pager", [Widget, Template], {
     }
     
     /*
-     currentPage
+     page
      totalPages
      */
     
@@ -60,8 +60,8 @@ return dojo.declare("evf.data.Pager", [Widget, Template], {
     var endLimit = this.metadata.totalPages - 1;
     var increment = 2;
     
-    var start = Math.max(startLimit, this.metadata.currentPage - increment);
-    var end = Math.min(endLimit, this.metadata.currentPage + increment);
+    var start = Math.max(startLimit, this.metadata.page - increment);
+    var end = Math.min(endLimit, this.metadata.page + increment);
     if(end < start) end = start;
     
     if (end - start < 4) {
@@ -74,25 +74,6 @@ return dojo.declare("evf.data.Pager", [Widget, Template], {
         start = Math.max(startLimit, end - needed);
       }
     }
-    
-    /*
-    var start = this.metadata.currentPage - 2;
-    var end = this.metadata.currentPage + 2
-    if (start < 2) {
-      start = 2;
-      dojo.Class(this.dotsNodeFirst, 'display', 'none');
-      end = start + 3;
-    }
-    
-    if (end > this.metadata.totalPages - 1) {
-      end = this.metadata.totalPages - 1;
-      dojo.Class(this.dotsNodeLast, 'display', 'none');
-      
-      if (start > 5) {
-        start = end - 3;zchg
-      }
-    }
-    */
 
     var _s = this;
     var fnWireLink = function(a) {
@@ -101,16 +82,16 @@ return dojo.declare("evf.data.Pager", [Widget, Template], {
       });
     };
    
-    if (this.metadata.currentPage == 1) {
+    if (this.metadata.page == 1) {
       dojo.addClass(this.pageNodeFirst, 'current');
     } else {
       dojo.removeClass(this.pageNodeFirst, 'current');
       fnWireLink(this.pageNodeFirst);
       fnWireLink(this.previousNode);
     }
-    dojo.style(this.previousNode, 'display', this.metadata.currentPage == 1 ? 'none' : '');
+    dojo.style(this.previousNode, 'display', this.metadata.page == 1 ? 'none' : '');
     
-    if (this.metadata.currentPage == this.metadata.totalPages) {
+    if (this.metadata.page == this.metadata.totalPages) {
       dojo.addClass(this.pageNodeLast, 'current');
     } else {
       dojo.removeClass(this.pageNodeLast, 'current');
@@ -118,7 +99,7 @@ return dojo.declare("evf.data.Pager", [Widget, Template], {
       fnWireLink(this.nextNode);
     }
     this.pageNodeLast.innerHTML = this.metadata.totalPages;
-    dojo.style(this.nextNode, 'display', this.metadata.currentPage == this.metadata.totalPages ? 'none' : '');
+    dojo.style(this.nextNode, 'display', this.metadata.page == this.metadata.totalPages ? 'none' : '');
     
     domConstruct.empty(this.dynamicContainerNode);
     for (var i=start; i<=end; i++) {
@@ -126,7 +107,7 @@ return dojo.declare("evf.data.Pager", [Widget, Template], {
       a.innerHTML = i;
       dojo.addClass(a, 'page-numbers');
       
-      if (this.metadata.currentPage == i) {
+      if (this.metadata.page == i) {
         dojo.addClass(a, 'current');
       } else {
         fnWireLink(a);
