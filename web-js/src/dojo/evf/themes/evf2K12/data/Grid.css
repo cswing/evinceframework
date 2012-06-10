@@ -11,6 +11,7 @@
 
 .evf2K12 .dataGrid .innerTableContainer {
   overflow:           auto;
+  background-color:	  #EEE;
 }
 
 .evf2K12 .dataGrid .innerTable {
@@ -47,8 +48,8 @@
   border-left:        0;
 }
 
-.evf2K12 .dataGrid table.innerTable > tbody > tr.dataRow.even > td {
-  background-color:   #EEEEEE;
+.evf2K12 .dataGrid table.innerTable > tbody > tr.dataRow.odd > td {
+  background-color:   #FFF;
 }
 
 /* Menu Cell */
