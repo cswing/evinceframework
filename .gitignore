@@ -1,5 +1,9 @@
 # Directories created as part of the build process
 ###########################################################################
+*.class
+*.jar
+*.war
+*.ear
 **/build/**
 **/dist/**
 **/lib/**
