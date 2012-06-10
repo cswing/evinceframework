@@ -31,7 +31,10 @@ import java.util.Set;
 import org.springframework.util.StringUtils;
 
 import com.evinceframework.core.factory.MapBackedClassLookupFactory;
+import com.evinceframework.data.QueryParameters;
+import com.evinceframework.data.QueryResult;
 import com.evinceframework.web.dojo.json.JsonSerializationContext.DeferredSerialization;
+import com.evinceframework.web.dojo.json.conversion.InterfaceConverter;
 import com.evinceframework.web.dojo.json.conversion.MapConverter;
 import com.evinceframework.web.dojo.json.conversion.PojoConverter;
 import com.evinceframework.web.dojo.navigation.NavigationCategory;
@@ -134,7 +137,8 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 		getLookupMap().put(Navigator.class, new Navigator.JsonConverter());
 		getLookupMap().put(NavigationCategory.class, new NavigationCategory.JsonConverter());
 		getLookupMap().put(NavigationCommand.class, new NavigationCommand.JsonConverter());
-		
+		getLookupMap().put(QueryParameters.class, new InterfaceConverter(QueryParameters.class));
+		getLookupMap().put(QueryResult.class, new InterfaceConverter(QueryResult.class));
 	}
 	
 	/**
