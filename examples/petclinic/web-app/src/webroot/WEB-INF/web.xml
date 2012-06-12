@@ -66,7 +66,6 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	<!-- 
 	<servlet>
 		<servlet-name>json-services</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>		
@@ -76,18 +75,16 @@
 		</init-param>		
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	 -->
 	 <!--
 	<servlet-mapping>
       <servlet-name>default</servlet-name>
       <url-pattern>/index.html</url-pattern>
 	</servlet-mapping>
-	 
+	 -->
 	<servlet-mapping>
 		<servlet-name>json-services</servlet-name>
 		<url-pattern>/json/*</url-pattern>
 	</servlet-mapping>
-	 -->		  
 	<servlet-mapping>
 		<servlet-name>core-ui</servlet-name>
 		<url-pattern>/*</url-pattern>

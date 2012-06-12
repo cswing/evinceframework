@@ -28,9 +28,14 @@
 	</mvc:interceptors>
 		
 	<!-- wire all mvc controllers using the PageController stereotype --> 
+	<context:component-scan base-package="com.evinceframework.web.mvc" >
+		<context:include-filter type="annotation" expression="com.evinceframework.web.stereotype.ServiceController"/>
+	</context:component-scan>
 	<context:component-scan base-package="com.evinceframework.examples.petclinic.web.mvc" >
 		<context:include-filter type="annotation" expression="com.evinceframework.web.stereotype.ServiceController"/>
 	</context:component-scan>
 	<!-- END: Controller definitions --> 	  
+	
+	<bean class="com.evinceframework.web.dojo.mvc.view.JsonStoreViewResolver" p:jsonEngine-ref="evf.json.storeEngine" />
 	 
 </beans>
