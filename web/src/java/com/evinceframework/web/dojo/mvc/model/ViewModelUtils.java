@@ -1,9 +1,9 @@
 package com.evinceframework.web.dojo.mvc.model;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import org.springframework.ui.ModelMap;
 import org.springframework.util.ClassUtils;
 
 public class ViewModelUtils {
@@ -11,7 +11,7 @@ public class ViewModelUtils {
 	public static final String VIEW_MODEL = "viewModel";
 	
 	@SuppressWarnings("unchecked")
-	public Set<Object> findOrCreateViewModel(ModelMap model) {
+	public Set<Object> findOrCreateViewModel(Map<String, Object> model) {
 		
 		if (model.containsKey(VIEW_MODEL)) {
 			
@@ -29,7 +29,7 @@ public class ViewModelUtils {
 		return viewModel;
 	}
 	
-	public void addToViewModel(ModelMap model, Object obj) {
+	public void addToViewModel(Map<String, Object> model, Object obj) {
 		findOrCreateViewModel(model).add(obj);
 	}
 	
