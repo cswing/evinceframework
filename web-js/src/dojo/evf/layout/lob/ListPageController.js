@@ -17,9 +17,9 @@ define("evf/layout/lob/ListPageController", [
   "dojo", "dijit", "dojo/dom-construct",
   "dijit/_Widget", "dijit/DropDownMenu", "dijit/form/DropDownButton",
   "evf/layout/lob/ApplicationPageController", "evf/data/Pager", "dijit/layout/ContentPane",
-  "evf/data/Grid"
+  "evf/dialog/util", "evf/data/Grid", "evf/data/queryService"
 ], function(dojo, dijit, domConstruct, Widget, DropDownMenu, DropDownButton,
-    ApplicationPageController, Pager, ContentPane, Grid) {
+    ApplicationPageController, Pager, ContentPane, dialogUtil, Grid, queryService) {
 
 return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageController], {
   
@@ -35,30 +35,9 @@ return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageControl
     this.searchPane = new ContentPane({ content: 'List Search', region: 'top' });
     dojo.style(this.searchPane.domNode, 'height', '125px'); 
     page.addChild(this.searchPane);
+    
+    this._processStore(this.getStore());
         
-    //this.topPager = new Pager({ metadata: this.metadata, region: 'top' });
-    //page.addChild(this.topPager);
-    
-    var qr = this.getStore().query({ 
-    	_type:          'evf.query.result'
-    });
-    
-    if (qr.length > 1) {
-    	throw 'multiple query results are not supported.';
-    }
-    
-    if (qr.length == 0) {
-    	this.metadata = {
-    		parameters:		{},
-    		page: 			1,
-    		totalPages: 	1,
-    		totalItems:		0,
-    		items: 			[]
-    	};
-    } else {
-    	this.metadata = qr[0];
-    }
-    
     this.grid = new Grid({
       structure:    this.getStructure(),
       items:		this.metadata.items || []
@@ -75,6 +54,7 @@ return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageControl
     
     this.bottomPager = new Pager({ metadata: this.metadata, region: 'bottom' });
     page.addChild(this.bottomPager);
+    dojo.connect(this.bottomPager, 'onNavigate', this, '_navigateToPage');
     
     return this.bottomPager;
   },
@@ -114,6 +94,43 @@ return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageControl
           button.domNode).style('display', 'none');
       }
     };
+  },
+  
+  _navigateToPage: function(page) {
+	  
+	  var params = this.metadata.parameters;
+	  params.page = page;
+	  
+	  queryService.callService(this.getServiceUrl(), params, 
+			  dojo.hitch(this, this._processStore), dialogUtil.showError);
+  },
+  
+  _processStore: function(store) {
+	  var qr = store.query({ 
+		_type:          'evf.query.result'
+	  });
+	
+	  if (qr.length > 1) {
+		  throw 'multiple query results are not supported.';
+	  }
+	
+	  if (qr.length == 0) {
+		  this.metadata = {
+			parameters:		{},
+			page: 			1,
+			totalPages: 	1,
+			totalItems:		0,
+			items: 			[]
+		  };
+	  } else {
+		  this.metadata = qr[0];
+	  }
+
+	  if (this.grid)
+		  this.grid.set('items', this.metadata.items || []);
+		  
+	  if (this.bottomPager)
+		  this.bottomPager.set('metadata', this.metadata);
   }
       
 });

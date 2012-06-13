@@ -19,9 +19,9 @@ import com.evinceframework.data.QueryParameters;
 
 public class DefaultQueryParametersImpl implements QueryParameters {
 
-	private static final Integer DEFAULT_PAGE_SIZE = 25;
+	public static final Integer DEFAULT_PAGE_SIZE = 25;
 	
-	private static final Integer DEFAULT_PAGE = 1;
+	public static final Integer DEFAULT_PAGE = 1;
 	
 	private Integer page = DEFAULT_PAGE;
 	

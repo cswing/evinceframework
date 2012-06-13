@@ -43,6 +43,8 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
     if(!changeSize)
       return;
     
+    this._changeSize = changeSize;
+    
     domGeometry.setMarginBox(this.domNode, changeSize);
     //domGeometry.setMarginBox(this.tableNode, changeSize);
     
@@ -121,13 +123,7 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
     dojo.style(this._spacerHeadCell, 'width', '16px');
     dojo.attr(this.parentBodyCell, 'colSpan', this.structure.length + 1);
     
-    if (this.store) {
-    	this.query = this.query || {};
-    	var qr = this.store.query(this.query);
-    	qr.forEach(this._buildRow, this);
-    } else {
-    	dojo.forEach(this.items || [], this._buildRow, this);
-    }
+    this._buildData();
   },
   
   _buildHeaderCell: function(tr, cellDef, colIdx) {
@@ -139,6 +135,20 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
     } else {
       th.innerHTML = cellDef.caption;  
     }
+  },
+  
+  _buildData: function() {
+	
+	domConstruct.empty(this.bodyNode);
+	// TODO: destroy connects, subscribes, etc.
+	  
+	if (this.store) {
+		this.query = this.query || {};
+		var qr = this.store.query(this.query);
+		qr.forEach(this._buildRow, this);
+	} else {
+		dojo.forEach(this.items || [], this._buildRow, this);
+	}  
   },
   
   _buildRow: function(data, idx) {
@@ -163,6 +173,15 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
     } else {
       td.innerHTML = data[cellDef.field];  
     }
+  },
+  
+  _setItemsAttr: function(items) {
+	  this.items = items;
+	  
+	  if (this._started) {
+		  this._buildData();
+		  this.resize(this._changeSize);
+	  }
   }
   
 });
