@@ -8,5 +8,8 @@
 **/dist/**
 **/lib/**
 **/src/generated/**
+examples/petclinic/build/**
+examples/petclinic/web-app/.settings/**
+examples/petclinic/web-app/build/**
 ###########################################################################
 /.gradle

@@ -6,8 +6,12 @@ define("example/OwnersListPageController", [
 
 	return dojo.declare("example.OwnersListPageController", [ListPageController, ControllerMixin], {	
 		
+		getServiceUrl: function() {
+			return dojo.replace("{0}/json/data/query/owners", [dojo.getObject('contextPath')]);
+		},
+		
 		buildActions: function(data, dropDown) {
-			var _ctrl = this;
+			//var _ctrl = this;
 			var editAction = new MenuItem({
               label: 'Edit'  
             });
