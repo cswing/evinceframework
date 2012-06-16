@@ -40,8 +40,9 @@ return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageControl
         
     this.grid = new Grid({
       structure:    this.getStructure(),
-      items:		this.metadata.items || []
+      metadata:		this.metadata
     }); 
+    dojo.connect(this.grid, 'onSort', this, '_sort');
     
     // wrap in a pane widget, to get proper resize
     var pane = new ContentPane({ content: this.grid });
@@ -72,9 +73,10 @@ return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageControl
       controller: this,
       field: "__actions",
       width: 20, 
-      renderHeader: function(th, cellDef, colIdx) {
-        th.innerHTML = "&nbsp;";
-        dojo.addClass(th, 'menuCellHeader');
+      renderHeader: function(thNode, textNode, cellDef, colIdx) {
+    	  domConstruct.empty(thNode);
+    	  thNode.innerHTML = '&nbsp;';
+    	  dojo.addClass(thNode, 'menuCellHeader');
       },
       renderCell:   function(td, data, rowIdx, colIdx, cellDef) {
         
@@ -97,9 +99,16 @@ return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageControl
   },
   
   _navigateToPage: function(page) {
-	  
-	  var params = this.metadata.parameters;
+	  var params = dojo.mixin({}, this.metadata.parameters);
 	  params.page = page;
+	  
+	  queryService.callService(this.getServiceUrl(), params, 
+			  dojo.hitch(this, this._processStore), dialogUtil.showError);
+  },
+  
+  _sort: function(sortOrder) {
+	  var params = dojo.mixin({}, this.metadata.parameters);
+	  params.order = sortOrder;
 	  
 	  queryService.callService(this.getServiceUrl(), params, 
 			  dojo.hitch(this, this._processStore), dialogUtil.showError);
@@ -116,7 +125,9 @@ return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageControl
 	
 	  if (qr.length == 0) {
 		  this.metadata = {
-			parameters:		{},
+			parameters:		{
+				orders:			[]
+			},
 			page: 			1,
 			totalPages: 	1,
 			totalItems:		0,
@@ -126,8 +137,9 @@ return dojo.declare("evf.layout.lob.ListPageController", [ApplicationPageControl
 		  this.metadata = qr[0];
 	  }
 
-	  if (this.grid)
-		  this.grid.set('items', this.metadata.items || []);
+	  if (this.grid) {
+		  this.grid.set('metadata', this.metadata);
+	  }
 		  
 	  if (this.bottomPager)
 		  this.bottomPager.set('metadata', this.metadata);

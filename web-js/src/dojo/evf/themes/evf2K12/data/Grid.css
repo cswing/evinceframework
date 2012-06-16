@@ -29,8 +29,33 @@
   border-left:        solid 1px #759DC0;
 }
 
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader.menuCellHeader {
+	padding:			0;
+}
+
 .evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader:first-child {
-  border-left:        0;
+	border-left:        solid 1px #CFE5FA;
+}
+
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader:menuCellHeader + td {
+	border-left:        solid 1px #CFE5FA;
+}
+
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader.sortable:hover {
+	cursor:				pointer;
+}
+
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader.sortable .sortIcon {
+  height:             16px;
+  width:              16px;
+}
+
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader.sortable.asc .sortIcon {
+	background:         url(../images/fchi/16x16/bullet_arrow_down.png);
+}
+
+.evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader.sortable.desc .sortIcon {
+  	background:         url(../images/fchi/16x16/bullet_arrow_up.png);
 }
 
 .evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeaderPad {

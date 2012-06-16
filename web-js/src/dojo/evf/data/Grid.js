@@ -22,15 +22,11 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
 
 	items:		null,
 	
-  store:          null,
+	structure:      null,
   
-  query:          null,
+	baseClass:      'dataGrid',
   
-  structure:      null,
-  
-  baseClass:      'dataGrid',
-  
-  templateString: dojo.cache('evf.data', 'templates/Grid.html'),
+	templateString: dojo.cache('evf.data', 'templates/Grid.html'),
   
   postCreate: function() {
     this.inherited(arguments);
@@ -129,26 +125,78 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
   _buildHeaderCell: function(tr, cellDef, colIdx) {
     var th = domConstruct.create('td', {'class': 'columnHeader'}, tr);
     this._thsByCellDef[colIdx] = th;
+    if(cellDef.sortable) {
+    	dojo.addClass(th, 'sortable');
+    }
+    
+    var text = domConstruct.create('div', {'class' : 'dijitInline'}, th);    
+    domConstruct.create('div', {'class' : 'dijitInline sortIcon'}, th);
     
     if (cellDef.renderHeader && dojo.isFunction(cellDef.renderHeader)) {
-      cellDef.renderHeader(th, cellDef, colIdx);
+      cellDef.renderHeader(th, text, cellDef, colIdx);
     } else {
-      th.innerHTML = cellDef.caption;  
+    	text.innerHTML = cellDef.caption;  
     }
   },
   
   _buildData: function() {
 	
+	dojo.forEach(this._connects, this.disconnect, this);
 	domConstruct.empty(this.bodyNode);
-	// TODO: destroy connects, subscribes, etc.
-	  
-	if (this.store) {
-		this.query = this.query || {};
-		var qr = this.store.query(this.query);
-		qr.forEach(this._buildRow, this);
-	} else {
-		dojo.forEach(this.items || [], this._buildRow, this);
-	}  
+	
+	// update column header (sorting)
+	var hasOrder = this.metadata.parameters.order && this.metadata.parameters.order.length > 0;		
+	var orderField = hasOrder ? this.metadata.parameters.order[0].sortField : '';
+	var isAsc = hasOrder ? this.metadata.parameters.order[0].ascending : false;
+		
+	dojo.forEach(this.structure, function (cellDef, colIdx) {
+		
+		if (!cellDef.sortable)
+			return;
+		
+		var th = this._thsByCellDef[colIdx];
+		
+		var isPrimarySort = false;
+		if (hasOrder) {
+			if (cellDef.customSort) {
+				isPrimarySort = cellDef.customSort[0] == orderField;
+			} else {
+				isPrimarySort = cellDef.field == orderField;
+			}
+		}
+		
+		var ascOrderArray = [], dscOrderArray = [];
+		dojo.forEach(cellDef.customSort ? cellDef.customSort : [cellDef.field], function(field) {
+			ascOrderArray.push({ ascending: true, sortField: field });
+			dscOrderArray.push({ ascending: false, sortField: field });
+		});
+
+		if(isPrimarySort) {
+			dojo.addClass(th, 'primarySort');
+			if(isAsc) {
+				dojo.addClass(th, 'asc');
+				dojo.removeClass(th, 'desc');
+				this.connect(th, 'onclick', function() {
+					this.onSort(dscOrderArray);
+				});
+			} else {
+				dojo.addClass(th, 'desc');
+				dojo.removeClass(th, 'asc');
+				this.connect(th, 'onclick', function() {
+					this.onSort(ascOrderArray);
+				});
+			}
+		} else {
+			dojo.removeClass(th, 'primarySort');
+			dojo.removeClass(th, 'asc');
+			dojo.removeClass(th, 'desc');
+			this.connect(th, 'onclick', function() {
+				this.onSort(ascOrderArray);
+			});
+		}
+    }, this);
+	
+	dojo.forEach(this.items || [], this._buildRow, this);  
   },
   
   _buildRow: function(data, idx) {
@@ -175,14 +223,17 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
     }
   },
   
-  _setItemsAttr: function(items) {
-	  this.items = items;
+  _setMetadataAttr: function(meta) {
+	  this.metadata = meta;
+	  this.items = meta.items || [];
 	  
 	  if (this._started) {
 		  this._buildData();
 		  this.resize(this._changeSize);
 	  }
-  }
+  },
+  
+  onSort: function(/*Array*/ sortOrder) {}
   
 });
 

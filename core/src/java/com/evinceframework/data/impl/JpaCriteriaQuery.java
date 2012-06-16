@@ -15,11 +15,16 @@
  */
 package com.evinceframework.data.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 import com.evinceframework.data.Query;
@@ -41,14 +46,16 @@ public class JpaCriteriaQuery<T> implements Query<T> {
 	public QueryResult<T> execute(QueryParameters params) {
 		
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		QueryHelper helper = new QueryHelper(builder);
+		QueryHelper helper = new QueryHelper(builder, params);
 		
 		// TODO add criteria to the queries
 		
-		return helper.execute(params);
+		return helper.execute();
 	}
 	
 	private class QueryHelper {
+		
+		private QueryParameters params;
 		
 		private CriteriaQuery<Long> countQuery;
 		
@@ -58,16 +65,34 @@ public class JpaCriteriaQuery<T> implements Query<T> {
 		
 		Root<T> root;
 
-		public QueryHelper(CriteriaBuilder builder) {
+		public QueryHelper(CriteriaBuilder builder, QueryParameters params) {
+			this.params = params;
 			countQuery = builder.createQuery(Long.class);
 			countRoot = countQuery.from(dataClass);
 			countQuery.select(builder.count(countRoot));
 			
 			query = builder.createQuery(dataClass);
-			root = query.from(dataClass);			
+			root = query.from(dataClass);
+		
+			List<Order> jpaOrders = new ArrayList<Order>();
+			for (com.evinceframework.data.Order order : params.getOrder()) {
+				if (order.isAscending()) {
+					jpaOrders.add(
+							builder.asc(getPath(order.getSortField())));
+				} else {
+					jpaOrders.add(
+							builder.desc(getPath(order.getSortField())));
+				}
+			}
+			query.orderBy(jpaOrders);
 		}
 		
-		public QueryResult<T> execute(QueryParameters params) {
+		protected Path<?> getPath(String path) {
+			// TODO allow sorting in child objects
+			return root.get(path);
+		}
+		
+		public QueryResult<T> execute() {
 			
 			DefaultQueryResultImpl<T> result = new DefaultQueryResultImpl<T>(params);
 			
@@ -88,6 +113,8 @@ public class JpaCriteriaQuery<T> implements Query<T> {
 			Long count = typedCountQuery.getSingleResult();
 			if (count < new Long(Integer.MAX_VALUE))
 				result.setTotalItems(count.intValue());
+			
+			
 			
 			result.setItems(typedQuery.getResultList());
 			

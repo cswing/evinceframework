@@ -15,6 +15,10 @@
  */
 package com.evinceframework.data.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.evinceframework.data.Order;
 import com.evinceframework.data.QueryParameters;
 
 public class DefaultQueryParametersImpl implements QueryParameters {
@@ -27,6 +31,8 @@ public class DefaultQueryParametersImpl implements QueryParameters {
 	
 	private Integer pageSize = DEFAULT_PAGE_SIZE;
 
+	private List<Order> orders = new ArrayList<Order>(); 
+	
 	@Override
 	public Integer getPage() {
 		return page;
@@ -43,5 +49,40 @@ public class DefaultQueryParametersImpl implements QueryParameters {
 
 	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
+	}
+
+	@Override
+	public List<Order> getOrder() {
+		return orders;
+	}
+	
+	public void addOrderAscending(String path) {
+		orders.add(new OrderImpl(true, path));
+	}
+	
+	public void addOrderDescending(String path) {
+		orders.add(new OrderImpl(false, path));
+	}
+	
+	public class OrderImpl implements Order {
+		
+		private boolean isAscending;
+		
+		private String field;
+
+		public OrderImpl(boolean isAscending, String field) {
+			this.isAscending = isAscending;
+			this.field = field;
+		}
+
+		@Override
+		public boolean isAscending() {
+			return isAscending;
+		}
+
+		@Override
+		public String getSortField() {
+			return field;
+		}
 	}
 }

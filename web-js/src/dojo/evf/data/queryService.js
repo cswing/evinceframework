@@ -37,10 +37,30 @@ query.callService = function(serviceUrl, parameters, onSuccess, onError) {
 	// parameters:
 	//
 	
+	/*
+	order:[object Object]
+order:[object Object]
+page:5
+pageSize:25
+	*/
+	
+	var postForm = {
+		page:		parameters.page,
+		pageSize:	parameters.pageSize
+	};
+	
+	if (parameters.order) {
+		dojo.forEach(parameters.order, function(o, idx) {
+			var key = 'orders[' + idx + ']';
+			postForm[key+'.ascending'] = o.ascending;
+			postForm[key+'.sortField'] = o.sortField;
+		});
+	}
+	
 	var xhrArgs = {
 		url: 		serviceUrl,
 		handleAs:	'json',
-		postData:   dojo.objectToQuery(parameters)
+		postData:   dojo.objectToQuery(postForm)
 	};
 	dojo.xhrPost(xhrArgs)
 		.then(function(data) {

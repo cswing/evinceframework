@@ -15,10 +15,14 @@
  */
 package com.evinceframework.data;
 
+import java.util.List;
+
 public interface QueryParameters {
 
 	public Integer getPageSize();
 
 	public Integer getPage();
 
+	public List<Order> getOrder();
+	
 }
