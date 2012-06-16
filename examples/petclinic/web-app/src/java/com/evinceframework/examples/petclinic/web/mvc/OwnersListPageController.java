@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.evinceframework.data.Query;
-import com.evinceframework.data.QueryParameters;
 import com.evinceframework.data.impl.DefaultQueryParametersImpl;
 import com.evinceframework.examples.petclinic.Owner;
 import com.evinceframework.examples.petclinic.web.navigation.SiteNavigationProvider;
@@ -38,7 +37,10 @@ public class OwnersListPageController {
 		
 		modelUtil.addToViewModel(model, contextNavigation.getNavigator()); 
 		
-		QueryParameters params = new DefaultQueryParametersImpl(); 
+		DefaultQueryParametersImpl params = new DefaultQueryParametersImpl();
+		params.addOrderAscending("lastName");
+		params.addOrderAscending("firstName");
+		
 		// TODO get defaults from personalization?
 		
 		modelUtil.addToViewModel(model, query.execute(params));

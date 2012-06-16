@@ -25,11 +25,11 @@ define("example/OwnersListPageController", [
         getStructure: function() {
           return [
             this.createMenuCellDef(),
-            { field: "name",    caption: "Name", renderCell: dataUtil.fullNameCellRenderer },
-            { field: "address", caption: "Address" },
-            { field: "city",    caption: "City" },
-            { field: "telephone", caption: "Telephone" },
-            { field: "pets",	caption: "Pets", renderCell: this.renderPets }
+            { field: "name",    caption: "Name", renderCell: dataUtil.fullNameCellRenderer, sortable: true, customSort: [ 'lastName', 'firstName' ] },
+            { field: "address", caption: "Address", sortable: true },
+            { field: "city",    caption: "City", sortable: true },
+            { field: "telephone", caption: "Telephone", sortable: true },
+            { field: "pets",	caption: "Pets", renderCell: this.renderPets, sortable: true }
           ];  
         },
         
