@@ -29,7 +29,7 @@ define("example/OwnersListPageController", [
             { field: "address", caption: "Address", sortable: true },
             { field: "city",    caption: "City", sortable: true },
             { field: "telephone", caption: "Telephone", sortable: true },
-            { field: "pets",	caption: "Pets", renderCell: this.renderPets, sortable: true }
+            { field: "pets",	caption: "Pets", renderCell: this.renderPets, sortable: false }
           ];  
         },
         
