@@ -62,12 +62,12 @@ public class DefaultQueryResultImpl<T> implements QueryResult<T> {
 			totalItems = 0;
 			
 		} else if (pageSize == null) {
-			firstItemIndex = 1;
+			firstItemIndex = 0;
 			lastItemIndex = totalItems;
 			totalPages = 1;
 			
 		} else {
-			firstItemIndex = pageSize * (page-1) + 1;
+			firstItemIndex = pageSize * (page-1);
 			lastItemIndex = pageSize * (page-1) + pageSize;
 			totalPages = totalItems / pageSize;
 			if (totalItems % pageSize > 0) {
@@ -127,6 +127,10 @@ public class DefaultQueryResultImpl<T> implements QueryResult<T> {
 		this.items = Collections.unmodifiableList(items);
 	}
 
+	/**
+	 * The index of the first item in the list.  This is 0 based.
+	 * @return
+	 */
 	public Integer getFirstItemIndex() {
 		return firstItemIndex;
 	}
