@@ -51,11 +51,11 @@
 }
 
 .evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader.sortable.asc .sortIcon {
-	background:         url(../images/fchi/16x16/bullet_arrow_down.png);
+	background:         url(../images/fchi/16x16/bullet_arrow_up.png);
 }
 
 .evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeader.sortable.desc .sortIcon {
-  	background:         url(../images/fchi/16x16/bullet_arrow_up.png);
+  	background:         url(../images/fchi/16x16/bullet_arrow_down.png);
 }
 
 .evf2K12 .dataGrid table.parentTable > thead > tr > td.columnHeaderPad {
