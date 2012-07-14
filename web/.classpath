@@ -19,10 +19,7 @@
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/emma-2.1.5320.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-core-2.0.2-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-core-2.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.8.2.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/spring-aop-3.0.7.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-asm-3.0.7.RELEASE.jar"/>
@@ -34,5 +31,7 @@
 	<classpathentry kind="lib" path="lib/spring-web-3.0.7.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-webmvc-3.0.7.RELEASE-sources.jar"/>
 	<classpathentry kind="lib" path="lib/spring-webmvc-3.0.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="build/java"/>
 </classpath>
