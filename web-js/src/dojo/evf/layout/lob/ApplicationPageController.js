@@ -54,7 +54,11 @@ return dojo.declare("evf.layout.lob.ApplicationPageController", [], {
     fnCreate(this.createContextNavigation, 'top');
     fnCreate(this.createMainContent, 'center');
     fnCreate(this.createFooter, 'bottom');
+    
+    this.onLayoutCreated();
   },
+  
+  onLayoutCreated: function() {},
   
   createSiteNavigation: function() {
     var qr = this.viewModel.query({ 

@@ -27,60 +27,52 @@ define("evf/layout/lob/util", [
 	var util = dojo.getObject('evf.layout.lob.util', true);
   
   
-  util.createMenuNavigation = function(controller, nav) {
-    var mnuBar = MenuBar({});
-    dojo.addClass(mnuBar.domNode, 'navigation');
+	util.createMenuNavigation = function(controller, nav) {
+		var mnuBar = MenuBar({});
+		dojo.addClass(mnuBar.domNode, 'navigation');
     
-    var createMenuItemGroup = function(navItem, widget) {
+		var createMenuItemGroup = function(navItem, widget) {
       
-      var subMenu = new DropDownMenu({});
+			var subMenu = new DropDownMenu({});
         
-      dojo.forEach(navItem.items, function(navItem) {
-        if (navItem.items) {
-          subMenu.addChild(createMenuItemGroup(navItem, PopupMenuItem));
-        } else {
-          subMenu.addChild(createMenuItem(navItem, MenuItem));  
-        }  
-      });
+			dojo.forEach(navItem.items, function(navItem) {
+			    if (navItem.items) {
+			      subMenu.addChild(createMenuItemGroup(navItem, PopupMenuItem));
+			    } else {
+			      subMenu.addChild(createMenuItem(navItem, MenuItem));  
+			    }  
+			});
       
-      return new widget({
-          label:  navItem.title,
-          popup:  subMenu
-      });
-    };
+			return new widget({
+				label:  navItem.title,
+				popup:  subMenu
+			});
+		};
     
-    var createMenuItem = function(itm, widget) {
-      var menuItem = new widget({
-        label: itm.title
-      });
+		var createMenuItem = function(itm, widget) {
+			var menuItem = new widget({
+				label: itm.title
+			});
        
-      mnuBar.connect(menuItem, 'onClick', function() {
-        dialogUtils.showConfirmation('Are you sure?');
-      });
-      
-     return menuItem;
-    };
+			if (itm.impl) {
+				mnuBar.connect(menuItem, 'onClick', function() {
+					dojo.publish(itm.impl);
+				});
+			}
+			return menuItem;
+		};
     
-    var items = nav.items || [];
-    items = storeUtils.sort(items.clone(), 'order');
-    dojo.forEach(items, function(navItem) {
-      
-      if (navItem.items) {
+		var items = nav.items || [];
+		items = storeUtils.sort(items.clone(), 'order');
+		
+		dojo.forEach(items, function(navItem) {
+			mnuBar.addChild(navItem.items 
+					? createMenuItemGroup(navItem, PopupMenuBarItem)
+					: createMenuItem(navItem, MenuBarItem));
+		});
         
-        mnuBar.addChild(
-          createMenuItemGroup(navItem, PopupMenuBarItem)
-        );
-        
-      } else {
-        
-        mnuBar.addChild(
-          createMenuItem(navItem, MenuBarItem)
-        );
-      }      
-    });
-        
-    return mnuBar;
-  };
+		return mnuBar;
+	};
   
-  return util;
+	return util;
 });
