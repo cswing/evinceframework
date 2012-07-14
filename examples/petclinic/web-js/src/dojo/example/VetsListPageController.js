@@ -6,6 +6,10 @@ define("example/VetsListPageController", [
 
 	return dojo.declare("example.VetsListPageController", [ListPageController, ControllerMixin], {	
 		
+		getServiceUrl: function() {
+			return dojo.replace("{0}/json/data/query/vets", [dojo.getObject('contextPath')]);
+		},
+		
 		buildActions: function(data, dropDown) {
 			/*
 			var _ctrl = this;
@@ -23,8 +27,8 @@ define("example/VetsListPageController", [
         getStructure: function() {
           return [
             this.createMenuCellDef(),
-            { field: "name",    caption: "Name", renderCell: dataUtil.fullNameCellRenderer },
-            { field: "specialties", caption: "Specialties", renderCell: this.renderSpecialties }
+            { field: "name",    caption: "Name", renderCell: dataUtil.fullNameCellRenderer, sortable: true, customSort: [ 'lastName', 'firstName' ] },
+            { field: "specialties", caption: "Specialties", renderCell: this.renderSpecialties, sortable: false }
           ];  
         },
         

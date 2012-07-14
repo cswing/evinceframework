@@ -38,8 +38,9 @@ public class VeterinariesListPageController {
 		
 		modelUtil.addToViewModel(model, contextNavigation.getNavigator()); 
 		
-		QueryParameters params = new DefaultQueryParametersImpl(); 
-		// TODO get defaults from personalization?
+		DefaultQueryParametersImpl params = new DefaultQueryParametersImpl();
+		params.addOrderAscending("lastName");
+		params.addOrderAscending("firstName");
 		
 		modelUtil.addToViewModel(model, query.execute(params));
 		
