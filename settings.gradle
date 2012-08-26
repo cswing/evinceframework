@@ -1,7 +1,7 @@
 
 rootProject.name = 'evf'
 
-include 'core'
-include 'web'
-include 'web-js'
+include 'evf-core'
+include 'evf-web'
+include 'evf-web-js'
 include 'examples:petclinic:web-app'

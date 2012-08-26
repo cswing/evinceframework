@@ -12,7 +12,7 @@ configure(allprojects) {
 }
 
 // Configure java projects
-configure(subprojects.findAll {it.name != 'web-js'}) { subproject ->
+configure(subprojects.findAll {it.name != 'evf-web-js'}) { subproject ->
     apply plugin: 'java'
     apply from: "${rootProject.projectDir}/publish-maven.gradle"
     
@@ -64,14 +64,14 @@ configure(subprojects.findAll {it.name != 'web-js'}) { subproject ->
 }
 
 // configure dojo projects
-configure(subprojects.findAll {it.name == 'web-js'}) { subproject ->
+configure(subprojects.findAll {it.name == 'evf-web-js'}) { subproject ->
     //apply from: "${rootProject.projectDir}/publish-maven.gradle"
     
     apply plugin: 'maven'
     group = 'org.evinceframework'
 }
 
-project(':core') {
+project('evf-core') {
     dependencies {
         testCompile group: 'junit', name: 'junit', version: '4.8.+'
         testCompile group: 'emma', name: 'emma', version: '2.1.5320'
@@ -85,7 +85,7 @@ project(':core') {
     }
 }
 
-project(':web') {
+project('evf-web') {
     description: 'Server side web tier for the Evince Framework.'
     dependencies {
         testCompile group: 'junit', name: 'junit', version: '4.8.+'
@@ -101,11 +101,11 @@ project(':web') {
         compile group: 'org.springframework', name: 'spring-webmvc', version: '3.0.+', classifier:'sources'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.+'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.+', classifier:'sources'
-        compile project(':core')
+        compile project(':evf-core')
     }
 }
 
-project(':web-js') {
+project('evf-web-js') {
     
     task unpackDojoSource(type: Copy) {
         new File("build/dojo/src").mkdirs()
@@ -211,12 +211,7 @@ project(':examples:petclinic:web-app') {
         
         //compile group: 'org.hibernate', name: 'hibernate-core', version: '3.5.+', classifier: 'sources'
         
-        compile project(':core')
-        compile project(':web')
+        compile project(':evf-core')
+        compile project(':evf-web')
     }
-}
-
-// stuff that needs to be set after projects are specifically configured
-subprojects {
-    archivesBaseName = rootProject.name + '-' + project.name
 }
