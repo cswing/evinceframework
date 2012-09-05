@@ -1,48 +1,48 @@
 
-.evf2K12 .navigation .itemGroup {
+.claro .navigation .itemGroup {
   margin:           0;
   padding:          0;
 }
 
-.evf2K12 .navigation .itemGroup .itemGroupTitle {
+.claro .navigation .itemGroup .itemGroupTitle {
   font-weight:      bold;
 }
 
-.evf2K12 .navigation .itemGroup .itemGroup {
+.claro .navigation .itemGroup .itemGroup {
   padding:          0.25em 0 0 2em;
 } 
 
-.evf2K12 .navigation .itemGroup .itemGroup .itemGroupTitle {
+.claro .navigation .itemGroup .itemGroup .itemGroupTitle {
   font-weight:      normal;
 }
 
-.evf2K12 .navigation a {
+.claro .navigation a {
   cursor:           pointer;
   text-decoration:	none;
   color:			black;
 }
 
-.evf2K12 .navigation a:hover {
+.claro .navigation a:hover {
   text-decoration:  underline;
 }
 
 /* Title Pane Navigation */
-.evf2K12 .navigation .dijitTitlePaneTitle {
+.claro .navigation .dijitTitlePaneTitle {
 	border-left: 	0;
 	border-right: 	0;	
 }
 
-.evf2K12 .navigation .first .dijitTitlePaneTitle {
+.claro .navigation .first .dijitTitlePaneTitle {
 	border-top:		0;
 }
 
-.evf2K12 .navigation .dijitTitlePaneTitleFocus {
+.claro .navigation .dijitTitlePaneTitleFocus {
 	margin-top: 	0;
 	padding-bottom: 5px;
 	padding-top: 	6px;
 }
 
-.evf2K12 .navigation .dijitTitlePaneContentOuter {
+.claro .navigation .dijitTitlePaneContentOuter {
 	border-left: 	0;
 	border-right: 	0;
 	border-bottom: 	0;

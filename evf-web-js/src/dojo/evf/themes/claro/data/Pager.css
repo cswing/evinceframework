@@ -1,29 +1,29 @@
 
-.evf2K12 .pager {
+.claro .pager {
   padding:            0.5em;
   background:         #FFFFFF;
   white-space:        nowrap;
 }
 
-.evf2K12 .pager .pageContainer {
+.claro .pager .pageContainer {
   vertical-align:     text-bottom;
 }
 
-.evf2K12 .pager .page-numbers .prev,
-.evf2K12 .pager .page-numbers .next {
+.claro .pager .page-numbers .prev,
+.claro .pager .page-numbers .next {
   margin:             0 0.5em;
 }
 
-.evf2K12 .pager .page-numbers {
+.claro .pager .page-numbers {
   margin:             0 0.5em;
   cursor:             pointer;
 }
 
-.evf2K12 .pager .page-numbers:hover {
+.claro .pager .page-numbers:hover {
   text-decoration:    underline;  
 }
 
-.evf2K12 .pager .page-numbers.current {
+.claro .pager .page-numbers.current {
   cursor:             default;
   font-weight:        bold;
   background:         #ABD6FF;
@@ -33,6 +33,6 @@
   padding:            0.25em;
 }
 
-.evf2K12 .pager .page-numbers.current:hover {
+.claro .pager .page-numbers.current:hover {
   text-decoration:    none;
 }

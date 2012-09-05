@@ -1,5 +1,5 @@
 
-.evf2K12 .messagesContainer.pageMessages {
+.claro .messagesContainer.pageMessages {
   background-color:     #E1DFEC;
   border:               2px solid #8D89A7;
   border-radius:        5px 5px 5px 5px;
@@ -8,38 +8,38 @@
   text-align:           center;
 }
 
-.evf2K12 .messagesContainer.formMessages {
+.claro .messagesContainer.formMessages {
   border-bottom:      1px solid #F0F0F0;
   padding:            0.5em 0;
   text-align:         center;
 }
 
-.evf2K12 .messagesContainer .message {
+.claro .messagesContainer .message {
   white-space:        nowrap;
 }
 
-.evf2K12 .messagesContainer .message .messageContent {
+.claro .messagesContainer .message .messageContent {
   padding:            0 0.5em;
   text-align:         left;
   white-space:        normal;
 }
-.evf2K12 .messagesContainer .message.error .messageContent {
+.claro .messagesContainer .message.error .messageContent {
   color:              #D46464;
   font-weight:        bold;
 }
 
 /* message icons */
-.evf2K12 .messagesContainer .message .messageIcon {
+.claro .messagesContainer .message .messageIcon {
   height:             16px;
   width:              16px;
 }
-.evf2K12 .messagesContainer .message.info .messageIcon {
+.claro .messagesContainer .message.info .messageIcon {
   background:         url(../images/fchi/16x16/information.png) left center no-repeat;
 }
-.evf2K12 .messagesContainer .message.warn .messageIcon {
+.claro .messagesContainer .message.warn .messageIcon {
   background:         url(../images/fchi/16x16/error.png) left center no-repeat;
 }
-.evf2K12 .messagesContainer .message.error .messageIcon {
+.claro .messagesContainer .message.error .messageIcon {
   background:         url(../images/fchi/16x16/exclamation.png) left center no-repeat;
 }
 

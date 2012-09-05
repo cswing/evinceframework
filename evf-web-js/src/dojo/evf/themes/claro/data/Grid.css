@@ -1,0 +1,112 @@
+
+.claro .dijitContentPane.dataGridPane {
+  padding:            0;
+  border-color:       #759DC0;  
+}
+
+.claro .dataGrid .parentTable {
+  border-collapse:    collapse;
+  border-spacing:     0;
+}
+
+.claro .dataGrid .innerTableContainer {
+  overflow:           auto;
+  background-color:	  #EEE;
+}
+
+.claro .dataGrid .innerTable {
+  border-collapse:    collapse;
+  border-spacing:     0;
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td {
+  border-bottom:      1px solid #759DC0;
+  background-color:   #CFE5FA;
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeader {
+  padding:            0.25em 0.75em;
+  border-left:        solid 1px #759DC0;
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeader.menuCellHeader {
+	padding:			0;
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeader:first-child {
+	border-left:        solid 1px #CFE5FA;
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeader:menuCellHeader + td {
+	border-left:        solid 1px #CFE5FA;
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeader.sortable:hover {
+	cursor:				pointer;
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeader.sortable .sortIcon {
+  height:             16px;
+  width:              16px;
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeader.sortable.asc .sortIcon {
+	background:         url(../images/fchi/16x16/bullet_arrow_up.png);
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeader.sortable.desc .sortIcon {
+  	background:         url(../images/fchi/16x16/bullet_arrow_down.png);
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeaderPad {
+  padding:            0;
+  border-left:        0;
+}
+
+.claro .dataGrid table.innerTable > tbody > tr.dataRow > td {
+  padding:            0.5em 0.75em;
+  border-bottom:      solid 1px #E7E7E7;
+  border-left:        solid 1px #E7E7E7;
+}
+
+.claro .dataGrid table.innerTable > tbody > tr.dataRow > td:first-child {
+  border-left:        0;
+}
+
+.claro .dataGrid table.innerTable > tbody > tr.dataRow.odd > td {
+  background-color:   #FFF;
+}
+
+/* Menu Cell */
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeader.menuCellHeader {
+  padding:            0;
+}
+
+.claro .dataGrid table.parentTable > thead > tr > td.columnHeader.menuCellHeader + td {
+  border-left:        0;
+}
+
+.claro .dataGrid table.innerTable > tbody > tr.dataRow > td.menuCell {
+  padding:            0;
+  height:             16px;
+}
+
+.claro .dataGrid table.innerTable > tbody > tr.dataRow > td.menuCell .dijitDropDownButton .dijitButtonNode {
+  border:             0;
+  background-image:   none;
+  background-color:   transparent;
+  box-shadow:         none;
+  padding:            0;
+}
+
+.claro .dataGrid table.innerTable > tbody > tr.dataRow > td.menuCell .gridMenu {
+  height:             16px;
+  width:              16px;
+  background:         url(../images/fchi/16x16/control_eject_blue.png);
+  -moz-transform:     scaleY(-1);
+  -o-transform:       scaleY(-1);
+  -webkit-transform:  scaleY(-1);
+  transform:          scaleY(-1);
+  filter:             FlipV;
+  -ms-filter:         "FlipV";
+}

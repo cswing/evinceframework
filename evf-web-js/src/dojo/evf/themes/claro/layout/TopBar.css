@@ -1,5 +1,5 @@
 
-.evf2K12 .topBar {
+.claro .topBar {
     left:           0;
     position:         fixed;
     top:          0;
@@ -16,46 +16,46 @@
     box-shadow:           0px 1px 3px #CCC;
 }
 
-.evf2K12 .topBar .topBar-outer {
+.claro .topBar .topBar-outer {
   margin:         0 auto;
   width:          1000px;
 }
 
-.evf2K12 .topBar div.logo {
+.claro .topBar div.logo {
   
 }
 
-.evf2K12 .topBar .topBarContainer {
+.claro .topBar .topBarContainer {
   vertical-align:     bottom;
     min-width:        1000px;
     overflow:         hidden;
     width:          1000px;
 }
 
-.evf2K12 .topBar .topBarContainer table.topBarTable {
+.claro .topBar .topBarContainer table.topBarTable {
   border-collapse:    collapse;
     height:         40px;
     width:          100%;
 }
 
-.evf2K12 .topBar .topBarContainer table.topBarTable td.logo {
+.claro .topBar .topBarContainer table.topBarTable td.logo {
   vertical-align:     top;
   width:          150px;
 }
 
-.evf2K12 .topBar .topBarContainer table.topBarTable td {
+.claro .topBar .topBarContainer table.topBarTable td {
   vertical-align:     bottom;
 }
 
 /* dijit menubar, menuitem overrides*/
 
-.evf2K12 .topBar .dijitMenuBar {
+.claro .topBar .dijitMenuBar {
   background:       none repeat scroll 0 0 transparent;
     border:         0 none;
 }
 
-.evf2K12 .topBar .dijitMenuItem,
-.evf2K12 .topBarMenu.dijitMenu .dijitMenuItem {
+.claro .topBar .dijitMenuItem,
+.claro .topBarMenu.dijitMenu .dijitMenuItem {
   background-image:     none;
   border:         0 none;
   color:          #79796C;
@@ -63,42 +63,42 @@
   padding:        6px 10px 7px; /* sets the hover/active padding to .dijitMenuItem */
 }
 
-.evf2K12 .topBar .dijitMenuItem {
+.claro .topBar .dijitMenuItem {
   background-color:     #F0F1BF;
   border-radius:      10px 10px 0 0;
 }
 
-.evf2K12 .topBar .dijitMenuItem.dijitHover,
-.evf2K12 .topBar .dijitMenuItem.dijitActive,
-.evf2K12 .topBar .dijitMenuItem.dijitMenuItemSelected {
+.claro .topBar .dijitMenuItem.dijitHover,
+.claro .topBar .dijitMenuItem.dijitActive,
+.claro .topBar .dijitMenuItem.dijitMenuItemSelected {
   background-color:     #FBFCDC;
 }
 
-/*.evf2K12 .topBar*/ 
-.evf2K12 .topBarMenu.dijitMenu {
+/*.claro .topBar*/ 
+.claro .topBarMenu.dijitMenu {
     background-color:     #FBFCDC;
     border:         0 none; /*1px solid #8D89A7;*/
     margin:         -1px 0;
 }
 
 /* embedded login form */
-.evf2K12 .topBar .loginForm {
+.claro .topBar .loginForm {
   margin-bottom:      5px;
 }
 
-.evf2K12 .topBar .loginForm .label {
+.claro .topBar .loginForm .label {
   padding:        0 1em;
 }
 
-.evf2K12 .topBar .loginForm .dijitButton {
+.claro .topBar .loginForm .dijitButton {
   margin-left:      0.5em;
 }
 
-.evf2K12 .topBar a.action {
+.claro .topBar a.action {
   color:          #79796C;
     text-decoration:    none;
 }
 
-.evf2K12 .topBar a.action:hover {
+.claro .topBar a.action:hover {
   text-decoration:    underline;
 }

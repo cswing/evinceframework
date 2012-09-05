@@ -1,42 +1,42 @@
 
-.evf2K12 .evfMessageDialog .dialogMessage {
+.claro .evfMessageDialog .dialogMessage {
   white-space:      nowrap;
   vertical-align:   top;
 }
 
-.evf2K12 .evfMessageDialog .dialogMessage .messge {
+.claro .evfMessageDialog .dialogMessage .messge {
   padding:          0.5em;
   white-space:      normal;
 }
 
-.evf2K12 .evfMessageDialog .dijitDialogSingleChild {
+.claro .evfMessageDialog .dijitDialogSingleChild {
   padding:          0.25em;
 }
 
-.evf2K12 .evfMessageDialog .evfDialogContainer {
+.claro .evfMessageDialog .evfDialogContainer {
   min-height:       64px;
   min-width:        256px;
 }
 
-.evf2K12 .evfMessageDialog .actionBar {
+.claro .evfMessageDialog .actionBar {
   text-align:       center;
 }
 
 /* Icons */
-.evf2K12 .evfMessageDialog .dialogMessage .messageIcon {
+.claro .evfMessageDialog .dialogMessage .messageIcon {
   height:           32px;
   width:            32px;
   margin:           0.25em;
 }
-.evf2K12 .evfMessageDialog .dialogMessage .messageIcon.confirm {
+.claro .evfMessageDialog .dialogMessage .messageIcon.confirm {
   background:       url(../images/fchi/32x32/information.png) no-repeat;
 }
-.evf2K12 .evfMessageDialog .dialogMessage .messageIcon.error {
+.claro .evfMessageDialog .dialogMessage .messageIcon.error {
   background:       url(../images/fchi/32x32/exclamation.png) no-repeat;
 }
-.evf2K12 .evfMessageDialog .dialogMessage .messageIcon.warn {
+.claro .evfMessageDialog .dialogMessage .messageIcon.warn {
   background:       url(../images/fchi/32x32/error.png) no-repeat;
 }
-.evf2K12 .evfMessageDialog .dialogMessage .messageIcon.info {
+.claro .evfMessageDialog .dialogMessage .messageIcon.info {
   background:       url(../images/fchi/32x32/information.png) no-repeat;
 }
