@@ -20,14 +20,14 @@
 		<value>dojo-release/dojo/resources/dojo.css</value>
 		<value>dojo-release/dijit/themes/dijit.css</value>
 		<value>dojo-release/dijit/themes/claro/claro.css</value>
-		<value>dojo-release/evf/themes/evf2K12/evf2K12.css</value>
+		<value>dojo-release/evf/themes/claro/evf-claro.css</value>
 	</util:set>	
 	
 	<util:set id="stylesheets.debug">		
 		<value>static/dojo-source/dojo/resources/dojo.css</value>
 		<value>static/dojo-source/dijit/themes/dijit.css</value>
 		<value>static/dojo-source/dijit/themes/claro/claro.css</value>
-		<value>static/dojo-source/evf/themes/evf2K12/evf2K12.css</value>
+		<value>static/dojo-source/evf/themes/claro/evf-claro.css</value>
 		<value>static/dojo-source/example/styles.css</value>
 	</util:set>	
 	
@@ -56,7 +56,7 @@
 
 	<bean id="dojo.config.default" 
 				class="com.evinceframework.web.dojo.mvc.view.config.DojoConfiguration"
-				p:bodyCss="claro evf2K12"
+				p:bodyCss="claro"
 				p:coreDojoPath="dojo-release/dojo/dojo.js"
 				p:stylesheets-ref="stylesheets.default"
 				p:auxiliaryScriptPaths-ref="auxiliaryScriptPaths.default"
@@ -65,7 +65,7 @@
 							
 	<bean id="dojo.config.uncompressed" 
 				class="com.evinceframework.web.dojo.mvc.view.config.DojoConfiguration"
-				p:bodyCss="claro evf2K12"
+				p:bodyCss="claro"
 				p:coreDojoPath="dojo-release/dojo/dojo.js.uncompressed.js"
 				p:stylesheets-ref="stylesheets.default"
 				p:auxiliaryScriptPaths-ref="auxiliaryScriptPaths.uncompressed"
@@ -74,7 +74,7 @@
 	
 	<bean id="dojo.config.debug" 
 				class="com.evinceframework.web.dojo.mvc.view.config.DojoConfiguration"
-				p:bodyCss="claro evf2K12"
+				p:bodyCss="claro"
 				p:coreDojoPath="static/dojo-source/dojo/dojo.js"
 				p:stylesheets-ref="stylesheets.debug"
 				p:auxiliaryScriptPaths-ref="auxiliaryScriptPaths.debug"
