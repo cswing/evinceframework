@@ -13,36 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define("evf/store/util", [
-  "dojo", "dijit", "dojo/dom-construct"
-], function(dojo, dijit, domConstruct) {
+define([
+  "dojo", "dojo/topic"
+], function(dojo, topic) {
 
-  var util = dojo.getObject('evf.store.util', true);
+    var util = dojo.getObject('evf.store.util', true);
   
-  util.sort = function(array, sortDefinitions) {
-    // summary:
-    //  provide a utility method to sort an array.
-    // description:
-    //  extracted from dojo.store.util.SimpleQueryEngine
-    
-    var sorts = sortDefinitions;
-    if (dojo.isString(sorts)) {
-      sorts = [{ attribute: sorts }]
-    }
-    
-    array.sort(function(a, b){
-      for(var sort, i=0; sort = sorts[i]; i++){
-        var aValue = a[sort.attribute];
-        var bValue = b[sort.attribute];
-        if (aValue != bValue) {
-          return !!sort.descending == aValue > bValue ? -1 : 1;
+    util.sort = function(array, sortDefinitions) {
+        // summary:
+        //  provide a utility method to sort an array.
+        // description:
+        //  extracted from dojo.store.util.SimpleQueryEngine
+        
+        var sorts = sortDefinitions;
+        if (dojo.isString(sorts)) {
+          sorts = [{ attribute: sorts }]
         }
-      }
-      return 0;
-    });
-    
-    return array;
-  };
+        
+        array.sort(function(a, b){
+          for(var sort, i=0; sort = sorts[i]; i++){
+            var aValue = a[sort.attribute];
+            var bValue = b[sort.attribute];
+            if (aValue != bValue) {
+              return !!sort.descending == aValue > bValue ? -1 : 1;
+            }
+          }
+          return 0;
+        });
+        
+        return array;
+    };
   
-  return util;
+    var guidGenerator = function() {
+        var S4 = function() {
+           return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        };
+        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    };
+    
+    util._guidsMappedByItem = {};
+    util._getGuid = function(item){
+        var guid = util._guidsMappedByItem[item]
+        if(!guid){
+            guid = util._guidsMappedByItem[item] = guidGenerator();
+        }
+        return guid;
+    };
+    util.publish = function(item, name){
+        topic.publish(util._getGuid(item), item, name)
+    };
+    util.subscribe = function(item, fn){
+        return topic.subscribe(util._getGuid(item), fn);
+    };
+  
+    return util;
 });

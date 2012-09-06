@@ -17,6 +17,8 @@
 
     var baseRequires = [
         "evf/_lang",
+        "evf/dataTypeFactory",
+        "evf/dataTypes/defaults",
         "evf/dialog/Dialog",
         "evf/dialog/util",
         "evf/layout/Messages",

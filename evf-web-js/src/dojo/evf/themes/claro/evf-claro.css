@@ -8,3 +8,5 @@
 @import url(layout/lob/ApplicationPage.css);
 @import url(layout/lob/Navigation.css);
 @import url(layout/Messages.css);
+
+@import url(properties/Editor.css);

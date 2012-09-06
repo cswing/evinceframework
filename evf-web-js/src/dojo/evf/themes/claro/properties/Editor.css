@@ -1,0 +1,63 @@
+
+.claro .propertyEditor.defaultEditor{
+    width:          25em;
+    border:         solid 1px #759DC0;
+    border-radius:  3px;
+}
+
+.claro .propertyEditor.defaultEditor table{
+    width:          100%;
+    border-spacing: 0;
+}
+
+.claro .propertyEditor .categoryCell{
+    border:         solid 1px #759DC0;
+    border-width:   1px 0;
+    background-color: #CFE5FA;
+    padding:        0.25em;
+}
+.claro .propertyEditor .categoryCell.first{
+    border-width:   0 0 1px 0;
+}
+.claro .propertyEditor .categoryCell.last{
+}
+
+.claro .propertyEditor .propertyRow td{
+    border:         solid 1px #EDEDED;
+    border-width:   1px 0 0 0;
+}
+.claro .propertyEditor .propertyRow.first td {
+    border-top:     0;
+}
+
+.claro .propertyEditor .propertyRow .caption{
+    padding:        0.25em 0.25em 0.25em 0.75em;
+    border-right:   solid 1px #EDEDED;
+    color:          #494949;
+    width:          10em;
+}
+
+.claro .propertyEditor .propertyRow .editor{
+    padding:        0.25em;
+}
+
+/* Properties Dialog */
+.claro .propertyDialog .dijitDialogTitleBar {
+    border:         0;
+}
+
+.claro .propertyDialog .dijitDialogPaneContent {
+    padding:        0;
+}
+
+.claro .propertyDialog .propertyEditor.defaultEditor {
+    border-width:   0;
+}
+
+.claro .propertyDialog .actionBar {
+    border:         solid 1px #759DC0;
+    border-width:   1px 0 0 0;
+    padding:        0.25em;
+    text-align:     center;
+    background-color: #EDEDED;  
+}
