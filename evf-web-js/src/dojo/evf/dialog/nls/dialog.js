@@ -11,7 +11,9 @@ define({ root:
   
 })
 //end v1.x content
-,
+/*,
+"fr": true,
+"fr-ca": true
 "zh": true,
 "zh-tw": true,
 "tr": true,
@@ -40,5 +42,5 @@ define({ root:
 "da": true,
 "cs": true,
 "ca": true,
-"ar": true
+"ar": true*/
 });

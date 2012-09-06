@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 def whenScheduled(task, closure) {
     if (gradle.startParameter.taskNames.contains(task)) {
@@ -215,3 +216,217 @@ project(':examples:petclinic:web-app') {
         compile project(':evf-web')
     }
 }
+=======
+
+def whenScheduled(task, closure) {
+    if (gradle.startParameter.taskNames.contains(task)) {
+        closure(task)
+    }
+}
+
+configure(allprojects) {
+    repositories {
+        mavenCentral()
+    }
+}
+
+// Configure java projects
+configure(subprojects.findAll {it.name != 'evf-web-js'}) { subproject ->
+    apply plugin: 'java'
+    apply from: "${rootProject.projectDir}/publish-maven.gradle"
+    
+    group = 'org.evinceframework'
+    
+    [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:none']
+
+    sourceSets.main.java.srcDirs = ['src/java']
+    sourceSets.main.resources.srcDirs = ['src/resources']
+    sourceSets.test.resources.srcDirs = ['src/test-resources', 'src/tests']
+    jar {
+        manifest.attributes['Implementation-Title'] = subproject.name
+        manifest.attributes['Implementation-Version'] = subproject.version
+
+        from("${rootProject.projectDir}/src/dist") {
+            include "license.txt"
+            include "notice.txt"
+            into "META-INF"
+            expand(copyright: new Date().format('yyyy'), version: project.version)
+        }
+    }
+
+    javadoc {
+        options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        options.author = true
+        options.header = project.name
+        //options.overview = "${projectDir}/src/main/java/overview.html"
+    }
+
+    task sourcesJar(type: Jar, dependsOn:classes) {
+        classifier = 'sources'
+        from sourceSets.main.allJava
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
+    }
+
+    task copyToLib(type: Sync) {
+        into "${projectDir}/lib"
+        from configurations.testCompile
+    }
+}
+
+// configure dojo projects
+configure(subprojects.findAll {it.name == 'evf-web-js'}) { subproject ->
+    //apply from: "${rootProject.projectDir}/publish-maven.gradle"
+    
+    apply plugin: 'maven'
+    group = 'org.evinceframework'
+}
+
+project('evf-core') {
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.8.+'
+        testCompile group: 'emma', name: 'emma', version: '2.1.5320'
+        //testCompile group: 'javancss', name: 'javancss', version: '32.53'
+        
+        compile group: 'log4j', name: 'log4j', version: '1.2.+'
+        compile group: 'commons-logging', name: 'commons-logging', version: '1.1.+'
+        compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.0-api', version: '1.0.+'
+        compile group: 'org.springframework', name: 'spring-beans', version: '3.0.+'
+        compile group: 'org.springframework', name: 'spring-core', version: '3.0.+'        
+    }
+}
+
+project('evf-web') {
+    description: 'Server side web tier for the Evince Framework.'
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.8.+'
+        testCompile group: 'emma', name: 'emma', version: '2.1.5320'
+        //testCompile group: 'javancss', name: 'javancss', version: '32.53'
+        
+        compile group: 'log4j', name: 'log4j', version: '1.2.+'
+        compile group: 'commons-logging', name: 'commons-logging', version: '1.1.+'
+        
+        //<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="core->default" />		
+        compile group: 'javax.servlet', name: 'servlet-api', version: '2.5'
+        compile group: 'org.springframework', name: 'spring-webmvc', version: '3.0.+'
+        compile group: 'org.springframework', name: 'spring-webmvc', version: '3.0.+', classifier:'sources'
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.+'
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.+', classifier:'sources'
+        compile project(':evf-core')
+    }
+}
+
+project('evf-web-js') {
+    
+    task unpackDojoSource(type: Copy) {
+        new File("build/dojo/src").mkdirs()
+        from(zipTree(dojoSource)) {
+            eachFile { details -> details.path = details.path.substring(details.relativePath.segments[0].length()) } 
+            
+        } into "build/dojo/src"
+    }
+    
+    task syncSource(type: Copy) {
+        from "src/dojo" into "build/dojo/src"
+    }
+
+    task doBuild(type: JavaExec) {
+        main='org.mozilla.javascript.tools.shell.Main'
+        classpath=files('build/dojo/src/util/shrinksafe/js.jar', 'build/dojo/src/util/closureCompiler/compiler.jar', 'build/dojo/src/util/shrinksafe/shrinksafe.jar')
+        args=['dojo/dojo.js', 'baseUrl=dojo', 'load=build', 'profile=build.profile.js']
+        workingDir="${projectDir}/build/dojo/src"
+    }
+
+    task build {
+        dependsOn 'clean', 'unpackDojoSource', 'syncSource', 'doBuild'
+        whenScheduled(name) {
+            gradle.projectsEvaluated {
+                project.unpackDojoSource.dependsOn 'clean'
+                project.syncSource.dependsOn 'unpackDojoSource'
+                project.doBuild.dependsOn 'syncSource'
+            }
+        }
+    }
+    
+    task packageRelease(type: Zip) {
+        from 'build/dojo/release/output'
+    }
+
+    task packageSource(type: Zip) {
+        classifier = 'sources'
+        from 'build/dojo/src/evf'
+        into('evf')
+    }
+    
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                 repository(url: "file://" + project.gradle.gradleUserHomeDir.canonicalPath + ".m2/repository")
+            }
+        }
+    }
+    
+    artifacts {
+        archives packageRelease
+        archives packageSource
+    }
+    
+    task install {
+        dependsOn 'clean', 'unpackDojoSource', 'syncSource', 'doBuild', 'packageRelease', 'packageSource', 'uploadArchives'
+        whenScheduled(name) {
+            gradle.projectsEvaluated {
+                project.unpackDojoSource.dependsOn 'clean'
+                project.syncSource.dependsOn 'unpackDojoSource'
+                project.doBuild.dependsOn 'syncSource'
+                project.packageRelease.dependsOn 'doBuild'
+                project.packageSource.dependsOn 'doBuild'
+                project.uploadArchives.dependsOn 'packageRelease', 'packageSource'
+            }
+        }
+    }
+
+    task quickBuild {
+        dependsOn 'syncSource', 'doBuild'
+        whenScheduled(name) {
+            gradle.projectsEvaluated {
+                project.doBuild.dependsOn 'syncSource'
+            }
+        }
+    }   
+}
+
+// examples
+project(':examples:petclinic:web-app') {
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.8.+'
+        testCompile group: 'emma', name: 'emma', version: '2.1.5320'
+        //testCompile group: 'javancss', name: 'javancss', version: '32.53'
+        
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.6.1'
+        compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.6.1'
+        compile group: 'log4j', name: 'log4j', version: '1.2.+'
+        compile group: 'commons-logging', name: 'commons-logging', version: '1.1.+'
+        
+        compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '4.1.+'
+      //compile group: 'org.hibernate', name: 'hibernate-annotations', version: '3.5.+'
+        
+        compile group: 'org.springframework', name: 'spring-jdbc', version: '3.0.+'
+        compile group: 'org.springframework', name: 'spring-orm', version: '3.0.+'
+        compile group: 'commons-dbcp', name: 'commons-dbcp', version: '1.2.+'
+        compile group: 'org.hsqldb', name: 'hsqldb', version: '2.2.+'
+        
+        //compile group: 'org.hibernate', name: 'hibernate-core', version: '3.5.+', classifier: 'sources'
+        
+        compile project(':evf-core')
+        compile project(':evf-web')
+    }
+}
+>>>>>>> update dojo build for AMD build

@@ -15,7 +15,7 @@
  */
 {
 	"name": "evf",
-	"version":"1.7.2",
+	"version":"1.8.0",
 	"main":"main",
 	"dependencies": {
 		"dojo": "current"
@@ -30,5 +30,5 @@
 	"bugs": "https://github.com/cswing/evinceframework/issues",
 	"keywords": ["JavaScript", "Evince", "Dojo"],
 	"homepage": "http://evinceframework.org/",
-	"dojoBuild": "evf.profile.js",    
+	"dojoBuild": "package.js",    
 }
