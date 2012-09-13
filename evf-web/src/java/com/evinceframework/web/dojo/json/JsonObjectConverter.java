@@ -23,7 +23,7 @@ import java.io.IOException;
  * 
  * @author Craig Swing
  */
-public interface JsonConverter {
+public interface JsonObjectConverter {
 
 	/**
 	 * Determine the unique identifier of the object.  Objects must have an identifier

@@ -25,12 +25,12 @@ import java.util.Set;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 
-import com.evinceframework.web.dojo.json.JsonConverter;
+import com.evinceframework.web.dojo.json.JsonObjectConverter;
 import com.evinceframework.web.dojo.json.JsonSerializationContext;
 import com.evinceframework.web.dojo.json.JsonStoreEngine;
 
 /**
- * The default {@link JsonConverter} for the {@link JsonStoreEngine}.  This converter
+ * The default {@link JsonObjectConverter} for the {@link JsonStoreEngine}.  This converter
  * by default will convert all properties on the object.
  * 
  * The converter will inspect the object for an entry keyed by the {@link #identifierField}
@@ -50,7 +50,7 @@ import com.evinceframework.web.dojo.json.JsonStoreEngine;
  * 
  * @author Craig Swing
  */
-public class PojoConverter implements JsonConverter {
+public class PojoConverter implements JsonObjectConverter {
 	
 	private String identifierField = JsonStoreEngine.DEFAULT_IDENTIFIER_NAME;
 	
@@ -62,7 +62,7 @@ public class PojoConverter implements JsonConverter {
 			new HashSet<String>(Arrays.asList(new String[] { "class" } )));
 
 	/**
-	 * The identifier property look for when {@link JsonConverter#determineIdentifier(Object)}
+	 * The identifier property look for when {@link JsonObjectConverter#determineIdentifier(Object)}
 	 * is called.  If not specified then the {@link Object#hashCode()} will be used. 
 	 * 
 	 * @return
@@ -81,7 +81,7 @@ public class PojoConverter implements JsonConverter {
 	}
 
 	/**
-	 * The type to return {@link JsonConverter#determineType(Object)}.  If the type
+	 * The type to return {@link JsonObjectConverter#determineType(Object)}.  If the type
 	 * is not specified then the canonical name of the java class will be used.  
 	 * 
 	 * @return
@@ -91,7 +91,7 @@ public class PojoConverter implements JsonConverter {
 	}
 
 	/**
-	 * Provide the ability to specify the type to use with {@link JsonConverter#determineType(Object)}
+	 * Provide the ability to specify the type to use with {@link JsonObjectConverter#determineType(Object)}
 	 * when the instance of this converter is specific to a class.
 	 * 
 	 * @param type

@@ -28,10 +28,10 @@ public class JsonStoreException {
 	
 	/**
 	 * Will be thrown during the serialization process, if the {@link JsonStoreEngine} 
-	 * cannot find a {@link JsonConverter} for a particular object.
+	 * cannot find a {@link JsonObjectConverter} for a particular object.
 	 * 
 	 * This should never be thrown using the default configuration, because a default
-	 * {@link JsonConverter} is specified for the {@link JsonStoreEngine}.
+	 * {@link JsonObjectConverter} is specified for the {@link JsonStoreEngine}.
 	 *  
 	 * @author Craig Swing
 	 */
@@ -72,7 +72,7 @@ public class JsonStoreException {
 	
 	/**
 	 * Will be thrown by the {@link AbstractTypedJsonConverter} if the object passed into
-	 * the {@link JsonConverter} methods is not of the expected type.
+	 * the {@link JsonObjectConverter} methods is not of the expected type.
 	 * 
 	 * @author Craig Swing
 	 */

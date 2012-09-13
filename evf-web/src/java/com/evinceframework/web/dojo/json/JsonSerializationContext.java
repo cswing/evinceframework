@@ -29,7 +29,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
  * have either already been serialized or already been queued to be serialized later, and a
  * queue of objects that need to be serialized later in the process.
  * 
- * The {@link JsonStoreEngine} and {@link JsonConverter} implementations are designed to be 
+ * The {@link JsonStoreEngine} and {@link JsonObjectConverter} implementations are designed to be 
  * stateless.  These objects contain no data that is specific to the particular serialization 
  * that is occurring.
  * 
@@ -74,7 +74,7 @@ public class JsonSerializationContext {
 		registeredIds.add(identifier);
 	}
 	
-	/* package */ void registerDeferredSerialization(Object value, JsonConverter converter) {
+	/* package */ void registerDeferredSerialization(Object value, JsonObjectConverter converter) {
 
 		String id = converter.determineIdentifier(value);
 		if (registeredIds.contains(id)) {
@@ -91,9 +91,9 @@ public class JsonSerializationContext {
 		
 		private Object value;
 		
-		private JsonConverter converter;
+		private JsonObjectConverter converter;
 
-		public DeferredSerialization(String id, Object value, JsonConverter converter) {
+		public DeferredSerialization(String id, Object value, JsonObjectConverter converter) {
 			this.id = id;
 			this.value = value;
 			this.converter = converter;
@@ -107,7 +107,7 @@ public class JsonSerializationContext {
 			return value;
 		}
 
-		public JsonConverter getConverter() {
+		public JsonObjectConverter getConverter() {
 			return converter;
 		}
 		

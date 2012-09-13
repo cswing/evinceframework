@@ -22,11 +22,8 @@ import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.util.StringUtils;
 
@@ -34,6 +31,8 @@ import com.evinceframework.core.factory.MapBackedClassLookupFactory;
 import com.evinceframework.data.QueryParameters;
 import com.evinceframework.data.QueryResult;
 import com.evinceframework.web.dojo.json.JsonSerializationContext.DeferredSerialization;
+import com.evinceframework.web.dojo.json.conversion.DatePrimitiveWriter;
+import com.evinceframework.web.dojo.json.conversion.DefaultPrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.InterfaceConverter;
 import com.evinceframework.web.dojo.json.conversion.MapConverter;
 import com.evinceframework.web.dojo.json.conversion.PojoConverter;
@@ -50,16 +49,16 @@ import com.fasterxml.jackson.core.JsonFactory;
  * The outputted format is a single array of javascript objects.  Any references to other 
  * objects are signified using the field name identified by referenceFieldName.
  * 
- * The JsonStoreEngine delegates the conversion of an object to JSON to {@link JsonConverter}s.
- * A custom {@link JsonConverter} can be registered using the setLookupMap(lookupMap) method.
- * The engine will determine the {@link JsonConverter} to use based on the class of the object
+ * The JsonStoreEngine delegates the conversion of an object to JSON to {@link JsonObjectConverter}s.
+ * A custom {@link JsonObjectConverter} can be registered using the setLookupMap(lookupMap) method.
+ * The engine will determine the {@link JsonObjectConverter} to use based on the class of the object
  * that needs to be serialized.
  * 
  * In the process of converting an graph of data to a single list of elements, the JsonStoreEngine 
  * handles the logic of determining when an object should be serialized or when the serialization
  * should be deferred and a reference object should be serialized.
  * 
- * The developer implementing a {@link JsonConverter} only needs to be concerned with how a Java
+ * The developer implementing a {@link JsonObjectConverter} only needs to be concerned with how a Java
  * object should be converted to a JSON object. 
  * 
  * Example output:
@@ -103,7 +102,7 @@ import com.fasterxml.jackson.core.JsonFactory;
  * 
  * @author Craig Swing
  */
-public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> {
+public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConverter> {
 
 	public static final String DEFAULT_IDENTIFIER_NAME = "_id";
 	
@@ -118,19 +117,22 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 	private String identifierFieldName = DEFAULT_IDENTIFIER_NAME;
 	
 	private String typeFieldName = DEFAULT_TYPE_NAME;
-			
-	private Set<Class<?>> primitiveTypes = new HashSet<Class<?>>();
+	
+	private MapBackedClassLookupFactory<JsonPrimitiveWriter<?>> primitiveFactory = 
+			new MapBackedClassLookupFactory<JsonPrimitiveWriter<?>>();
 	
 	public JsonStoreEngine() {
-		primitiveTypes.add(String.class);
-		primitiveTypes.add(Integer.class);
-		primitiveTypes.add(BigInteger.class);
-		primitiveTypes.add(Double.class);
-		primitiveTypes.add(Date.class);	
-		primitiveTypes.add(Boolean.class);
-		primitiveTypes.add(BigDecimal.class);
 		
-		primitiveTypes = Collections.unmodifiableSet(primitiveTypes);
+		DefaultPrimitiveWriter<Object> defaultPrimitiveWriter = 
+				new DefaultPrimitiveWriter<Object>();
+		
+		primitiveFactory.getLookupMap().put(String.class, defaultPrimitiveWriter);
+		primitiveFactory.getLookupMap().put(Integer.class, defaultPrimitiveWriter);
+		primitiveFactory.getLookupMap().put(BigInteger.class, defaultPrimitiveWriter);
+		primitiveFactory.getLookupMap().put(Double.class, defaultPrimitiveWriter);
+		primitiveFactory.getLookupMap().put(Boolean.class, defaultPrimitiveWriter);
+		primitiveFactory.getLookupMap().put(BigDecimal.class, defaultPrimitiveWriter);
+		primitiveFactory.getLookupMap().put(Date.class, new DatePrimitiveWriter());
 		
 		setDefaultImplementation(new PojoConverter());
 		getLookupMap().put(Map.class, new MapConverter());
@@ -142,23 +144,15 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 	}
 	
 	/**
-	 * A set of Java classes that translate into primitives in javascript. When the engine
-	 * encounters these types, the values will be written as the primitive value and not 
-	 * a javascript object.
-	 * 
-	 * @return
-	 */
-	public Set<Class<?>> getPrimitiveTypes() {
-		return primitiveTypes;
-	}
-
-	/**
-	 * Override the default Java classes that are considered primitives in javascript.
+	 * A map of Java classes and JsonPrimitiveWriter that write "primitive" values as javascript. When the engine
+	 * encounters these types, the engine will always emit the javascript.  It will not create a reference object. 
 	 * 
 	 * @param primitiveTypes the Java classes to consider primitives.
 	 */
-	public void setPrimitiveTypes(Set<Class<?>> primitiveTypes) {
-		this.primitiveTypes = Collections.unmodifiableSet(primitiveTypes);
+	public void setPrimitiveWriters(Map<Class<?>, JsonPrimitiveWriter<?>> primitiveWriters) {
+		for(Class<?> key : primitiveWriters.keySet()) {
+			this.primitiveFactory.getLookupMap().put(key, primitiveWriters.get(key));
+		}
 	}
 	
 	/**
@@ -207,10 +201,10 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 	}
 
 	/**
-	 * When serializing a Java object, the {@link JsonConverter} can optionally specify a "type".  Client side 
+	 * When serializing a Java object, the {@link JsonObjectConverter} can optionally specify a "type".  Client side 
 	 * code can utilize this type when searching through the array of items looking for a particular group of items.
 	 * 
-	 * If the {@link JsonConverter} does specify a type, it will be serialized using the field name specified by this
+	 * If the {@link JsonObjectConverter} does specify a type, it will be serialized using the field name specified by this
 	 * property.  The default is _type.
 	 * 
 	 * @return the name of the field that contains the objects type.
@@ -285,7 +279,12 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 		context.getGenerator().writeFieldName(name);
 		
 		if (isPrimitiveObject(value)) {
-			context.getGenerator().writeObject(value);
+			
+			@SuppressWarnings("unchecked")
+			JsonPrimitiveWriter<Object> primitiveWriter = 
+					(JsonPrimitiveWriter<Object>)primitiveFactory.lookup(value.getClass());
+			
+			primitiveWriter.writeValue(context.getGenerator(), value);
 			return;
 		}
 		
@@ -347,7 +346,7 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 		}
 		
 		// lookup converter
-		JsonConverter converter = lookup(obj.getClass());
+		JsonObjectConverter converter = lookup(obj.getClass());
 		if (converter == null) {
 			throw new JsonStoreException.UnknownJsonConverter();
 		}
@@ -365,7 +364,7 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 		}
 	}
 
-	private void writeObject(JsonSerializationContext context, Object obj, JsonConverter converter) throws IOException {
+	private void writeObject(JsonSerializationContext context, Object obj, JsonObjectConverter converter) throws IOException {
 		
 		context.getGenerator().writeStartObject();
 		
@@ -394,7 +393,7 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonConverter> 
 	}
 	
 	private boolean isPrimitiveObject(Object value) {
-		return value != null && primitiveTypes.contains(value.getClass());
+		return value != null && primitiveFactory.lookup(value.getClass()) != null;
 	}
 	
 	private boolean isJavascriptArrayType(Object value) 

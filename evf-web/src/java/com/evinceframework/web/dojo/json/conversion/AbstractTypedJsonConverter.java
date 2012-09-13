@@ -19,7 +19,7 @@ import java.io.IOException;
 
 import org.springframework.util.ClassUtils;
 
-import com.evinceframework.web.dojo.json.JsonConverter;
+import com.evinceframework.web.dojo.json.JsonObjectConverter;
 import com.evinceframework.web.dojo.json.JsonSerializationContext;
 import com.evinceframework.web.dojo.json.JsonStoreException;
 
@@ -34,7 +34,7 @@ import com.evinceframework.web.dojo.json.JsonStoreException;
  *
  * @param <T> the expected type of the objects being converted.
  */
-public abstract class AbstractTypedJsonConverter<T extends Object> implements JsonConverter {
+public abstract class AbstractTypedJsonConverter<T extends Object> implements JsonObjectConverter {
 
 	private Class<T> clazz;
 	
@@ -51,7 +51,7 @@ public abstract class AbstractTypedJsonConverter<T extends Object> implements Js
 	}
 
 	/**
-	 * @see JsonConverter#determineIdentifier(Object)
+	 * @see JsonObjectConverter#determineIdentifier(Object)
 	 */
 	protected abstract String onDetermineIdentifier(T obj);
 
@@ -61,7 +61,7 @@ public abstract class AbstractTypedJsonConverter<T extends Object> implements Js
 	}
 
 	/**
-	 * @see JsonConverter#determineType(Object)
+	 * @see JsonObjectConverter#determineType(Object)
 	 */
 	protected abstract String onDetermineType(T obj);
 	
@@ -71,7 +71,7 @@ public abstract class AbstractTypedJsonConverter<T extends Object> implements Js
 	}
 
 	/**
-	 * @see JsonConverter#writeObjectProperties(JsonSerializationContext, Object)
+	 * @see JsonObjectConverter#writeObjectProperties(JsonSerializationContext, Object)
 	 */
 	protected abstract void onWriteObjectProperties(JsonSerializationContext context, T obj) throws IOException;
 	

@@ -18,12 +18,12 @@ package com.evinceframework.web.dojo.json.conversion;
 import java.io.IOException;
 import java.util.Map;
 
-import com.evinceframework.web.dojo.json.JsonConverter;
+import com.evinceframework.web.dojo.json.JsonObjectConverter;
 import com.evinceframework.web.dojo.json.JsonSerializationContext;
 import com.evinceframework.web.dojo.json.JsonStoreEngine;
 
 /**
- * A {@link JsonConverter} for the {@link JsonStoreEngine} that will convert
+ * A {@link JsonObjectConverter} for the {@link JsonStoreEngine} that will convert
  * a map of data into a JSON object.
  * 
  * The converter will inspect the map for an entry keyed by the {@link #identifierField}
@@ -47,7 +47,7 @@ public class MapConverter extends AbstractTypedJsonConverter<Map> {
 	private String typeField = JsonStoreEngine.DEFAULT_TYPE_NAME;
 
 	/**
-	 * The identifier property look for when {@link JsonConverter#determineIdentifier(Object)}
+	 * The identifier property look for when {@link JsonObjectConverter#determineIdentifier(Object)}
 	 * is called.  If not specified then the {@link Object#hashCode()} will be used. 
 	 * 
 	 * @return
