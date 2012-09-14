@@ -29,6 +29,12 @@ public class ViewModelUtils {
 		return viewModel;
 	}
 	
+	public void addToViewModel(Map<String, Object> model, Iterable<?> iter) {
+		for(Object obj : iter) {								
+			addToViewModel(model, obj);
+		}
+	}
+	
 	public void addToViewModel(Map<String, Object> model, Object obj) {
 		findOrCreateViewModel(model).add(obj);
 	}
