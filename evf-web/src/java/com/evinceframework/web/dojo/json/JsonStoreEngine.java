@@ -351,14 +351,21 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConve
 			throw new JsonStoreException.UnknownJsonConverter();
 		}
 		
+		String id = converter.determineIdentifier(obj);
+		
 		if (asReference) {
 			// register deferred serialization object
 			context.registerDeferredSerialization(obj, converter);
 			
 			context.getGenerator().writeStartObject();
-			context.getGenerator().writeStringField(referenceFieldName, converter.determineIdentifier(obj));
+			context.getGenerator().writeStringField(referenceFieldName, id);
 			context.getGenerator().writeEndObject();
 		
+		} else if (context.isRegistered(id)) {
+			// if the object is already registered it will have already been written
+			// so it can be ignored.  This can happen if a top level item was previously
+			// serialized as a child of another top level object.
+			
 		} else {
 			writeObject(context, obj, converter);
 		}

@@ -74,14 +74,18 @@ public class JsonSerializationContext {
 		registeredIds.add(identifier);
 	}
 	
+	/* package */ boolean isRegistered(String identifier) {
+		return registeredIds.contains(identifier);
+	}
+	
 	/* package */ void registerDeferredSerialization(Object value, JsonObjectConverter converter) {
 
 		String id = converter.determineIdentifier(value);
-		if (registeredIds.contains(id)) {
+		if (isRegistered(id)) {
 			return;
 		}
 		
-		registeredIds.add(id);
+		registerIdentifier(id);
 		deferreds.add(new DeferredSerialization(id, value, converter));
 	}
 	
