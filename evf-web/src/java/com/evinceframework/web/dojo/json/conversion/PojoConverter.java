@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
+import org.springframework.util.StringUtils;
 
 import com.evinceframework.web.dojo.json.JsonObjectConverter;
 import com.evinceframework.web.dojo.json.JsonSerializationContext;
@@ -52,7 +53,7 @@ import com.evinceframework.web.dojo.json.JsonStoreEngine;
  */
 public class PojoConverter implements JsonObjectConverter {
 	
-	private String identifierField = JsonStoreEngine.DEFAULT_IDENTIFIER_NAME;
+	private String identifierField = null;
 	
 	private String type;
 	
@@ -189,12 +190,28 @@ public class PojoConverter implements JsonObjectConverter {
 
 	@Override
 	public String determineIdentifier(Object obj) {
+		
+		if (StringUtils.hasText(getIdentifierField())) {
+			BeanWrapperImpl bean = new BeanWrapperImpl(obj);
+			if(bean.isReadableProperty(getIdentifierField())) {
+				Object val = bean.getPropertyValue(getIdentifierField());
+				if(val != null) {
+					return val.toString();
+				}
+			}
+		}
+		
 		return String.valueOf(System.identityHashCode(obj));
 	}
 
 	protected boolean serializeField(PropertyDescriptor prop) {
 		
 		String fieldName = prop.getName();
+		
+		// if id field, then it shouldn't be serialized
+		if (StringUtils.hasText(getIdentifierField()) && getIdentifierField().equals(fieldName)) {
+			return false;
+		}
 		
 		// if fields are included by default, only return false if the overridden fields CONTAINS the field.
 		if(includeFieldsByDefault)
