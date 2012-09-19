@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 define([
-  "dojo", "dojo/topic"
-], function(dojo, topic) {
+  "dojo/_base/lang",
+  "dojo/topic",
+  "dojo/store/util/QueryResults"
+], function(lang, topic, QueryResults) {
 
-    var util = dojo.getObject('evf.store.util', true);
+    var util = lang.getObject('evf.store.util', true);
   
     util.sort = function(array, sortDefinitions) {
         // summary:
         //  provide a utility method to sort an array.
         // description:
-        //  extracted from dojo.store.util.SimpleQueryEngine
+        //  extracted from dojo.store.util.SimpleQueryEngine.  Added the ability to sort on 
+        //  child properties (ie. owner.name)
         
         var sorts = sortDefinitions;
-        if (dojo.isString(sorts)) {
+        if (lang.isString(sorts)) {
           sorts = [{ attribute: sorts }]
         }
         
         array.sort(function(a, b){
           for(var sort, i=0; sort = sorts[i]; i++){
-            var aValue = a[sort.attribute];
-            var bValue = b[sort.attribute];
+            var aValue = lang.getObject(sort.attribute, false, a);
+            var bValue = lang.getObject(sort.attribute, false, b);
             if (aValue != bValue) {
               return !!sort.descending == aValue > bValue ? -1 : 1;
             }
@@ -41,7 +44,7 @@ define([
           return 0;
         });
         
-        return array;
+        return QueryResults(array);
     };
   
     var guidGenerator = function() {
