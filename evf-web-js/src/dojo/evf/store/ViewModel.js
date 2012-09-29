@@ -105,7 +105,7 @@ define([
             var refProperty = this.referenceProperty || '_reference';
           
             // not a 'referece', so return the value.
-            if (!val || !dojo.isObject(val) || !val[refProperty]) {
+            if (!val || !dojo.isObject(val) || (!val[refProperty] && val[refProperty] !== 0)) {
                 fnSetter(val);
                 return; 
             }
