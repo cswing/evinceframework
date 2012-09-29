@@ -1,4 +1,5 @@
 
 .claro .dijitDialog {
-  -webkit-box-shadow: 0 5px 10px #adadad;
+  -webkit-box-shadow:       0 5px 10px #adadad;
+  border-radius:            3px;
 }

@@ -1,0 +1,85 @@
+.claro .standardPage {
+    height:                             100%;
+    padding:                            0;
+}
+
+.claro .standardPage .dijitBorderContainer-child {
+    border:                             0;
+}
+
+.claro .standardPage .content {
+    padding:                            0;
+    background:                         #FFFFFF url("../../images/pageBackground.gif") repeat-x top left;
+}
+
+.claro .standardPage .content .inner {
+    background-color:                   #FFFFFF;
+    width:                              960px;
+    margin:                             0 auto;
+}
+
+.claro .standardPage .content .inner .pageTitle {
+    padding:                            1em 1em 0;
+    margin-bottom:                      0.5em;
+    min-width:                          15em;
+    border:                             solid 1px #E5F2FE;
+    border-radius:                      10px 0;
+    border-width:                       0 0px 1px 0;
+}
+
+.claro .standardPage .content .inner .pageTitle span {
+    font-size:                          2em;
+}
+
+.claro .standardPage .content .inner .secondaryNavigation {
+    vertical-align:                     bottom;
+    margin-bottom:                      0.5em;
+    padding-left:                       2em;
+}
+
+.claro .standardPage .content .inner .secondaryNavigation .dijitButton,
+.claro .standardPage .content .inner .secondaryNavigation .dijitDropDownButton {
+    padding:                            0;
+    margin:                             0 0.2em;
+}
+
+.claro .standardPage .content .inner .secondaryNavigation .dijitButton .dijitButtonNode,
+.claro .standardPage .content .inner .secondaryNavigation .dijitDropDownButton .dijitButtonNode {
+    background-image:                   none;
+    background-color:                   #E5F2FE;
+    -webkit-box-shadow:                 0 0 0;
+    -moz-box-shadow:                    0 0 0;
+    box-shadow:                         0 0 0;
+}
+
+.claro .standardPage .content .inner .secondaryNavigation .dijitButton .dijitButtonContents,
+.claro .standardPage .content .inner .secondaryNavigation .dijitDropDownButton .dijitButtonContents {
+    color:                              #131313;
+    font-size:                          1.25em;
+}
+
+.claro .standardPage .content .inner .secondaryNavigation .dijitButton.dijitHover .dijitButtonContents,
+.claro .standardPage .content .inner .secondaryNavigation .dijitButton.dijitActive .dijitButtonContents,
+.claro .standardPage .content .inner .secondaryNavigation .dijitDropDownButton.dijitHover .dijitButtonContents,
+.claro .standardPage .content .inner .secondaryNavigation .dijitDropDownButton.dijitActive .dijitButtonContents {
+    color:                              #759DC0;
+}
+
+.claro .dijitMenuTable.secondaryNavigationPopup .dijitMenuItem,
+.claro .dijitMenuTable.secondaryNavigationPopup .dijitMenuItemActive,
+.claro .dijitMenuTable.secondaryNavigationPopup .dijitMenuItemHover,
+.claro .dijitMenuTable.secondaryNavigationPopup .dijitMenuItemSelected {
+    background-color:                   #E5F2FE;
+}
+
+.claro .dijitMenuTable.secondaryNavigationPopup .dijitMenuItem {
+    background-image:                   none;
+    color:                              #131313;
+    font-size:                          1.25em;
+}
+
+.claro .dijitMenuTable.secondaryNavigationPopup .dijitMenuItemActive,
+.claro .dijitMenuTable.secondaryNavigationPopup .dijitMenuItemHover,
+.claro .dijitMenuTable.secondaryNavigationPopup .dijitMenuItemSelected {
+    color:                              #759DC0;
+}

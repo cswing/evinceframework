@@ -9,4 +9,7 @@
 @import url(layout/lob/Navigation.css);
 @import url(layout/Messages.css);
 
+@import url(layout/standard/StandardPage.css);
+@import url(layout/standard/Toolbar.css);
+
 @import url(properties/Editor.css);
