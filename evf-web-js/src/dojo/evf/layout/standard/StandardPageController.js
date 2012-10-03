@@ -103,10 +103,11 @@ define([
         },
         
         _createMainContent: function(){
-            return new _ContentPane({
+            this.mainContent = new _ContentPane({
                 controller: this,
                 content:    this.createMainContent()
             });
+            return this.mainContent;
         },
         
         createSecondaryNavigation: function(node){
@@ -131,6 +132,11 @@ define([
         
         createFooter: function(){
             return null;
-        }   
+        },
+        
+        setPageTitle: function(title){
+        	this.mainContent.pageTitleNode.innerHTML = title;
+        	dojo.doc.title = title;
+        }
     });/*declare*/  
 });/*define*/
