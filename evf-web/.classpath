@@ -25,10 +25,9 @@
 	<classpathentry kind="lib" path="lib/spring-expression-3.0.7.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-web-3.0.7.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-webmvc-3.0.7.RELEASE-sources.jar"/>
-	<classpathentry kind="lib" path="lib/spring-webmvc-3.0.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-webmvc-3.0.7.RELEASE.jar" sourcepath="lib/spring-webmvc-3.0.7.RELEASE-sources.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-core-2.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.0.5.jar"/>
 	<classpathentry kind="output" path="build/java"/>
 </classpath>
