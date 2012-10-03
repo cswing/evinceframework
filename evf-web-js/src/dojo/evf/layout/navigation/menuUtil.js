@@ -17,13 +17,14 @@ define([
     "dojo/_base/array",
     "dojo/_base/lang",
     "dojo/dom-construct",
+    "dojo/on",
     "dijit/form/Button",
     "dijit/form/DropDownButton", 
     "dijit/DropDownMenu", 
     "dijit/MenuItem",
     "evf/_lang",
     "evf/store/util"
-], function(array, lang, domConstruct, Button, DropDownButton, DropDownMenu, MenuItem, evfLang, storeUtils){
+], function(array, lang, domConstruct, on, Button, DropDownButton, DropDownMenu, MenuItem, evfLang, storeUtils){
 
     var util = {};
     
@@ -53,12 +54,25 @@ define([
         if(popupCss)
             dojo.addClass(menu.domNode, popupCss);
         
-        var fnDoWithNavItem = dojo.hitch(this, function (item) {
+        var fnDoWithNavItem = lang.hitch(this, function (item) {
             var menuItem = new MenuItem({
-                label: item.title
+            	label: item.title
             });
             menu.addChild(menuItem);
-            //on(menuItem, 'click', function () { alert('change to ' + name); });
+            
+            if (item.url) {
+	        	var url = item.url;
+	        	if (!url.startsWith("http")) {
+	        		var ctxPath = lang.getObject('contextPath');
+	        		if (ctxPath && ctxPath != '') {
+	        			url = lang.replace("{0}/{1}", [ctxPath, url]).replace('//', '/');
+	        		}
+	        	}
+	        	//var a = domConstruct('a', {innerHTML: item.title}, menuItem.containerNode);
+	        	//dojo.attr(a, 'href', url);
+	        	
+	        	on(menuItem, 'click', function(){ window.location = url;});
+	        }
         });
         
         navItem.items.forEach(fnDoWithNavItem);
