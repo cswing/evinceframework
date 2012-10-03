@@ -15,8 +15,10 @@
  */
 define([
   "dojo/_base/declare",
+  "dojo/_base/lang",
+  "dojo/dom-class",
   "dijit/layout/BorderContainer"
-], function(declare, Border){
+], function(declare, lang, domClass, Border){
 
     return declare("evf.layout.standard.StandardPage", [Border], {
     
@@ -38,9 +40,12 @@ define([
         
         postCreate: function() {
             this.inherited(arguments);
-            dojo.addClass(this.domNode, 'standardPage');
+            domClass.add(this.domNode, 'standardPage');
             
-            var Controller = dojo.getObject(this.controller); 
+            var Controller = this.controller;
+            if(lang.isString(this.controller))
+            	this.controller = lang.getObject(this.controller, false);
+             
             this.controller = new Controller({
                 page:       this,
                 viewModel:  this.viewModel
