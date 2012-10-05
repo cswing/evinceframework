@@ -19,7 +19,7 @@
 }
 
 .claro .standardPage .content .inner .pageTitle {
-    padding:                            1em 1em 0;
+    padding:                            1em 1em 0.25em 0;
     margin-bottom:                      0.5em;
     min-width:                          15em;
     border:                             solid 1px #E5F2FE;
