@@ -33,19 +33,23 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
     dojo.addClass(this.domNode, this.baseClass);
   },
   
+  _forceResize: function(){
+	  this.resize(domGeometry.getMarginBox(this.domNode));
+  },
+  
   resize: function(changeSize) {
     this.inherited(arguments);
     
     if(!changeSize)
       return;
     
-    this._changeSize = changeSize;
-    
     domGeometry.setMarginBox(this.domNode, changeSize);
-    //domGeometry.setMarginBox(this.tableNode, changeSize);
     
     dojo.style(this.innerContainer, 'height', dojo.replace('{0}px', [ 
       changeSize.h - domGeometry.getMarginBox(this.headerRowNode).h]));
+    
+    if (!this._started)
+    	return;
     
     // calculate column widths 
     var tableWidth = changeSize.w,
@@ -104,6 +108,7 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
   startup: function() {
     this.inherited(arguments);
     this._buildGrid();
+    this._forceResize();
   },
   
   _buildGrid: function() {
@@ -145,7 +150,7 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
 	domConstruct.empty(this.bodyNode);
 	
 	// update column header (sorting)
-	var hasOrder = this.metadata.parameters.order && this.metadata.parameters.order.length > 0;		
+	var hasOrder = this.metadata && this.metadata.parameters.order && this.metadata.parameters.order.length > 0;		
 	var orderField = hasOrder ? this.metadata.parameters.order[0].sortField : '';
 	var isAsc = hasOrder ? this.metadata.parameters.order[0].ascending : false;
 		
@@ -223,14 +228,17 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
     }
   },
   
-  _setMetadataAttr: function(meta) {
-	  this.metadata = meta;
-	  this.items = meta.items || [];
-	  
+  _setItemsAttr: function(items){
+	  this.items = items || [];
 	  if (this._started) {
 		  this._buildData();
-		  this.resize(this._changeSize);
+		  this._forceResize();
 	  }
+  },
+  
+  _setMetadataAttr: function(meta) {
+	  this.metadata = meta;
+	  this.set('items', meta.items);
   },
   
   onSort: function(/*Array*/ sortOrder) {}
