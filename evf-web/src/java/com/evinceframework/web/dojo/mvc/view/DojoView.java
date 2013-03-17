@@ -149,7 +149,7 @@ public class DojoView implements View {
 					needComma = true;
 				}
 				
-				dojoConfig.append(String.format("\n\t\t%s: '%s'", key, modules.get(key)));
+				dojoConfig.append(String.format("\n\t\t'%s': '%s'", key, modules.get(key)));
 			}
 			dojoConfig.append("\n\t}");
 		}
