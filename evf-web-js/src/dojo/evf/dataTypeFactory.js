@@ -62,7 +62,7 @@
         if(!dataType) throw 'dataType is unknown';
     
         if (factory._dataTypeMap[dataType.key] && !replaceIfExists)
-            throw dataType.key + 'already exists as a dataType.';
+            throw dataType.key + ' already exists as a dataType.';
         
         if(!dataType.widgetFactory)
             throw dataType.key + ' - a widgetFactory is required.';
@@ -79,7 +79,7 @@
     factory.findDataType = function(key) {
         var dt = factory._dataTypeMap[key];
         if (!dt)
-            throw key + 'is NOT a known dataType';
+            throw key + ' is NOT a known dataType';
         return dt;
     }
     

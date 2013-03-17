@@ -14,44 +14,44 @@
  * limitations under the License.
  */
 define([
-  "dojo"
-], function(dojo) {
+  "dojo/_base/lang"
+], function(lang) {
 
-var util = dojo.getObject("evf.data.util", true);
+	var util = {};
 
-/*=====
-evf.data.util = {
-  // summary: 
-  //    utility methods to help with data formatting      
-}
-
-=====*/
-
-util.formatFullName = function(nameAware) {
-	// summary:
-	//    Format a name as Last name, First name 
-	// description:
-	//    A utility function for formatting a full name. 
-	// nameAware:
-	//    A data object that has a lastName and/or firstName properties.  
-	if (nameAware.firstName && nameAware.lastName) {
-		return dojo.replace("{lastName}, {firstName}", nameAware);
+	/*=====
+	evf.data.util = {
+	  // summary: 
+	  //    utility methods to help with data formatting      
 	}
-	if (nameAware.firstName) {
-		return nameAware.firstName;
-	}
-	return nameAware.lastName;
-};
+	
+	=====*/
 
-util.fullNameCellRenderer = function(td, data, rowIdx, colIdx, cellDef) {
-	// summary:
-	//    Renders a grid cell as a full name. 
-	// description:
-	//    A utility function for rendering a full name grid cell.
-	//
-	//
-	td.innerHTML = util.formatFullName(data);
-};
-
-return util;
+	util.formatFullName = function(nameAware) {
+		// summary:
+		//    Format a name as Last name, First name 
+		// description:
+		//    A utility function for formatting a full name. 
+		// nameAware:
+		//    A data object that has a lastName and/or firstName properties.  
+		if (nameAware.firstName && nameAware.lastName) {
+			return lang.replace("{lastName}, {firstName}", nameAware);
+		}
+		if (nameAware.firstName) {
+			return nameAware.firstName;
+		}
+		return nameAware.lastName;
+	};
+	
+	util.fullNameCellRenderer = function(td, data, rowIdx, colIdx, cellDef) {
+		// summary:
+		//    Renders a grid cell as a full name. 
+		// description:
+		//    A utility function for rendering a full name grid cell.
+		//
+		//
+		td.innerHTML = util.formatFullName(data);
+	};
+	
+	return util;
 });

@@ -59,7 +59,7 @@
             if(this.item == null)
                 throw 'an item is required.';
                 
-            this._propertyMap = {};
+            this._propertyMap = {};            
         },
         
         postCreate: function(){
@@ -67,7 +67,12 @@
             dojo.addClass(this.domNode, this.baseClass);
             
             // TODO sort categories
-            this.store.query({_type:"propertyCategory"}).forEach(dojo.hitch(this, this._processCategory));
+            var categories = this.store.query({_type:"propertyCategory"});
+            if (categories.length > 0)
+            	categories.forEach(dojo.hitch(this, this._processCategory));
+            else
+            	this.store.query({_type:"property"})
+            		.forEach(dojo.hitch(this, this._processProperty));
         },
         
         _setItemAttr: function(item) {

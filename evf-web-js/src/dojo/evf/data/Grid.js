@@ -14,9 +14,9 @@
  * limitations under the License.
  */
  define("evf/data/Grid", [
-  "dojo", "dijit", "dojo/dom-construct", "dojo/dom-geometry",
+  "dojo/_base/lang", "dijit", "dojo/dom-construct", "dojo/dom-geometry",
   "dijit/_Widget", "dijit/_TemplatedMixin"
-], function(dojo, dijit, domConstruct, domGeometry, Widget, Template) {
+], function(lang, dijit, domConstruct, domGeometry, Widget, Template) {
 
 return dojo.declare("evf.data.Grid", [Widget, Template], {
 
@@ -224,7 +224,7 @@ return dojo.declare("evf.data.Grid", [Widget, Template], {
     if (cellDef.renderCell && dojo.isFunction(cellDef.renderCell)) {
       cellDef.renderCell(td, data, rowIdx, colIdx, cellDef);
     } else {
-      td.innerHTML = data[cellDef.field];  
+      td.innerHTML = lang.getObject(cellDef.field, false, data);  
     }
   },
   
