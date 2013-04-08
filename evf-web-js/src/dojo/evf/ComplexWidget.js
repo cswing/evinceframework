@@ -24,11 +24,10 @@ define([
 	"dojo/dom-style",
 	"dojo/on",
 	"dojo/Evented",
-	"dijit/_Widget",
-	"dijit/Destroyable"
-], function(config, declare, kernel, lang, domAttr, domClass, domConstruct, domStyle, on, Evented, Widget, Destroyable){
+	"dijit/_Widget"
+], function(config, declare, kernel, lang, domAttr, domClass, domConstruct, domStyle, on, Evented, Widget){
 	
-	return declare("evf/ComplexWidget", [Widget, Evented, Destroyable], {
+	return declare("evf/ComplexWidget", [Widget, Evented], {
 		// summary:
 		//		A base widget class that provides default functionality.  
 		//
@@ -40,8 +39,8 @@ define([
 		//			- dojo/dom-style
 		//
 		//		By using this widget, it is not required to include these dom modules in the require 
-		//		statement.  The widget also adds the Evented and Destroyable mixins.  The result is 
-		//		the base for a complex widget.
+		//		statement.  The widget also adds the Evented mixin.  The result is the base for a 
+		//		complex widget.
 		
 		kernel: kernel,
 			// summary:
@@ -71,7 +70,7 @@ define([
 			// summary:
 			// 		Provides convenient access to the dojo/dom-style module. 
 		
-		_on: on,
+		dojoOn: on,
 			// summary:
 			// 		Provides convenient access to the dojo/on module. 
 		
@@ -84,9 +83,9 @@ define([
 			//		ownership of resulting handle.
 			//
 			//		NOTE: The preferred name for this method would have been on, but 
-			//		dojo/on looks for a custom on methodon the target and that is not 
-			//		the desired behavior.
-			
+			//		_WidgetBase has an on function that assumes the domNode of the 
+			//		widget as the target.
+						
 			var hndl = on(target, type, this.hitch(listener), dontFix);
 			this.own(hndl);
 			return hndl;
