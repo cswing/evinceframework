@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 the original author or authors.
+ * Copyright 2012-2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-define(["dojo"], function(dojo) {
+define(["dijit/form/_TextBoxMixin", "dijit/form/TextBox"], function(_TextBoxMixin, TextBox) {
 
     // String enhancements
 	String.prototype.startsWith = function(str) { 
@@ -54,5 +54,19 @@ define(["dojo"], function(dojo) {
       return -1;
     };
   }
+  
+    /*
+     * Modify Dojo's default behavior regarding the HTML5 placeHolder - if focused and 
+     * still empty, then the placeholder should still be shown.
+     */
+    TextBox.prototype._updatePlaceHolder = function(){
+        if(this._phspan){
+            this._phspan.style.display=(this.placeHolder&&!this.textbox.value)?"":"none";
+        }
+    };
+    TextBox.prototype._processInput = function(){
+        _TextBoxMixin.prototype._processInput.apply(this, arguments);
+        this._updatePlaceHolder();
+    };
 
 });
