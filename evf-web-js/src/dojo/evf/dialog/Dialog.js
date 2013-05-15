@@ -13,62 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define("evf/dialog/Dialog", [
-	"dojo", "dijit", "dojo/dom-construct",
-	"dijit/Dialog", "dijit/layout/BorderContainer",
-	"dijit/_Widget", "dijit/_TemplatedMixin", "dijit/_Container", 
-	"evf/layout/Messages"
-], function(dojo, dijit, domConstruct, Dialog, BorderContainer, Widget, Templated, Container, Messages) {
+define([
+	'dojo/_base/declare',
+	'dijit/_Container',
+	'dijit/Dialog',
+	'evf/ComplexWidget',
+	'./DialogMessage'
+], function(declare, Container, Dialog, ComplexWidget, DialogMessage) {
 	
-	dojo.declare("evf.dialog._DialogMessage", [Widget, Templated], {
-    messageNode:    null,
-    iconNode:       null,    
-    templateString: '<div class="dialogMessage"><div dojoAttachPoint="iconNode" class="dijitInline messageIcon ${messageType}"></div><div class="dijitInline messge"><span dojoAttachPoint="messageNode">${message}</span></div></div>'
-  });
-
-  var ActionBar = dojo.declare("evf.dialog._ActionBar", [Widget, Container], { 
+	var ActionBar = dojo.declare([ComplexWidget, Container], { 
 		postCreate: function() {
 			this.inherited(arguments);
-			dojo.addClass(this.domNode, 'actionBar');
+			this.domClass.add(this.domNode, 'evfDialogActionBar');
 		}
 	});
     
-	return dojo.declare("evf.dialog.Dialog", [Dialog], {
+	return declare('evf.dialog.Dialog', [Dialog, ComplexWidget], {
 	
 		postCreate: function() {
 			this.inherited(arguments);
-			dojo.addClass(this.domNode, 'evfDialog');
+			this.domClass.add(this.domNode, 'evfDialog');
 			
-			var div = domConstruct.create('div', {}, this.containerNode);
-			this.createContainer(div);
+			var div = this.domConstruct.create('div', {'class': 'evfDialogContainer'}, this.containerNode);
+			this.content = this.createContent(this.domConstruct.create('div', {}, div));
+			this.createActions(this.constructWidget(ActionBar, {}, 
+				this.domConstruct.create('div', {}, div)));
 		},
 		
-		createContainer: function(div) {
-			this.container = new BorderContainer({
-				gutters: false
-			}, div);
-			dojo.addClass(this.container.domNode, 'evfDialogContainer');
-			/*
-			this.messages = new Messages({
-				region: 	'top'
-			});
-			this.container.addChild(this.messages);
-			*/
-			this.content = this.createContent();
-			this.content.set('region', 'center');
-			dojo.addClass(this.content.domNode, 'content');
-			this.container.addChild(this.content);
-			
-			this.actionBar = new ActionBar({
-				region: 	'bottom'
-			});
-			this.container.addChild(this.actionBar);
-			this.createActions(this.actionBar);
-			
-			return this.container;
-		},
-		
-		createContent: function() {
+		createContent: function(node) {
 			throw 'createContent was not implemented.';
 		},
 		
