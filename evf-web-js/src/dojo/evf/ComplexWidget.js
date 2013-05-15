@@ -1,33 +1,28 @@
 /*
- * Copyright 2012 Craig Swing.
+ * Copyright 2013 Craig Swing.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 define([
-	"dojo/_base/config",
-	"dojo/_base/declare",
-	"dojo/_base/kernel",
-	"dojo/_base/lang",
-	"dojo/dom-attr",
-	"dojo/dom-class",
-	"dojo/dom-construct",
-	"dojo/dom-style",
-	"dojo/on",
-	"dojo/Evented",
-	"dijit/_Widget"
-], function(config, declare, kernel, lang, domAttr, domClass, domConstruct, domStyle, on, Evented, Widget){
+    'dojo/_base/array',
+	'dojo/_base/declare',
+	'dojo/topic',
+	'dojo/Evented',	
+	'dijit/_Widget',
+	'./_UtilMixin'
+], function(array, declare, dojoTopic, Evented, Widget, UtilMixin){
 	
-	return declare("evf/ComplexWidget", [Widget, Evented], {
+	return declare('evf/ComplexWidget', [Widget, Evented, UtilMixin], {
 		// summary:
 		//		A base widget class that provides default functionality.  
 		//
@@ -42,39 +37,26 @@ define([
 		//		statement.  The widget also adds the Evented mixin.  The result is the base for a 
 		//		complex widget.
 		
-		kernel: kernel,
+        _startupWidgets: null,
 			// summary:
-			// 		Provides convenient access to the Dojo kernal (dojo/_base/kernal).
-		
-		dojoConfig: config,
-			// summary:
-			// 		Provides convenient access to the Dojo configuration (dojo/_base/config). 
-		
-		lang: lang,
-			// summary:
-			// 		Provides convenient access to the dojo/_base/lang module. 
-		
-		domAttr: domAttr, 
-			// summary:
-			// 		Provides convenient access to the dojo/dom-attr module. 
-		
-		domClass: domClass, 
-			// summary:
-			// 		Provides convenient access to the dojo/dom-class module. 
-		
-		domConstruct: domConstruct, 
-			// summary:
-			// 		Provides convenient access to the dojo/dom-construct module. 
-		
-		domStyle: domStyle,
-			// summary:
-			// 		Provides convenient access to the dojo/dom-style module. 
-		
-		dojoOn: on,
-			// summary:
-			// 		Provides convenient access to the dojo/on module. 
-		
-		listen: function(target, type, listener, dontFix) {
+			// 		[protected] An array of widgets that should have their startup method called when 
+            //      this widget has its startup method called.
+        
+        postMixInProperties: function() {
+            this.inherited(arguments);
+            this.viewModel = this.dojoLang.getObject('viewModel');
+        },
+
+        startup: function(){
+            if(this._started) return;
+            this.inherited(arguments);
+            
+            if(this._startupWidgets) {
+                array.forEach(this._startupWidgets, function(w){w.startup();});
+            }
+        },
+        
+        listen: function(target, type, listener, dontFix) {
 			// summary:
 			// 		A convenience method that registers an event listener in the 
 			// 		context of the current widget.  When using this method, the 
@@ -85,17 +67,67 @@ define([
 			//		NOTE: The preferred name for this method would have been on, but 
 			//		_WidgetBase has an on function that assumes the domNode of the 
 			//		widget as the target.
-						
-			var hndl = on(target, type, this.hitch(listener), dontFix);
+			
+			var hndl = this.dojoOn(target, type, this.hitch(listener), dontFix);
 			this.own(hndl);
 			return hndl;
 		}, 
-		
-		hitch: function(fn) {
-			// summary:
-			// 		A convenience method to hitch a function to this widget.
+        
+        publish: function(topic, event){
+            // summary:
+			// 		A convenience method to publish on a topic.
+            
+            dojoTopic.publish(topic, event);
+        },
+        
+        subscribe: function(topic, listener) {
+            // summary:
+			// 		A convenience method to subscribe on a topic.  The listener will 
+            //      automatically be hitched to the widget and the widget will 
+            //      automatically take ownership of resulting handle.
 			
-			return lang.hitch(this, fn);
-		}
+            var hndl = dojoTopic.subscribe(topic, this.hitch(listener));
+            this.own(hndl);
+            return hndl;
+        },
+		
+		ensureCtor: function(/*String|Widget ctor*/ctor) {
+			// summary: 
+			//		A utility method that will check if the constructor is a string.
+			//		If so, it will use lang.getObject to get the actual constructor. 
+			//		Otherwise, it assumes the value passed in is the actual constructor,
+
+			if(this.dojoLang.isString(ctor)) {
+                return this.dojoLang.getObject(ctor);
+            }
+            return ctor;
+		},
+
+        constructWidget: function(/*String|Widget ctor*/ctor, /*Object*/ props, /*DomNode*/ node) {
+            // summary:
+			// 		A convenience method to build a widget where the construtctor is either 
+            //      the actual constructor or a string that represents the widget name.
+            
+            var wctor = this.ensureCtor(ctor);
+            var w = new wctor(props, node);
+            this.registerWidgetForStartup(w);
+
+            return w;
+        },
+        
+        registerWidgetForStartup: function(w) {
+            // summary:
+			// 		A method to register to have its startup method called when the startup of this
+            //      widget is called.
+            
+            if(!this._startupWidgets) {
+                this._startupWidgets = [];
+            }
+            this._startupWidgets.push(w);
+
+            if(this._started && !w._started){
+				w.startup();
+			}
+        }
 	});
 });
