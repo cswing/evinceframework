@@ -1,0 +1,115 @@
+
+@import "../../variables";
+
+.claro .twibLayout960 .navBarOuter {
+    position:               fixed;
+    right:                  0;
+    left:                   0;
+    z-index:                900;
+    margin-bottom:          0;
+    background-color:       @primary-color;
+    min-height:             36px;
+    .box-shadow(0 1px 5px rgba(0,0,0,0.25));
+}
+
+.claro .twibLayout960 .navBarInner {
+    position:               relative;
+    min-height:             36px;
+}
+
+.claro .twibLayout960 .navBar {
+    width:                  960px;
+    margin:                 0 auto;
+}
+
+.claro .navBar .logo {
+    background:             url(@image-twib-toolbar-logo) no-repeat;
+    height:                 24px;
+    width:                  34px;
+    margin-top:             6px;
+    cursor:                 pointer;
+}
+
+.claro .navBar .userName {
+    float:                  right;
+    line-height:            34px;
+}
+
+.claro .navBar .dijitDropDownButton {
+    margin-top:             0.5em;
+}
+
+.claro .navBar .dijitButtonNode {
+    background:             transparent;
+    border-width:           0px;
+    .box-shadow(none);
+}
+
+.claro .navBarTooltipDialog {
+    padding:                6px 0px 0px;
+}
+
+.claro .navBarTooltipDialog .dijitTooltipContainer {
+    background-image:       none;
+    border-width:           0 10px 10px 10px;
+    border-color:           @primary-color;
+    border-radius:          0 0 4px 4px;
+    .box-shadow(0 1px 5px rgba(0, 0, 0, 0.25));
+}
+
+.claro .navBarTooltipDialog .dijitTooltipConnector {
+    display:                none;
+}
+
+/* Login Form */
+.claro .navBarTooltipDialog .loginForm {
+    min-width: 225px;
+}
+
+.claro .navBarTooltipDialog .loginForm .dijitTextBox {
+    display: block;
+    margin-bottom: 1em;
+}
+
+.claro .navBarTooltipDialog .loginForm .checkboxLabel {
+    margin-left: 0.25em;
+    line-height: 16px;
+    vertical-align: middle;
+}
+
+.claro .navBarTooltipDialog .loginForm .actionContainer {
+    padding: 1em 0;
+}
+
+.claro .navBarTooltipDialog .loginForm .registrationContainer {
+    border-top: solid 1px @primary-color;
+    padding-top: 1em;
+}
+
+/* Account Summary Form */
+.claro .navBarTooltipDialog .accountSummaryForm {
+    min-width: 225px;
+}
+
+.claro .navBarTooltipDialog .accountSummaryForm .accountSummary {
+    white-space: nowrap;
+}
+
+.claro .navBarTooltipDialog .accountSummaryForm .accountSummary .summaryContainer {
+    vertical-align: top;
+}
+
+.claro .navBarTooltipDialog .accountSummaryForm .accountSummary .profilePic {
+    height: 96px;
+    width: 96px;
+}
+
+.claro .navBarTooltipDialog .accountSummaryForm .accountSummary .dijitbutton {
+    margin-top: 1em;
+}
+
+.claro .navBarTooltipDialog .accountSummaryForm .actionContainer {
+    border-top: solid 1px #acf2a2;
+    margin: 0.5em 0 0;
+    padding: 0.5em 0 0;
+}

@@ -1,0 +1,73 @@
+@import "../variables";
+
+.claro ul.pager {
+  list-style-type:    none;
+  margin:             0;
+  padding:            0;
+  height:             2em;
+  border-radius:      5px;
+  .box-shadow(0 1px 5px rgba(0,0,0,0.25));
+}
+
+.claro ul.pager li.evfPageDots,
+.claro ul.pager li.evfPageNumbers {
+  float:              left;
+  background:         @primary-color;
+  padding:            0.25em 0.5em;
+  margin:             0;
+  display:            inline-block;
+  border:             solid 1px @base-border-color;
+  border-width:       1px 0;
+}
+
+.claro ul.pager li.evfPageNumbers.prev {
+  border-radius:      4px 0 0 4px;
+  border-width:       1px 0 1px 1px;
+}
+
+.claro ul.pager li.evfPageNumbers.next {
+  border-radius:      0 4px 4px 0;
+  border-width:       1px 1px 1px 0;
+}
+
+.claro ul.pager li.evfPageNumbersHover {
+  background:         @hovered-background-color;
+  border-color:       @hovered-border-color;
+  color:              @hovered-text-color;
+}
+
+.claro ul.pager li.evfPageNumbersActive {
+  background:         @pressed-background-color;
+  border-color:       @pressed-border-color;
+}
+
+.claro ul.pager li.evfPageNumbersHover a {
+  cursor:             pointer;
+}
+
+.claro ul.pager li.evfPageNumbersHover a {
+  text-decoration:    underline;
+}
+
+.claro ul.pager li.evfPageNumberSelected {
+  background:         @selected-background-color;
+  border-color:       @selected-border-color;
+  color:              @selected-text-color;
+  font-weight:        bold;
+}
+
+.claro ul.pager li.evfPageNumberDisabled {
+  background:         @disabled-background-color;
+  border-color:       @disabled-border-color;
+  color:              @disabled-text-color;
+}
+
+.claro ul.pager li.evfPageNumberSelected a,
+.claro ul.pager li.evfPageNumberDisabled a {
+  cursor:             default;
+}
+
+.claro ul.pager li.evfPageNumberSelected.evfPageNumbersHover a,
+.claro ul.pager li.evfPageNumberDisabled.evfPageNumbersHover a {
+  text-decoration:    none;
+}
