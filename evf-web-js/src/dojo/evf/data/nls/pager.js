@@ -1,8 +1,8 @@
 define({ root:
 //begin v1.x content
 ({
-  next_label:               'Next',
-  prev_label:               'Previous'
+  next_label:               '>>', //'Next',
+  prev_label:               '<<' // 'Previous'
   
 })
 //end v1.x content

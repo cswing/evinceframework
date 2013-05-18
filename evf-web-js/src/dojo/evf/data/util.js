@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 the original author or authors.
+ * Copyright 2012-3 Craig Swing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 define([
-  "dojo/_base/lang"
-], function(lang) {
+  'dojo/_base/lang',
+  'dojo/dom-class'
+], function(lang, domClass) {
 
 	var util = {};
 
@@ -51,6 +52,23 @@ define([
 		//
 		//
 		td.innerHTML = util.formatFullName(data);
+	};
+
+	util.applyRowCss = function(node, baseCss, idx, totalRows) {
+		// summary:
+		//		A utility method that will apply first, last, odd, even css classes 
+		//		based on the data.
+
+		var cls = [baseCss];
+		if(idx == 0)
+			cls.push('first');
+		
+		cls.push(idx % 2 == 0 ? 'even' : 'odd');
+		
+		if(idx == totalRows - 1)
+			cls.push('last');
+
+		domClass.add(node, cls.join(' '));
 	};
 	
 	return util;
