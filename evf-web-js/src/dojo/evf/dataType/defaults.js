@@ -14,11 +14,13 @@
  * limitations under the License.
  */
  define([
-    "evf/dataTypes/text",
-    "evf/dataTypes/bool",
-    "evf/dataTypes/date",
-    "evf/dataTypes/time"
-], function(){});
+    "evf/dataType/text",
+    "evf/dataType/bool",
+    "evf/dataType/date",
+    "evf/dataType/time"
+], function(){
+	
+});
 
 /*
  int    - number spiner
