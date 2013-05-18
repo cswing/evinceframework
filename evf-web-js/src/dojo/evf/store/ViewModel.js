@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 define([
+    "dojo/_base/array",
     "dojo/_base/declare",
+    "dojo/_base/lang",
     "dojo/date/stamp",
     "dojo/store/Memory"
-], function(declare, dateStamp, Memory){
+], function(array, declare, lang, dateStamp, Memory){
 
     /*=====
       var Memory = dojo.store.Memory;
@@ -54,8 +56,10 @@ define([
             if(data.items){
                 this.idProperty = data.identifier;
                 data = this.data = data.items;
-            }else{
+            }else if(lang.isArray(data)){
                 this.data = data;
+            }else{
+                this.data = [data];
             }
             this.index = {};
             
@@ -65,7 +69,7 @@ define([
             this._referenceSetters = {};
             
             // loop through the flat list of items
-            dojo.forEach(this.data, function(itm, idx) {
+            array.forEach(this.data, function(itm, idx) {
                 
                 var itmId = itm[this.idProperty]; 
                 this.index[itmId] = idx;
@@ -76,7 +80,7 @@ define([
                 
                 // process the queue of deferred setters for this object.
                 if (this._referenceSetters[itmId]) {
-                    dojo.forEach(this._referenceSetters[itmId], function(fnSet) {
+                    array.forEach(this._referenceSetters[itmId], function(fnSet) {
                         fnSet(itm);
                     });
                     this._referenceSetters[itmId] = null;
@@ -92,7 +96,7 @@ define([
             var customTypeProperty = this.customTypeProperty || '_customType';
             var customValueProperty = this.customValueProperty || '_value';
             
-            if(val && dojo.isObject(val) && val[customTypeProperty]){
+            if(val && lang.isObject(val) && val[customTypeProperty]){
                 var customType = val[customTypeProperty];
                 var mappingObj = this.customTypeMap[customType];
                 if(!mappingObj)
@@ -105,7 +109,7 @@ define([
             var refProperty = this.referenceProperty || '_reference';
           
             // not a 'referece', so return the value.
-            if (!val || !dojo.isObject(val) || (!val[refProperty] && val[refProperty] !== 0)) {
+            if (!val || !lang.isObject(val) || (!val[refProperty] && val[refProperty] !== 0)) {
                 fnSetter(val);
                 return; 
             }
@@ -130,8 +134,8 @@ define([
         _registerItem: function(itm, prop) {
             var propValue = itm[prop];
               
-            if (dojo.isArray(propValue)) {
-                dojo.forEach(propValue, function(propItm, propIdx) {
+            if (lang.isArray(propValue)) {
+                array.forEach(propValue, function(propItm, propIdx) {
                     this._inspectValue(propValue[propIdx], function(refItm) { 
                         propValue[propIdx] = refItm;  
                     });
