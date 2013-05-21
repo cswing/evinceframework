@@ -121,21 +121,21 @@
         addWidgetClass: AddFieldDialog,
         editWidgetClass: EditFieldDialog,
 
-        postMixInProperties: function(){
-            this.inherited(arguments);
-            this.confirmDelete = entityI18N.deleteField_confirm_msg;
-            this.columns = [
-                {
-                    label: '', 
-                    autoSave: true, 
-                    sortable: false, 
-                    renderHeaderCell:   this.hitch('renderPrimaryActionsHeader'),
-                    renderCell:         this.hitch('renderPrimaryActions')
-                },
-                { label: 'Name', field: 'name', sortable: false },
-                { label: 'Data Type', field: 'dataType', sortable: false }
-            ];
-        },
+		postMixInProperties: function(){
+			this.inherited(arguments);
+			this.confirmDelete = entityI18N.deleteField_confirm_msg;
+			this.columns = [
+				{
+					label: '', 
+					autoSave: true, 
+					sortable: false, 
+					renderHeaderCell:   this.hitch('renderPrimaryActionsHeader'),
+					renderCell:         this.hitch('renderPrimaryActions')
+				},
+				{ label: entityI18N.entitySummary_fieldGrid_nameColumn, field: 'name', sortable: false },
+				{ label: entityI18N.entitySummary_fieldGrid_dataTypeColumn, field: 'dataType', sortable: false }
+			];
+		},
 
         startup: function() {
             this.set('sort', 'name');
@@ -156,19 +156,26 @@
         }
     });
 
-    var ViewSummary = declare([_GridSummary], {
-        
-        postMixInProperties: function(){
-            this.inherited(arguments);
-            this.columns = [
-                { label: 'Name', field: 'name' }
-            ];
-        },
+	var ViewSummary = declare([_GridSummary], {
 
-        postCreate: function(){
-            this.inherited(arguments);
-        }
-    });
+		postMixInProperties: function(){
+			this.inherited(arguments);
+			this.columns = [
+				{
+					label: '', 
+					autoSave: true, 
+					sortable: false, 
+					renderHeaderCell:   this.hitch('renderPrimaryActionsHeader'),
+					renderCell:         this.hitch('renderPrimaryActions')
+				},
+				{ label: 'Name', field: 'name' }
+			];
+		},
+
+		postCreate: function(){
+			this.inherited(arguments);
+		}
+	});
 
     var FormSummary = declare([_GridSummary], {
         

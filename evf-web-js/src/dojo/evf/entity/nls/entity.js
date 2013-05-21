@@ -3,6 +3,8 @@ define({ root:
 ({
 
 	entitySummary_title_fields: 		'Fields',
+	entitySummary_fieldGrid_nameColumn: 'Name',
+	entitySummary_fieldGrid_dataTypeColumn: 'Data Type',
 
 	deleteField_confirm_msg: 			'Are you sure you want to delete this field?',
 
