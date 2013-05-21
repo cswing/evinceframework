@@ -15,11 +15,14 @@
  */
 package com.evinceframework.web.dojo.mvc.view.config;
 
+import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.evinceframework.web.dojo.mvc.view.DojoViewRenderingContext;
 
 public class DojoConfiguration {
 
@@ -39,11 +42,11 @@ public class DojoConfiguration {
 	
 	private String cacheKey = DEFAULT_CACHE_KEY;
 	
-	private Map<String, String> modules = new HashMap<String, String>();
+	private Set<String> javascriptSnippets = new HashSet<String>();
 	
-	private Set<String> requires = new HashSet<String>();
+	private Map<String, String> sourcePaths = new HashMap<String, String>();
 
-	private Map<String, String> parameters = new HashMap<String, String>();
+	private Map<String, Object> parameters = new HashMap<String, Object>();
 	
 	private Set<String> auxiliaryScriptPaths = new HashSet<String>();
 	
@@ -81,27 +84,19 @@ public class DojoConfiguration {
 		this.cacheKey = cacheKey;
 	}
 
-	public Map<String, String> getModules() {
-		return modules;
+	public Map<String, String> getSourcePaths() {
+		return sourcePaths;
 	}
 
 	public void setModules(Map<String, String> modules) {
-		this.modules = modules;
+		this.sourcePaths = modules;
 	}
-
-	public Set<String> getRequires() {
-		return requires;
-	}
-
-	public void setRequires(Set<String> requires) {
-		this.requires = requires;
-	}
-
-	public Map<String, String> getConfigParameters() {
+	
+	public Map<String, Object> getConfigParameters() {
 		return parameters;
 	}
 
-	public void setConfigParameters(Map<String, String> parameters) {
+	public void setConfigParameters(Map<String, Object> parameters) {
 		this.parameters = parameters;
 	}
 
@@ -120,5 +115,18 @@ public class DojoConfiguration {
 	public void setStylesheets(Set<String> stylesheets) {
 		this.stylesheets = stylesheets;
 	}
+
+	public Set<String> getJavascriptSnippets() {
+		return javascriptSnippets;
+	}
+
+	public void setJavascriptSnippets(Set<String> javascriptSnippets) {
+		this.javascriptSnippets = javascriptSnippets;
+	}
 	
+	public void renderJavascript(PrintWriter writer, DojoViewRenderingContext ctx) {
+		for(String snippet : javascriptSnippets) {
+			writer.write(snippet);
+		}
+	}
 }

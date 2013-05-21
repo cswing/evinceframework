@@ -15,8 +15,11 @@
  */
 package com.evinceframework.web.dojo.mvc.view;
 
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +29,7 @@ import org.springframework.web.servlet.View;
 import com.evinceframework.web.dojo.json.JsonStoreEngine;
 import com.evinceframework.web.dojo.mvc.view.config.DojoConfiguration;
 import com.evinceframework.web.dojo.mvc.view.config.DojoConfigurationResolver;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Renders an HTML page that has the following structure where the content described between
@@ -52,6 +56,8 @@ public class DojoView implements View {
 	
 	private static final String DEFAULT_CONTENT_TYPE = "text/html";
 	
+	private ObjectMapper mapper = new ObjectMapper();
+	
 	private JsonStoreEngine jsonEngine;
 	
 	private String[] storeNames;
@@ -59,6 +65,11 @@ public class DojoView implements View {
 	private DojoConfigurationResolver configurationResolver;
 	
 	private DojoLayout layout;
+	
+	// TODO hack.  integrate spring security
+	private Set<String> rights;
+	
+	private Map<String, Object> userDetails;
 	
 	@Override
 	public String getContentType() {
@@ -69,11 +80,14 @@ public class DojoView implements View {
 		return configurationResolver;
 	}
 
-	public DojoView(JsonStoreEngine jsonEngine, String[] storeNames, DojoConfigurationResolver configurationResolver, DojoLayout layout) {
+	public DojoView(JsonStoreEngine jsonEngine, String[] storeNames, DojoConfigurationResolver configurationResolver, 
+			DojoLayout layout, Set<String> rights, Map<String, Object> userDetails) {
 		this.jsonEngine = jsonEngine;
 		this.storeNames = storeNames;
 		this.configurationResolver = configurationResolver;
 		this.layout = layout;
+		this.rights = rights;
+		this.userDetails = userDetails;
 	}
 
 	@Override
@@ -84,12 +98,6 @@ public class DojoView implements View {
 		DojoConfiguration cfg = ctx.getConfiguration();
 		
 		PrintWriter writer = response.getWriter();
-		
-		ctx.addRequires("dojo.parser");
-		ctx.addRequires("evf.store.ViewModel");
-		
-		// add any requires that have been defined in the configuration
-		ctx.getRequires().addAll(cfg.getRequires());
 
 		writer.write(layout.getDocType(ctx));
 		writer.write("\n<html>\n<head>\n");
@@ -102,11 +110,10 @@ public class DojoView implements View {
 		layout.renderBodyContent(writer, ctx);
 		
 		// Render the main script with the configuration
+		writeDojoConfiguration(writer, cfg, ctx);
 		writer.write("\n\n<script type=\"text/javascript\" ");
 		writer.write(String.format(" src=\"%s\"", 
 				PathUtils.buildScriptPath(ctx, cfg.getCoreDojoPath())));
-		writer.write(String.format("\n data-dojo-config=\"\n%s\n\" ",
-				createDojoConfig(cfg)));
 		writer.write(">\n</script>\n");
 		
 		for(String path : cfg.getAuxiliaryScriptPaths()) {			
@@ -121,65 +128,69 @@ public class DojoView implements View {
 		writer.write("\n</body>\n</html>");
 	}
 	
-	protected String createDojoConfig(DojoConfiguration cfg) {
+	protected void writeDojoConfiguration(PrintWriter writer, DojoConfiguration cfg, DojoViewRenderingContext ctx) throws IOException {
 		
-		Map<String, String> params = cfg.getConfigParameters();
+		Map<String, Object> params = new HashMap<String, Object>(cfg.getConfigParameters()); 
+
+		if(!params.containsKey("parseOnLoad")) {
+			params.put("parseOnLoad", true);
+		}
+		if(!params.containsKey("async")) {
+			params.put("async", true);
+		}
+		if(!params.containsKey("isDebug")) {
+			//params.put("isDebug", cfg.isD);
+		}
+		params.put("contextPath", ctx.getRequest().getContextPath());
 		
-		StringBuilder dojoConfig = new StringBuilder();
-		dojoConfig.append("\tparseOnLoad: false");
-		
-		if (params != null) {
-			for(String k : cfg.getConfigParameters().keySet()) {			
-				
-				if ("parseOnLoad".equals(k))
-					continue;
-				
-				dojoConfig.append(String.format(",\n\t%s: '%s'", k, params.get(k)));
+		// TODO determine locale from spring
+		//  see locale interceptor
+		if(!params.containsKey("userDetails")) {
+			if(userDetails.containsKey("userDetails")) {
+				params.put("locale", userDetails.get("userDetails"));
+			} else {
+				params.put("locale", "en-us");
 			}
 		}
 		
-		Map<String, String> modules = cfg.getModules();
-		if (modules != null && modules.size() > 0) {
-			dojoConfig.append(",\n\tpaths: {");
-			boolean needComma = false;
-			for(String key : modules.keySet()) {
-				if (needComma) {
-					dojoConfig.append(",");
-				} else {
-					needComma = true;
-				}
-				
-				dojoConfig.append(String.format("\n\t\t'%s': '%s'", key, modules.get(key)));
-			}
-			dojoConfig.append("\n\t}");
-		}
+		params.put("paths", cfg.getSourcePaths());
+		params.put("user", userDetails);
 		
-		return dojoConfig.toString();
+		Map<String, Object> rightsMap = new HashMap<String, Object>();
+		for(String s : rights) {
+			rightsMap.put(s, true);
+		}
+		params.put("rights", rightsMap); 
+				
+		writer.write("\n\n<script type=\"text/javascript\">");
+		writer.write("var dojoConfig =");
+		writer.write(mapper.writeValueAsString(params));
+		writer.write(";</script>");
 	}
 	
 	protected void renderInitializationCode(PrintWriter writer, DojoViewRenderingContext ctx, DojoConfiguration cfg) {
 		
-		writer.write("<script type=\"text/javascript\">\n");
+		writer.write("<script type=\"text/javascript\">");
 		
-		writer.write("require(['dojo/domReady!'");
-		for(String require : ctx.getRequires()) {
-			writer.write(", '");
-			writer.write(require.replace('.', '/'));
-			writer.write("'");
-		}
-		writer.write("], function() {");
-		writer.write(String.format("\n\tdojo.setObject('contextPath', '%s')\n", ctx.getRequest().getContextPath()));
+		writer.write("\nrequire(['dojo/_base/lang', 'dojo/io-query', 'dojo/ready', 'dojo/store/Observable', ");
+		writer.write("'evf/store/ViewModel', 'dojo/domReady!'],");
+		writer.write("\nfunction(lang, ioQuery, ready, Observable, ViewModel) {");
+		
+		writer.write("\nready(20, function(){");
+		
+		writer.write("\n\tvar uri = window.location.href;");
+		writer.write("\n\tvar urlParams = ioQuery.queryToObject(uri.substring(uri.indexOf('?') + 1, uri.length));");
+		writer.write("\n\tlang.setObject('urlParams', urlParams);\n");
 		
 		for (String storeName : storeNames) {
 			Object obj = ctx.getModel().get(storeName);
-			writer.write(String.format("\n\tdojo.setObject('%s', new evf.store.ViewModel({data: %s}));", storeName, jsonEngine.serialize(obj)));
+			writer.write(String.format("\n\tlang.setObject('%s', new Observable(new ViewModel({data: %s})));", 
+					storeName, jsonEngine.serialize(obj)));
 		}
+		writer.write("\n});\n});\n\n");
 		
-		layout.renderPreParseJs(writer, ctx);
-		writer.write("\n\t\tdojo.parser.parse();\n");
-		layout.renderPostParseJs(writer, ctx);
-		
-		writer.write("});\n");
+		cfg.renderJavascript(writer, ctx);
+		layout.renderJavascript(writer, ctx);
 	}
 	
 }

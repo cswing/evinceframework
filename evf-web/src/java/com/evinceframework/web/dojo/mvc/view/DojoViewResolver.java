@@ -16,6 +16,8 @@
 package com.evinceframework.web.dojo.mvc.view;
 
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.View;
@@ -32,6 +34,11 @@ public class DojoViewResolver extends AbstractCachingViewResolver implements Ini
 	
 	private DojoConfigurationResolver configurationResolver;
 	
+	// TODO hack.  integrate spring security
+	private Set<String> rights;
+		
+	private Map<String, Object> userDetails;
+		
 	public DojoConfigurationResolver getConfigurationResolver() {
 		return configurationResolver;
 	}
@@ -56,6 +63,22 @@ public class DojoViewResolver extends AbstractCachingViewResolver implements Ini
 		this.storeNames = storeNames;
 	}
 
+	public Set<String> getRights() {
+		return rights;
+	}
+
+	public void setRights(Set<String> rights) {
+		this.rights = rights;
+	}
+
+	public Map<String, Object> getUserDetails() {
+		return userDetails;
+	}
+
+	public void setUserDetails(Map<String, Object> userDetails) {
+		this.userDetails = userDetails;
+	}
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 				
@@ -70,7 +93,7 @@ public class DojoViewResolver extends AbstractCachingViewResolver implements Ini
 			return null;
 		}
 		
-		return new DojoView(jsonEngine, storeNames, configurationResolver, layout);
+		return new DojoView(jsonEngine, storeNames, configurationResolver, layout, rights, userDetails);
 	}
 
 	protected String getViewBeanName(String viewName) {

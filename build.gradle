@@ -80,7 +80,8 @@ project('evf-core') {
         compile group: 'commons-logging', name: 'commons-logging', version: '1.1.+'
         compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.0-api', version: '1.0.+'
         compile group: 'org.springframework', name: 'spring-beans', version: '3.0.+'
-        compile group: 'org.springframework', name: 'spring-core', version: '3.0.+'        
+        compile group: 'org.springframework', name: 'spring-core', version: '3.0.+'
+        compile "org.springframework:spring-orm:3.0.+"
     }
 }
 
@@ -98,12 +99,14 @@ project('evf-web') {
         compile group: 'javax.servlet', name: 'servlet-api', version: '2.5'
         compile group: 'org.springframework', name: 'spring-webmvc', version: '3.0.+'
         compile group: 'org.springframework', name: 'spring-webmvc', version: '3.0.+', classifier:'sources'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.+'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.0.+', classifier:'sources'
+        compile "com.fasterxml.jackson.core:jackson-core:2.2.+"
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.2.+', classifier:'sources'
+        compile "com.fasterxml.jackson.core:jackson-databind:2.2.+"
         compile project(':evf-core')
     }
 }
 
+/*
 project('evf-web-js') {
     
     task unpackDojoSource(type: Copy) {
@@ -149,7 +152,7 @@ project('evf-web-js') {
     uploadArchives {
         repositories {
             mavenDeployer {
-                 repository(url: "file://" + project.gradle.gradleUserHomeDir.canonicalPath + ".m2/repository")
+                 repository(url: "file://" + project.gradle.gradleUserHomeDir.canonicalPath + "/../.m2/repository")
             }
         }
     }
@@ -182,7 +185,8 @@ project('evf-web-js') {
         }
     }   
 }
-
+*/
+/*
 // examples
 project(':examples:petclinic:web-app') {
     dependencies {
@@ -209,3 +213,4 @@ project(':examples:petclinic:web-app') {
         compile project(':evf-web')
     }
 }
+*/

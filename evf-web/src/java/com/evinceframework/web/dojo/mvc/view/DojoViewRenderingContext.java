@@ -35,7 +35,7 @@ public class DojoViewRenderingContext {
 	
 	private HttpServletResponse response;
 	
-	private Set<String> requires = new HashSet<String>();
+	//private Set<String> requires = new HashSet<String>();
 	
 	/* package */ DojoViewRenderingContext(DojoConfiguration configuration, Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -53,13 +53,13 @@ public class DojoViewRenderingContext {
 		this.configuration = configuration;
 	}
 	
-	public void addRequires(String require) {
-		this.requires.add(require);
-	}
+//	public void addRequires(String require) {
+//		this.requires.add(require);
+//	}
 	
-	/* package */ Set<String> getRequires() {
-		return requires;
-	}
+//	/* package */ Set<String> getRequires() {
+//		return requires;
+//	}
 
 	public HttpServletRequest getRequest() {
 		return request;

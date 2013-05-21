@@ -16,6 +16,8 @@
 package com.evinceframework.web.dojo.mvc.view.impl;
 
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.util.StringUtils;
 
@@ -42,17 +44,15 @@ public class SingleWidgetLayout implements DojoLayout {
 
 	private static final String HTML5_DOC_TYPE = "<!DOCTYPE html>";
 	
-	private static final String LAYOUT_WIDGET = "evf.layout.lob.ApplicationPage";
-	
 	private String docType = HTML5_DOC_TYPE; 
 			
 	private String pageTitle = null;
 	
 	private String headerContent = null;
 	
-	private String layoutWidget = LAYOUT_WIDGET;
+	private String layoutWidget;
 	
-	private String pageController = null;
+	private Set<String> javascriptSnippets = new HashSet<String>();
 	
 	public String getPageTitle() {
 		return pageTitle;
@@ -77,13 +77,13 @@ public class SingleWidgetLayout implements DojoLayout {
 	public void setLayoutWidget(String layoutWidget) {
 		this.layoutWidget = layoutWidget;
 	}
-
-	public String getPageController() {
-		return pageController;
+	
+	public Set<String> getJavascriptSnippets() {
+		return javascriptSnippets;
 	}
 
-	public void setPageController(String pageController) {
-		this.pageController = pageController;
+	public void setJavascriptSnippets(Set<String> javascriptSnippets) {
+		this.javascriptSnippets = javascriptSnippets;
 	}
 
 	@Override
@@ -117,25 +117,20 @@ public class SingleWidgetLayout implements DojoLayout {
 
 	@Override
 	public void renderBodyContent(PrintWriter writer, DojoViewRenderingContext ctx) {
-		
-		ctx.addRequires(getLayoutWidget());
-		ctx.addRequires(getPageController());
-		
 		writer.write(
-			String.format("<div id=\"pageLayout\" dojoType=\"%s\" controller=\"%s\" viewModel=\"viewModel\" ></div>", 
-			getLayoutWidget(), getPageController() ));
+			String.format("<div id=\"pageLayout\" data-dojo-type=\"%s\" data-dojo-props=\"viewModel: viewModel\" ></div>", 
+			getLayoutWidget()));
 	}
 
 	@Override
-	public void renderPreParseJs(PrintWriter writer, DojoViewRenderingContext ctx) {
-		// TODO Auto-generated method stub
+	public void renderJavascript(PrintWriter writer, DojoViewRenderingContext ctx) {
+		writer.write("\nrequire(['");
+		writer.write(getLayoutWidget());
+		writer.write("']);\n");
 		
-	}
-
-	@Override
-	public void renderPostParseJs(PrintWriter writer, DojoViewRenderingContext ctx) {
-		// TODO Auto-generated method stub
-		
+		for(String snippet : javascriptSnippets) {
+			writer.write(snippet);
+		}
 	}
 
 }

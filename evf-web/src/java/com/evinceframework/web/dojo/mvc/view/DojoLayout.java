@@ -31,7 +31,18 @@ public interface DojoLayout {
 	
 	public void renderBodyContent(PrintWriter writer, DojoViewRenderingContext ctx);
 	
-	public void renderPreParseJs(PrintWriter writer, DojoViewRenderingContext ctx);
-	
-	public void renderPostParseJs(PrintWriter writer, DojoViewRenderingContext ctx);
+	/**
+	 * Allow a layout to render javascript after Dojo has been configured.  This method should emit
+	 * javascript functions that take the form of the AMD format.
+	 * 
+	 * <code>
+	 * 	require([...], function(...) {
+	 * 		// code here
+	 *  });
+	 * </code>
+	 * 
+	 * @param writer
+	 * @param ctx
+	 */
+	public void renderJavascript(PrintWriter writer, DojoViewRenderingContext ctx);
 }
