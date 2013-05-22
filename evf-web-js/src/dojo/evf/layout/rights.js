@@ -14,13 +14,14 @@
  * limitations under the License.
  */
  define([
- 	'evf/security'
+	'evf/security' 	
 ], function(security) {
 
 	var exports = {
-		addField: 		{ key: 'evf.entity.addField', description: '' },
-		deleteField: 	{ key: 'evf.entity.editField', description: '' },
-		updateField: 	{ key: 'evf.entity.deleteField', description: '' }
+		authenticate: 	{ key: 'evf.auth.standardAuthentication', description: '' },
+		rememberMe: 	{ key: 'evf.auth.rememberMe', description: '' },
+		register: 		{ key: 'evf.auth.register', description: '' },
+		resetPassword: 	{ key: 'evf.auth.rememberMe', description: '' },
 	};
 
 	security.registerRights(exports);

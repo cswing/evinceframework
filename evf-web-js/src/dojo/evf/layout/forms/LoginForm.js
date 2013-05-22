@@ -17,13 +17,14 @@
     'dojo/_base/declare', 
     'dijit/_TemplatedMixin',
     'dijit/form/ValidationTextBox',
-    'dijit/Form/Button',
+    'dijit/form/Button',
     'dijit/form/CheckBox',
     'evf/ComplexWidget',
+    'evf/layout/rights',
     'evf/layout/topics', 
     'dojo/text!./templates/LoginForm.html',
     'dojo/i18n!./nls/account'
-], function(declare, Templated, ValidationTextBox, Button, CheckBox, ComplexWidget, layoutTopics, template, i18n){
+], function(declare, Templated, ValidationTextBox, Button, CheckBox, ComplexWidget, rights, layoutTopics, template, i18n){
     
     return declare('evf.layout.forms.LoginForm', [ComplexWidget, Templated], {
         
@@ -55,7 +56,7 @@
                 placeHolder:    i18n.password
             }, this.passwordNode);
             
-            if(this.dojoConfig.authentication && this.dojoConfig.authentication.rememberMe) {
+            if(this.hasSecurityRight(rights.rememberMe)) {
                 this.rememberMeCheckBox = this.constructWidget(CheckBox, {
                     name: 'rememberMe'
                 }, this.rememberMeNode);
@@ -78,7 +79,7 @@
             });
             
             // Forgot Password link
-            if(this.dojoConfig.authentication && this.dojoConfig.authentication.forgotPassword) {
+            if(this.hasSecurityRight(rights.resetPassword)) {
                 this.forgotButton = this.constructWidget(Button, {
                     label: i18n.forgotAction
                 }, this.forgotPasswordNode);
@@ -87,7 +88,7 @@
             }
             
             // Register link
-            if(this.dojoConfig.authentication && this.dojoConfig.authentication.forgotPassword) {
+            if(this.hasSecurityRight(rights.register)) {
                 this.forgotButton = this.constructWidget(Button, {
                     label: i18n.registerAction
                 }, this.registerNode);

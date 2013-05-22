@@ -14,67 +14,72 @@
  * limitations under the License.
  */
  define([
-    "dojo/_base/declare",
-    "dijit/_TemplatedMixin",
-    'dijit/form/DropDownButton', 
-    'dijit/TooltipDialog',
-    //"evf/layout/navigation/menuUtil",
-    'evf/ComplexWidget',
-    'evf/layout/forms/AccountSummaryForm', 
-    'evf/layout/forms/LoginForm',
-    'evf/layout/topics', 
-    "dojo/text!./templates/NavToolbar.html",
-    "dojo/i18n!../forms/nls/account"
-], function(declare, Templated, DropDownButton, TooltipDialog, /*menuUtils,*/ ComplexWidget, AccountSummaryForm, LoginForm, layoutTopics, template, i18n){
+	'dojo/_base/array',
+	'dojo/_base/declare',
+	'dijit/_TemplatedMixin',
+	'dijit/form/DropDownButton', 
+	'dijit/TooltipDialog',
+	//'evf/layout/navigation/menuUtil',
+	'evf/ComplexWidget',
+	'evf/layout/forms/AccountSummaryForm', 
+	'evf/layout/forms/LoginForm',
+	'evf/layout/rights',
+	'evf/layout/topics', 
+	'dojo/text!./templates/NavToolbar.html',
+	'dojo/i18n!../forms/nls/account'
+], function(array, declare, Templated, DropDownButton, TooltipDialog, /*menuUtils,*/ ComplexWidget, AccountSummaryForm, LoginForm, 
+	rights, layoutTopics, template, i18n){
 
-    return declare("evf.layout.twib.NavToolbar", [ComplexWidget, Templated], {
-        
-        templateString: template,
-        
-        viewModel: null,
-        
-        userNode: null,
-        
-        loginFormClass: LoginForm,
-        
-        accountFormClass: AccountSummaryForm,
-        
-        postCreate: function(){
-            this.inherited(arguments);
-            
-            // TODO [EVALUATE]: The assumption is the account and login dialogs are mutually exclusive and which one 
-            //  to display is decided once.  In order to support an SPA, the content should be converted to a stack 
-            //  container with both dialogs as a child and helper methods to provide the ability to change which dialog 
-            //  should be displayed.
-            
-            // Only add the right hand drop down if there is an authenticated user or support for authentication.
-            if (this.dojoConfig.user || this.dojoConfig.authentication) {
-                
-                var dlgContentClass = this.dojoConfig.user ? this.accountFormClass : this.loginFormClass;
-                var dlgContent = this.constructWidget(dlgContentClass, {
-                        viewModel: this.viewModel
-                });
-                
-                this.userDialog = new TooltipDialog({
-                    content: dlgContent
-                });
-                this.domClass.add(this.userDialog.domNode, 'navBarTooltipDialog');
-                
-                this.accountDropDown = this.constructWidget(DropDownButton, {
-                    label:      this.dojoConfig.user ? this.dojoConfig.user.name : i18n.signIn,
-                    dropDown:   this.userDialog
-                }, this.userNode);
-            }
-        },
+	return declare('evf.layout.twib.NavToolbar', [ComplexWidget, Templated], {
 
-        startup: function() {
-            if(this._started) return;
-            this.inherited(arguments);
+		templateString: template,
 
-            this.listen(this.logoNode, 'click', function() {
-                this.publish(layoutTopics.goHome, {});
-            });
-        }
-    });
-    
+		viewModel: null,
+
+		userNode: null,
+
+		loginFormClass: LoginForm,
+
+		accountFormClass: AccountSummaryForm,
+
+		postCreate: function(){
+			this.inherited(arguments);
+
+			// TODO [EVALUATE]: The assumption is the account and login dialogs are mutually exclusive and which one 
+			//  to display is decided once.  In order to support an SPA, the content should be converted to a stack 
+			//  container with both dialogs as a child and helper methods to provide the ability to change which dialog 
+			//  should be displayed.
+
+			// Only add the right hand drop down if there is an authenticated user or support for authentication.
+
+			var showAuthenticationDropdown = array.some([rights.authenticate, rights.register], this.hasSecurityRight, this);
+
+			if (this.dojoConfig.user || showAuthenticationDropdown) {
+
+			var dlgContentClass = this.dojoConfig.user ? this.accountFormClass : this.loginFormClass;
+			var dlgContent = this.constructWidget(dlgContentClass, {
+				viewModel: this.viewModel
+			});
+
+			this.userDialog = new TooltipDialog({
+				content: dlgContent
+			});
+			this.domClass.add(this.userDialog.domNode, 'navBarTooltipDialog');
+
+			this.accountDropDown = this.constructWidget(DropDownButton, {
+				label:      this.dojoConfig.user ? this.dojoConfig.user.name : i18n.signIn,
+				dropDown:   this.userDialog
+			}, this.userNode);
+			}
+		},
+
+		startup: function() {
+			if(this._started) return;
+			this.inherited(arguments);
+
+			this.listen(this.logoNode, 'click', function() {
+				this.publish(layoutTopics.goHome, {});
+			});
+		}
+	});
 });

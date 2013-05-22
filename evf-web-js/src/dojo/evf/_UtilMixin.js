@@ -25,8 +25,9 @@ define([
 	'dojo/dom-construct',
     'dojo/html',
 	'dojo/dom-style',
-	'dojo/on'
-], function(array, config, declare, kernel, lang, aspect, domAttr, domClass, domConstruct, domHtml, domStyle, on){
+	'dojo/on',
+	'evf/security'
+], function(array, config, declare, kernel, lang, aspect, domAttr, domClass, domConstruct, domHtml, domStyle, on, security){
 
 	return declare('evf._UtilMixin', [], {
 		// summary:
@@ -88,20 +89,13 @@ define([
 
 		hasSecurityRight: function(rightOrObject){
 			// summary:
-			//		A security method that returns true or false based on whether or not the 
-			//		user has the right specified.  This method will look in the dojo configuration
-			//		for a rights property that is a hash of right names and a boolean value 
-			//		representing whether or not the user has the right.  If the right does not 
-			//		exist in this hash, then the user is not considered to have the right.
+			//		A security method that calls into the security module to determine 
+			//		if the user has a particular security right.
 			//
 			// rightOrObject:
 			//		Either a string or an object that has a key property that specifies the 
 			//		security right.
-			if(!rightOrObject) return false;
-
-			var right = this.dojoLang.isString(rightOrObject) ? rightOrObject : rightOrObject['key'];
-
-			return this.dojoConfig.rights && this.dojoConfig.rights[right] === true;
+			return security.hasSecurityRight(rightOrObject);
 		}
 	});
 });
