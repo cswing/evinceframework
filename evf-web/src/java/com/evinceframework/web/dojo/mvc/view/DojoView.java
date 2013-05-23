@@ -155,12 +155,7 @@ public class DojoView implements View {
 		
 		params.put("paths", cfg.getSourcePaths());
 		params.put("user", userDetails);
-		
-		Map<String, Object> rightsMap = new HashMap<String, Object>();
-		for(String s : rights) {
-			rightsMap.put(s, true);
-		}
-		params.put("rights", rightsMap); 
+		params.put("rights", rights); 
 				
 		writer.write("\n\n<script type=\"text/javascript\">");
 		writer.write("var dojoConfig =");
