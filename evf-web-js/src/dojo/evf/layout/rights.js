@@ -18,10 +18,16 @@
 ], function(security) {
 
 	var exports = {
-		authenticate: 	{ key: 'evf.auth.standardAuthentication', description: '' },
-		rememberMe: 	{ key: 'evf.auth.rememberMe', description: '' },
-		register: 		{ key: 'evf.auth.register', description: '' },
-		resetPassword: 	{ key: 'evf.auth.rememberMe', description: '' },
+		
+		// rights for anonymous users
+		authenticate: 	{ key: 'evf.membership.standardAuthentication', description: '' },
+		rememberMe: 	{ key: 'evf.membership.rememberMe', description: '' },
+		register: 		{ key: 'evf.membership.register', description: '' },
+		resetPassword: 	{ key: 'evf.membership.rememberMe', description: '' },
+
+		// rights for authenticated users
+		viewProfile: 	{ key: 'evf.membership.viewProfile', description: '' },
+		signOut: 		{ key: 'evf.membership.signOut', description: '' }
 	};
 
 	security.registerRights(exports);
