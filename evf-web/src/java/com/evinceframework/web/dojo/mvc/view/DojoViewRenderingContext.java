@@ -16,9 +16,7 @@
 package com.evinceframework.web.dojo.mvc.view;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,8 +33,6 @@ public class DojoViewRenderingContext {
 	
 	private HttpServletResponse response;
 	
-	//private Set<String> requires = new HashSet<String>();
-	
 	/* package */ DojoViewRenderingContext(DojoConfiguration configuration, Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		this.configuration = configuration;
@@ -52,14 +48,6 @@ public class DojoViewRenderingContext {
 	public void setConfiguration(DojoConfiguration configuration) {
 		this.configuration = configuration;
 	}
-	
-//	public void addRequires(String require) {
-//		this.requires.add(require);
-//	}
-	
-//	/* package */ Set<String> getRequires() {
-//		return requires;
-//	}
 
 	public HttpServletRequest getRequest() {
 		return request;

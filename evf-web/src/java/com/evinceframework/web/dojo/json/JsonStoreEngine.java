@@ -233,7 +233,7 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConve
 	public void serialize(OutputStream out, Object model) throws IOException {
 		
 		JsonSerializationContext context = new JsonSerializationContext(
-				this, jsonFactory.createJsonGenerator(out, encoding));
+				this, jsonFactory.createGenerator(out, encoding));
 		
 		context.getGenerator().writeStartArray();
 		
