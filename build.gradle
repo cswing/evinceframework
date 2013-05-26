@@ -1,3 +1,6 @@
+def spring_version = '3.1.4.RELEASE' // spring must have the full version specified.  no +
+def jodatime_version = '2.1'
+
 def whenScheduled(task, closure) {
     if (gradle.startParameter.taskNames.contains(task)) {
         closure(task)
@@ -24,7 +27,7 @@ configure(subprojects.findAll {it.name != 'evf-web-js'}) { subproject ->
 
     [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:none']
 
-    sourceSets.main.java.srcDirs = ['src/java']
+    sourceSets.main.java.srcDirs = ['src/java', '/src/generated']
     sourceSets.main.resources.srcDirs = ['src/resources']
     sourceSets.test.resources.srcDirs = ['src/test-resources', 'src/tests']
     jar {
@@ -93,13 +96,17 @@ configure(subprojects.findAll {it.name != 'evf-web-js'}) { subproject ->
 			def outputPath = 'build/eclipse';
 			defaultOutputDir = file(outputPath)
 
+			/*
 			file {
 				beforeMerged { classpath ->
-					def generatedSource = 
-						new org.gradle.plugins.ide.eclipse.model.SourceFolder('src/generated', outputPath);
-					classpath.entries << generatedSource
+					def item = classpath.entries.find { it.path=='src/generated' }
+					if(item == null) {
+						def generatedSource = 
+							new org.gradle.plugins.ide.eclipse.model.SourceFolder('src/generated', outputPath);
+						classpath.entries << generatedSource
+					}
 				}
-			}
+			}*/
 		}
 	}
 }
@@ -119,12 +126,12 @@ project('evf-core') {
         //testCompile group: 'javancss', name: 'javancss', version: '32.53'
         
         javaAnnotationProcessors 'org.hibernate:hibernate-jpamodelgen:1.1.+'
-        
+
         compile group: 'log4j', name: 'log4j', version: '1.2.+'
         compile group: 'commons-logging', name: 'commons-logging', version: '1.1.+'
         compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.0-api', version: '1.0.+'
-        compile group: 'org.springframework', name: 'spring-beans', version: '3.0.+'
-        compile group: 'org.springframework', name: 'spring-core', version: '3.0.+'
+        compile group: 'org.springframework', name: 'spring-beans', version: "${spring_version}"
+        compile group: 'org.springframework', name: 'spring-core', version: "${spring_version}"
         compile 'org.springframework:spring-orm:3.0.+'
     }
 }
@@ -140,13 +147,36 @@ project('evf-web') {
         
         //<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="core->default" />		
         compile group: 'javax.servlet', name: 'servlet-api', version: '2.5'
-        compile group: 'org.springframework', name: 'spring-webmvc', version: '3.0.+'
-        compile group: 'org.springframework', name: 'spring-webmvc', version: '3.0.+', classifier:'sources'
+        compile group: 'org.springframework', name: 'spring-webmvc', version: "${spring_version}"
+        testCompile group: 'org.springframework', name: 'spring-webmvc', version: "${spring_version}", classifier:'sources'
         compile "com.fasterxml.jackson.core:jackson-core:2.2.+"
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.2.+', classifier:'sources'
         compile "com.fasterxml.jackson.core:jackson-databind:2.2.+"
         compile project(':evf-core')
     }
+}
+
+project('evf-membership') {
+	dependencies {
+		testCompile 'junit:junit:4.8.+'
+		testCompile 'emma:emma:2.1.5320'
+		//testCompile 'javancss:javancss:32.53'
+
+		javaAnnotationProcessors 'org.hibernate:hibernate-jpamodelgen:1.1.+'
+
+		compile 'commons-logging:commons-logging:1.1.+'
+		compile 'commons-codec:commons-codec:1.8'
+		compile "joda-time:joda-time:${jodatime_version}"
+		compile 'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.+'
+		compile 'org.springframework.security:spring-security-core:3.1.0.RELEASE'
+
+		//compile 'javax.servlet:servlet-api:2.5'
+		//compile 'com.fasterxml.jackson.core:jackson-core:2.2.+'
+		compile "org.springframework:spring-webmvc:${spring_version}"
+
+		compile project(':evf-core')
+		compile project(':evf-web')
+	}
 }
 
 /*
