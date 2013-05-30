@@ -25,18 +25,18 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.evinceframework.membership.model.User;
-import com.evinceframework.web.dojo.mvc.view.IAuthenticationDetailsProvider;
+import com.evinceframework.web.dojo.mvc.view.AuthenticationDetailsProvider;
 
 /**
- * An implementation of {@link IAuthenticationDetailsProvider} that returns data based on this 
+ * An implementation of {@link AuthenticationDetailsProvider} that returns data based on this 
  * membership library.
  * 
  * @author Craig Swing
  *
- * @see IAuthenticationDetailsProvider
+ * @see AuthenticationDetailsProvider
  */
 public class AuthenticationDetailsProviderImpl 
-		implements IAuthenticationDetailsProvider<Map<String, Object>> {
+		implements AuthenticationDetailsProvider<Map<String, Object>> {
 	
 	@Override
 	public Set<String> getSecurityRights() {

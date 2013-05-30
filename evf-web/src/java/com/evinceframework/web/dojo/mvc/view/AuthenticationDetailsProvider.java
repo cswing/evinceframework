@@ -25,7 +25,7 @@ import java.util.Set;
  * @see DojoView
  * @see DojoViewResolver
  */
-public interface IAuthenticationDetailsProvider<T> {
+public interface AuthenticationDetailsProvider<T> {
 
 	/**
 	 * A set of security rights that the currently authenticated user has.  If the user is not 

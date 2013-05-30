@@ -67,7 +67,7 @@ public class DojoView implements View {
 	
 	private DojoLayout layout;
 	
-	private IAuthenticationDetailsProvider<?> authenticationDetailsProvider;
+	private AuthenticationDetailsProvider<?> authenticationDetailsProvider;
 	
 	@Override
 	public String getContentType() {
@@ -79,7 +79,7 @@ public class DojoView implements View {
 	}
 
 	public DojoView(JsonStoreEngine jsonEngine, String[] storeNames, DojoConfigurationResolver configurationResolver, 
-			DojoLayout layout, IAuthenticationDetailsProvider<?> authProvider) {
+			DojoLayout layout, AuthenticationDetailsProvider<?> authProvider) {
 		this.jsonEngine = jsonEngine;
 		this.storeNames = storeNames;
 		this.configurationResolver = configurationResolver;

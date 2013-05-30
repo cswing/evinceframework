@@ -33,7 +33,7 @@ public class DojoViewResolver extends AbstractCachingViewResolver {
 	
 	private String[] storeNames;
 	
-	private IAuthenticationDetailsProvider<?> authenticationDetailsProvider = 
+	private AuthenticationDetailsProvider<?> authenticationDetailsProvider = 
 			new AuthenticationDetailsProviderImpl();
 	
 	private DojoConfigurationResolver configurationResolver;
@@ -62,12 +62,12 @@ public class DojoViewResolver extends AbstractCachingViewResolver {
 		this.storeNames = storeNames;
 	}
 	
-	public IAuthenticationDetailsProvider<?> getAuthenticationDetailsProvider() {
+	public AuthenticationDetailsProvider<?> getAuthenticationDetailsProvider() {
 		return authenticationDetailsProvider;
 	}
 
 	public void setAuthenticationDetailsProvider(
-			IAuthenticationDetailsProvider<?> authenticationDetailsProvider) {
+			AuthenticationDetailsProvider<?> authenticationDetailsProvider) {
 		this.authenticationDetailsProvider = authenticationDetailsProvider;
 	}
 
@@ -88,7 +88,7 @@ public class DojoViewResolver extends AbstractCachingViewResolver {
 	}
 	
 	private class AuthenticationDetailsProviderImpl 
-			implements IAuthenticationDetailsProvider<Map<String, Object>> {
+			implements AuthenticationDetailsProvider<Map<String, Object>> {
 		
 		@Override
 		public Set<String> getSecurityRights() {
