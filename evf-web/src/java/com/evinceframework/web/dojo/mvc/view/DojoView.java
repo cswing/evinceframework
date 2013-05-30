@@ -18,13 +18,14 @@ package com.evinceframework.web.dojo.mvc.view;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.evinceframework.web.dojo.json.JsonStoreEngine;
 import com.evinceframework.web.dojo.mvc.view.config.DojoConfiguration;
@@ -66,10 +67,7 @@ public class DojoView implements View {
 	
 	private DojoLayout layout;
 	
-	// TODO hack.  integrate spring security
-	private Set<String> rights;
-	
-	private Map<String, Object> userDetails;
+	private IAuthenticationDetailsProvider<?> authenticationDetailsProvider;
 	
 	@Override
 	public String getContentType() {
@@ -81,13 +79,12 @@ public class DojoView implements View {
 	}
 
 	public DojoView(JsonStoreEngine jsonEngine, String[] storeNames, DojoConfigurationResolver configurationResolver, 
-			DojoLayout layout, Set<String> rights, Map<String, Object> userDetails) {
+			DojoLayout layout, IAuthenticationDetailsProvider<?> authProvider) {
 		this.jsonEngine = jsonEngine;
 		this.storeNames = storeNames;
 		this.configurationResolver = configurationResolver;
 		this.layout = layout;
-		this.rights = rights;
-		this.userDetails = userDetails;
+		this.authenticationDetailsProvider = authProvider;
 	}
 
 	@Override
@@ -143,19 +140,12 @@ public class DojoView implements View {
 		}
 		params.put("contextPath", ctx.getRequest().getContextPath());
 		
-		// TODO determine locale from spring
-		//  see locale interceptor
-		if(!params.containsKey("userDetails")) {
-			if(userDetails.containsKey("userDetails")) {
-				params.put("locale", userDetails.get("userDetails"));
-			} else {
-				params.put("locale", "en-us");
-			}
-		}
+		Locale locale = RequestContextUtils.getLocale(ctx.getRequest());
+		params.put("locale", locale.toString());
 		
 		params.put("paths", cfg.getSourcePaths());
-		params.put("user", userDetails);
-		params.put("rights", rights); 
+		params.put("user", authenticationDetailsProvider.getUserDetails());
+		params.put("rights", authenticationDetailsProvider.getSecurityRights()); 
 				
 		writer.write("\n\n<script type=\"text/javascript\">");
 		writer.write("var dojoConfig =");

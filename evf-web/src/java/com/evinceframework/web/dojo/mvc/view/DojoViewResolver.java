@@ -15,29 +15,28 @@
  */
 package com.evinceframework.web.dojo.mvc.view;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractCachingViewResolver;
 
 import com.evinceframework.web.dojo.json.JsonStoreEngine;
 import com.evinceframework.web.dojo.mvc.view.config.DojoConfigurationResolver;
 
-public class DojoViewResolver extends AbstractCachingViewResolver implements InitializingBean {
+public class DojoViewResolver extends AbstractCachingViewResolver {
 
 	private JsonStoreEngine jsonEngine;
 	
 	private String[] storeNames;
 	
-	private DojoConfigurationResolver configurationResolver;
+	private IAuthenticationDetailsProvider<?> authenticationDetailsProvider = 
+			new AuthenticationDetailsProviderImpl();
 	
-	// TODO hack.  integrate spring security
-	private Set<String> rights;
-		
-	private Map<String, Object> userDetails;
+	private DojoConfigurationResolver configurationResolver;
 		
 	public DojoConfigurationResolver getConfigurationResolver() {
 		return configurationResolver;
@@ -62,28 +61,16 @@ public class DojoViewResolver extends AbstractCachingViewResolver implements Ini
 	public void setStoreNames(String[] storeNames) {
 		this.storeNames = storeNames;
 	}
-
-	public Set<String> getRights() {
-		return rights;
-	}
-
-	public void setRights(Set<String> rights) {
-		this.rights = rights;
-	}
-
-	public Map<String, Object> getUserDetails() {
-		return userDetails;
-	}
-
-	public void setUserDetails(Map<String, Object> userDetails) {
-		this.userDetails = userDetails;
-	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-				
-	}
 	
+	public IAuthenticationDetailsProvider<?> getAuthenticationDetailsProvider() {
+		return authenticationDetailsProvider;
+	}
+
+	public void setAuthenticationDetailsProvider(
+			IAuthenticationDetailsProvider<?> authenticationDetailsProvider) {
+		this.authenticationDetailsProvider = authenticationDetailsProvider;
+	}
+
 	@Override
 	protected View loadView(String viewName, Locale locale) throws Exception {
 		
@@ -93,10 +80,25 @@ public class DojoViewResolver extends AbstractCachingViewResolver implements Ini
 			return null;
 		}
 		
-		return new DojoView(jsonEngine, storeNames, configurationResolver, layout, rights, userDetails);
+		return new DojoView(jsonEngine, storeNames, configurationResolver, layout, authenticationDetailsProvider);
 	}
 
 	protected String getViewBeanName(String viewName) {
 		return String.format("dojoView.%s", viewName.replace("/", "."));
-	}	
+	}
+	
+	private class AuthenticationDetailsProviderImpl 
+			implements IAuthenticationDetailsProvider<Map<String, Object>> {
+		
+		@Override
+		public Set<String> getSecurityRights() {
+			return new HashSet<String>();
+		}
+		
+		@Override
+		public Map<String, Object> getUserDetails() {
+			return new HashMap<String, Object>();
+		}
+	}
+	
 }
