@@ -14,7 +14,7 @@
         p:accountExpirationDuration="${evf.membership.accountExpirationDuration}"
         />
     
-    <bean id="evf.membership.user" lazy-init="true"
+    <bean id="evf.membership.user" lazy-init="true" scope="prototype"
         p:configuration-ref="evf.membership.configuration"/>
         
     <bean id="evf.membership.authenticationQuery"
