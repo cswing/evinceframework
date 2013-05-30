@@ -49,7 +49,7 @@ public class SecurityRight implements GrantedAuthority {
 	 * 
 	 * @return the token
 	 */
-	@Column(name="token", length=32, unique=true)
+	@Column(name="token", length=64, unique=true, nullable=false)
 	public String getToken() {
 		return token;
 	}
@@ -63,7 +63,7 @@ public class SecurityRight implements GrantedAuthority {
 	 * 
 	 * @return the description
 	 */
-	@Column(name="description", length=512)
+	@Column(name="description", length=512, nullable=false)
 	public String getDescription() {
 		return description;
 	}
