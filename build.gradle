@@ -85,28 +85,10 @@ configure(subprojects.findAll {it.name != 'evf-web-js'}) { subproject ->
         archives javadocJar
     }
 
-    task copyToLib(type: Sync) {
-        into "${projectDir}/lib"
-        from configurations.testCompile
-    }
-
 	eclipse {
 		classpath {
-			
 			def outputPath = 'build/eclipse';
 			defaultOutputDir = file(outputPath)
-
-			/*
-			file {
-				beforeMerged { classpath ->
-					def item = classpath.entries.find { it.path=='src/generated' }
-					if(item == null) {
-						def generatedSource = 
-							new org.gradle.plugins.ide.eclipse.model.SourceFolder('src/generated', outputPath);
-						classpath.entries << generatedSource
-					}
-				}
-			}*/
 		}
 	}
 }
@@ -148,7 +130,7 @@ project('evf-web') {
         //<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="core->default" />		
         compile group: 'javax.servlet', name: 'servlet-api', version: '2.5'
         compile group: 'org.springframework', name: 'spring-webmvc', version: "${spring_version}"
-        testCompile group: 'org.springframework', name: 'spring-webmvc', version: "${spring_version}", classifier:'sources'
+        compile group: 'org.springframework', name: 'spring-webmvc', version: "${spring_version}", classifier:'sources'
         compile "com.fasterxml.jackson.core:jackson-core:2.2.+"
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.2.+', classifier:'sources'
         compile "com.fasterxml.jackson.core:jackson-databind:2.2.+"
