@@ -52,6 +52,8 @@ public class User extends BaseEntity implements UserDetails {
 	
 	private Configuration configuration;
 	
+	private String displayName;
+	
 	private String emailAddress;
 	
 	private String password;
@@ -79,7 +81,16 @@ public class User extends BaseEntity implements UserDetails {
 		this.configuration = configuration;
 	}
 
-	@Column(name="emailAddress")
+	@Column(name="displayName", length=64, nullable=false)
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	@Column(name="emailAddress", length=254, nullable=false, unique=true)
 	public String getEmailAddress() {
 		return emailAddress;
 	}
@@ -95,7 +106,7 @@ public class User extends BaseEntity implements UserDetails {
 	}
 
 	@Override
-	@Column(name="password")
+	@Column(name="password", length=256, nullable=true)
 	public String getPassword() {								
 		return password;
 	}
@@ -104,7 +115,7 @@ public class User extends BaseEntity implements UserDetails {
 		this.password = password;
 	}
 
-	@Column(name="account_expiration_dt")
+	@Column(name="account_expiration_dt", nullable=true)
 	public DateTime getAccountExpirationDate() {
 		return accountExpirationDate;
 	}
@@ -113,7 +124,7 @@ public class User extends BaseEntity implements UserDetails {
 		this.accountExpirationDate = accountExpirationDate;
 	}
 
-	@Column(name="password_expiration_dt")
+	@Column(name="password_expiration_dt", nullable=true)
 	public DateTime getPasswordExpirationDate() {
 		return passwordExpirationDate;
 	}
@@ -152,7 +163,7 @@ public class User extends BaseEntity implements UserDetails {
 	 * 
 	 * @return the number of failed attempts.
 	 */
-	@Column(name="failed_authentication_attempts")
+	@Column(name="failed_authentication_attempts", nullable=false)
 	public int getFailedAuthenticationAttempts() {
 		return failedAuthenticationAttempts;
 	}
@@ -166,7 +177,7 @@ public class User extends BaseEntity implements UserDetails {
 	 * 
 	 * @return
 	 */
-	@Column(name="last_authentication_dt")
+	@Column(name="last_authentication_dt", nullable=true)
 	public DateTime getLastSuccessfulAuthentication() {
 		return lastSuccessfulAuthentication;
 	}
@@ -180,7 +191,7 @@ public class User extends BaseEntity implements UserDetails {
 	 * 
 	 * @return
 	 */
-	@Column(name="last_failed_authentication_dt")
+	@Column(name="last_failed_authentication_dt", nullable=true)
 	public DateTime getLastFailedAuthentication() {
 		return lastFailedAuthentication;
 	}
@@ -196,7 +207,7 @@ public class User extends BaseEntity implements UserDetails {
 	}
 
 	@Override
-	@Column(name="enabled")
+	@Column(name="enabled", nullable=false)
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -206,8 +217,8 @@ public class User extends BaseEntity implements UserDetails {
 	}
 
 	@ManyToMany(cascade = CascadeType.MERGE)
-	@JoinTable(name = "evf_membership_userrights", 
-	            joinColumns = { @JoinColumn(name = "role_id")}, 
+	@JoinTable(name = "evf_membership_userright", 
+	            joinColumns = { @JoinColumn(name = "user_id")}, 
 	            inverseJoinColumns={@JoinColumn(name="right_id")})
 	public Set<SecurityRight> getRights() {
 		return rights;
