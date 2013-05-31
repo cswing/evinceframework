@@ -34,7 +34,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.evinceframework.membership.ISaltProvider;
+import com.evinceframework.membership.SaltProvider;
 import com.evinceframework.membership.PasswordHasher;
 import com.evinceframework.membership.SecurityMessageSource;
 import com.evinceframework.membership.model.SecurityRight;
@@ -56,37 +56,37 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 	
 	private MessageSourceAccessor messages = SecurityMessageSource.getAccessor();
 	
-	private Set<IAuthenticationObserver> observers = new HashSet<IAuthenticationObserver>();
+	private Set<AuthenticationObserver> observers = new HashSet<AuthenticationObserver>();
 	
 	private PasswordHasher hasher = new PasswordHasher();
 		
 	private UserQuery query;
 	
-	private ISaltProvider saltProvider = new SaltProviderImpl();
+	private SaltProvider saltProvider = new SaltProviderImpl();
 	
 	/**
-	 * The {@link IAuthenticationObserver}s that will be notified of certain authentication events.
+	 * The {@link AuthenticationObserver}s that will be notified of certain authentication events.
 	 * 
 	 * @return the observers.
 	 */
-	public Set<IAuthenticationObserver> getObservers() {
+	public Set<AuthenticationObserver> getObservers() {
 		return observers;
 	}
 
-	public void setObservers(Set<IAuthenticationObserver> observers) {
+	public void setObservers(Set<AuthenticationObserver> observers) {
 		this.observers = observers;
 	}
 
 	/**
-	 * The {@link ISaltProvider} that will create a salt for hashing passwords.
+	 * The {@link SaltProvider} that will create a salt for hashing passwords.
 	 * 
 	 * @return the salt provider
 	 */
-	public ISaltProvider getSaltProvider() {
+	public SaltProvider getSaltProvider() {
 		return saltProvider;
 	}
 
-	public void setSaltProvider(ISaltProvider saltProvider) {
+	public void setSaltProvider(SaltProvider saltProvider) {
 		this.saltProvider = saltProvider;
 	}
 	
@@ -191,7 +191,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 		if(observers == null)
 			return;
 		
-		for(IAuthenticationObserver observer : observers) {
+		for(AuthenticationObserver observer : observers) {
 			try {
 				observer.onFailedAuthenticationAttempt(user, username, message);
 				
@@ -205,7 +205,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 		if(observers == null)
 			return;
 		
-		for(IAuthenticationObserver observer : observers) {
+		for(AuthenticationObserver observer : observers) {
 			try {
 				observer.onSuccessfulAuthentication(user);
 				
@@ -221,7 +221,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 		if(observers == null)
 			return;
 		
-		for(IAuthenticationObserver observer : observers) {
+		for(AuthenticationObserver observer : observers) {
 			try {
 				observer.onAuthenticationServiceFailure(user, username, message, serviceException);
 				
@@ -231,7 +231,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 		}
 	}
 	
-	public class SaltProviderImpl implements ISaltProvider {
+	public class SaltProviderImpl implements SaltProvider {
 
 		private Base64 encoder = new Base64();
 		

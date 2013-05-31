@@ -24,7 +24,7 @@ import com.evinceframework.membership.model.User;
  * 
  * @see AuthenticationProviderImpl
  */
-public interface IAuthenticationObserver {
+public interface AuthenticationObserver {
 
 	/**
 	 * A user has successfully authenticated.

@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.evinceframework.membership.model.User;
 
-public class AuthenticationLogger implements IAuthenticationObserver {
+public class AuthenticationLogger implements AuthenticationObserver {
 	
 	public static final String LOGGER_NAME = "evf.membership.authentication";
 	

@@ -28,11 +28,11 @@ import com.evinceframework.membership.model.User;
 
 /**
  * Responsible for updating the {@link User} based on authentication events as defined by
- * {@link IAuthenticationObserver}.
+ * {@link AuthenticationObserver}.
  * 
  * @author Craig Swing
  */
-public class UserUpdater implements IAuthenticationObserver {
+public class UserUpdater implements AuthenticationObserver {
 
 	@PersistenceContext
 	private EntityManager entityManager;

@@ -26,7 +26,7 @@ import com.evinceframework.membership.model.User;
  * 
  * @see AuthenticationProviderImpl
  */
-public interface ISaltProvider {
+public interface SaltProvider {
 
 	/**
 	 * Calculate a salt to use to hash a password for the given user. 
