@@ -7,7 +7,28 @@
        						http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
                            	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+	<!-- 
+		Bean dependencies - when using this file, the following beans must be defined.
+		
+		evf.environment.jsonStoreEngine
+		evf.environment.transformFactory
+	-->
+
     <bean id="evf.membership.web.authenticationProvider" 
         class="com.evinceframework.membership.web.AuthenticationDetailsProviderImpl" />
+    	
+    <bean id="evf.membership.web.jsonFailureHandler" 
+    	class="com.evinceframework.membership.web.JsonAuthenticationFailureHandler" 
+    	p:jsonStoreEngine-ref="evf.environment.jsonStoreEngine" 
+    	p:transformFactory-ref="evf.environment.transformFactory" />
+    	
+    <bean id="evf.membership.web.jsonRedirect" 
+    	class="com.evince.web.security.DojoRedirectStrategy" 
+    	p:contextRelative="${evf.membership.web.contextRelativeRedirect}"/>
     
+    <bean id="evf.membership.web.jsonSuccessHandler" 
+    	class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler"
+    	p:redirectStrategy-ref="evf.membership.web.jsonRedirect" />
+    
+    	
 </beans>
