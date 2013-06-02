@@ -30,5 +30,16 @@
     	class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler"
     	p:redirectStrategy-ref="evf.membership.web.jsonRedirect" />
     
+    <bean id="evf.membership.web.transformFactory.map.security.badCredentials" 
+		class="com.evinceframework.web.messaging.exceptions.transforms.StaticMessageTransform"
+		p:errorCode="HTTP-401" 
+		p:messageSourceAccessor-ref="evf.membership.securityMessageAccessor" 
+		p:messageKey="authentication.authenticationFailure" />
+
+	<bean id="evf.membership.web.transformFactory.map.security.userNotFound" 
+		class="com.evinceframework.web.messaging.exceptions.transforms.StaticMessageTransform"
+		p:errorCode="HTTP-401" 
+		p:messageSourceAccessor-ref="evf.membership.securityMessageAccessor" 
+		p:messageKey="authentication.authenticationFailure" />
     	
 </beans>

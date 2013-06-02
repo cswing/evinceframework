@@ -35,8 +35,7 @@ import com.evinceframework.web.dojo.mvc.view.AuthenticationDetailsProvider;
  *
  * @see AuthenticationDetailsProvider
  */
-public class AuthenticationDetailsProviderImpl 
-		implements AuthenticationDetailsProvider<Map<String, Object>> {
+public class AuthenticationDetailsProviderImpl implements AuthenticationDetailsProvider<Map<String, Object>> {
 	
 	@Override
 	public Set<String> getSecurityRights() {

@@ -7,6 +7,9 @@
        						http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
                            	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+	<bean id="evf.membership.securityMessageAccessor" 
+		class="com.evinceframework.membership.SecurityMessageSource" factory-method="getAccessor" />
+	
     <bean id="evf.membership.configuration"
         class="com.evinceframework.membership.Configuration"
         p:attemptsBeforeAccountLockedOut="${evf.membership.attemptsBeforeAccountLockedOut}"
