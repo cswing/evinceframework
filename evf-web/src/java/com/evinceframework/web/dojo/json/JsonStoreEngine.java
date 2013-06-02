@@ -25,6 +25,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.springframework.util.StringUtils;
 
 import com.evinceframework.core.factory.MapBackedClassLookupFactory;
@@ -32,8 +35,11 @@ import com.evinceframework.data.QueryParameters;
 import com.evinceframework.data.QueryResult;
 import com.evinceframework.web.dojo.json.JsonSerializationContext.DeferredSerialization;
 import com.evinceframework.web.dojo.json.conversion.DatePrimitiveWriter;
+import com.evinceframework.web.dojo.json.conversion.DateTimePrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.DefaultPrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.InterfaceConverter;
+import com.evinceframework.web.dojo.json.conversion.LocalDatePrimitiveWriter;
+import com.evinceframework.web.dojo.json.conversion.LocalDateTimePrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.MapConverter;
 import com.evinceframework.web.dojo.json.conversion.PojoConverter;
 import com.evinceframework.web.dojo.navigation.NavigationCategory;
@@ -134,6 +140,11 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConve
 		primitiveFactory.getLookupMap().put(BigDecimal.class, defaultPrimitiveWriter);
 		primitiveFactory.getLookupMap().put(Date.class, new DatePrimitiveWriter());
 		
+		// Joda Time Support
+		primitiveFactory.getLookupMap().put(DateTime.class, new DateTimePrimitiveWriter());
+		primitiveFactory.getLookupMap().put(LocalDateTime.class, new LocalDatePrimitiveWriter());
+		primitiveFactory.getLookupMap().put(LocalDate.class, new LocalDateTimePrimitiveWriter());
+		
 		setDefaultImplementation(new PojoConverter());
 		getLookupMap().put(Map.class, new MapConverter());
 		getLookupMap().put(Navigator.class, new Navigator.JsonConverter());
@@ -204,8 +215,8 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConve
 	 * When serializing a Java object, the {@link JsonObjectConverter} can optionally specify a "type".  Client side 
 	 * code can utilize this type when searching through the array of items looking for a particular group of items.
 	 * 
-	 * If the {@link JsonObjectConverter} does specify a type, it will be serialized using the field name specified by this
-	 * property.  The default is _type.
+	 * If the {@link JsonObjectConverter} does specify a type, it will be serialized using the field name specified by 
+	 * this property.  The default is _type.
 	 * 
 	 * @return the name of the field that contains the objects type.
 	 */
@@ -223,8 +234,7 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConve
 	}
 
 	/**
-	 * Serializes a graph of Java objects into a single array of javascript objects using a
-	 * JSON format.
+	 * Serializes a graph of Java objects into a single array of javascript objects using a JSON format.
 	 * 
 	 * @param out the JSON is written to this stream.
 	 * @param model the object graph to serialize
@@ -249,8 +259,7 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConve
 	}
 	
 	/**
-	 * Serializes a graph of Java objects into a single array of javascript objects using a
-	 * JSON format.
+	 * Serializes a graph of Java objects into a single array of javascript objects using a JSON format.
 	 * 
 	 * @param model the object graph to serialize
 	 * @return the serialized objects in a JSON format.

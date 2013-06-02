@@ -134,6 +134,7 @@ project('evf-web') {
         compile "com.fasterxml.jackson.core:jackson-core:2.2.+"
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.2.+', classifier:'sources'
         compile "com.fasterxml.jackson.core:jackson-databind:2.2.+"
+        compile "joda-time:joda-time:${jodatime_version}"
         compile project(':evf-core')
     }
 }
