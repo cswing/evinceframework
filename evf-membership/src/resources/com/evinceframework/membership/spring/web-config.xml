@@ -23,7 +23,7 @@
     	p:transformFactory-ref="evf.environment.transformFactory" />
     	
     <bean id="evf.membership.web.jsonRedirect" 
-    	class="com.evince.web.security.DojoRedirectStrategy" 
+    	class="com.evinceframework.membership.web.JsonRedirectStrategy" 
     	p:contextRelative="${evf.membership.web.contextRelativeRedirect}"/>
     
     <bean id="evf.membership.web.jsonSuccessHandler" 
