@@ -10,10 +10,10 @@
                            	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <context:property-placeholder 
-        location="classpath:com/evicneframework/membership/spring/default.properties" 
+        location="classpath:com/evinceframework/membership/spring/default.properties" 
         ignore-unresolvable="true" />
     
-    <import resource="classpath:com/evicneframework/membership/spring/base-config.xml"/>
-    <import resource="classpath:com/evicneframework/membership/spring/web-config.xml"/>
+    <import resource="classpath:com/evinceframework/membership/spring/base-config.xml"/>
+    <import resource="classpath:com/evinceframework/membership/spring/web-config.xml"/>
     
 </beans>
