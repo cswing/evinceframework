@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import com.evinceframework.jpa.BaseEntity;
 import com.evinceframework.membership.authentication.AuthenticationProviderImpl;
 
 /**
@@ -34,7 +35,7 @@ import com.evinceframework.membership.authentication.AuthenticationProviderImpl;
  * @see AuthenticationProviderImpl
  */
 @Entity(name="evf_membership_right")
-public class SecurityRight implements GrantedAuthority {
+public class SecurityRight extends BaseEntity implements GrantedAuthority {
 
 	private static final long serialVersionUID = 313449404324420067L;
 
