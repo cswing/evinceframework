@@ -37,7 +37,7 @@
         	class="com.evinceframework.membership.authentication.AuthenticationLogger"/>
     	<bean id="evf.membership.authentication.updater"
         	class="com.evinceframework.membership.authentication.UserUpdater"
-        	p:configuration="evf.membership.configuration" />
+        	p:configuration-ref="evf.membership.configuration" />
     </util:set>
     
     <bean id="evf.membership.authenticationProvider" 
