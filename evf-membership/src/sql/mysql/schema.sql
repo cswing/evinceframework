@@ -1,5 +1,6 @@
 CREATE TABLE evf_membership_user(
-        id						INT				NOT NULL,
+        id						INT				NOT NULL AUTO_INCREMENT,
+        oid                     VARCHAR(36)     NOT NULL,
         version                 INT				NOT NULL DEFAULT 0,
         displayName				NVARCHAR(64)	NOT NULL,
 		emailAddress			NVARCHAR(254)	NOT NULL,
@@ -19,7 +20,8 @@ CREATE UNIQUE INDEX ui_evf_membership_user_email
 
 	
 CREATE TABLE evf_membership_right(
-        id						INT				NOT NULL,
+        id						INT				NOT NULL AUTO_INCREMENT,
+        oid                     VARCHAR(36)     NOT NULL,
         version                 INT				NOT NULL DEFAULT 0,
 		token					NVARCHAR(64)	NOT NULL,
 		description				NVARCHAR(512)	NOT NULL,
