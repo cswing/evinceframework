@@ -6,10 +6,19 @@
        xsi:schemaLocation="http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
        						http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
                            	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-
+	<!--  
 	<bean id="evf.membership.securityMessageAccessor" 
-		class="com.evinceframework.membership.SecurityMessageSource" factory-method="getAccessor" />
-	
+		class="com.evinceframework.membership.SecurityMessageSource"
+		factory-method="getAccessor" />
+	-->
+	<bean id="evf.membership.securityMessageSource" 
+		class="com.evinceframework.membership.SecurityMessageSource" />
+		
+	<bean id="evf.membership.securityMessageAccessor" 
+		class="org.springframework.context.support.MessageSourceAccessor">
+		<constructor-arg ref="evf.membership.securityMessageSource" />
+	</bean>
+		
     <bean id="evf.membership.configuration"
         class="com.evinceframework.membership.Configuration"
         p:attemptsBeforeAccountLockedOut="${evf.membership.attemptsBeforeAccountLockedOut}"
@@ -34,6 +43,7 @@
     <bean id="evf.membership.authenticationProvider" 
        	class="com.evinceframework.membership.authentication.AuthenticationProviderImpl"
        	p:query-ref="evf.membership.authenticationQuery"
-       	p:observers-ref="evf.membership.authenticationObservers" />
+       	p:observers-ref="evf.membership.authenticationObservers"
+       	p:messageSource-ref="evf.membership.securityMessageAccessor" />
     
 </beans>

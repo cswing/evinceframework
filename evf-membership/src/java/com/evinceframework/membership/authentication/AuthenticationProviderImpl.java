@@ -54,7 +54,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 
 	private static final Log logger = LogFactory.getLog(AuthenticationProviderImpl.class);
 	
-	private MessageSourceAccessor messages = SecurityMessageSource.getAccessor();
+	private MessageSourceAccessor messageAccessor;
 	
 	private Set<AuthenticationObserver> observers = new HashSet<AuthenticationObserver>();
 	
@@ -96,12 +96,12 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 	 * @return the message source accessor.
 	 * @see {@link SecurityMessageSource}
 	 */
-	public MessageSourceAccessor getMessages() {
-		return messages;
+	public MessageSourceAccessor getMessageSource() {
+		return messageAccessor;
 	}
 
-	public void setMessages(MessageSourceAccessor messages) {
-		this.messages = messages;
+	public void setMessageSource(MessageSourceAccessor messageAccessor) {
+		this.messageAccessor = messageAccessor;
 	}
 
 	/**

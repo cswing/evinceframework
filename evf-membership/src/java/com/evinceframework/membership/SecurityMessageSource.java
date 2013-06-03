@@ -53,13 +53,4 @@ public class SecurityMessageSource extends ResourceBundleMessageSource {
     public SecurityMessageSource() {
     	setBasename(BASE_NAME);
     }
-    
-    /**
-     * Utility method to retrieve the MessageSourceAccessor.
-     * 
-     * @return the MessageSourceAccessor
-     */
-    public static MessageSourceAccessor getAccessor() {
-    	return new MessageSourceAccessor(new SecurityMessageSource());
-    }
 }
