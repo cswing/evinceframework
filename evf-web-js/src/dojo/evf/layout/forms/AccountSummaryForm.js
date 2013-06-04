@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 define([
+	'require',
 	'dojo/_base/declare', 
 	'dijit/_TemplatedMixin',
 	'dijit/form/Button',
@@ -22,7 +23,7 @@ define([
 	'evf/layout/topics',
 	'dojo/text!./templates/AccountSummaryForm.html',
 	'dojo/i18n!./nls/account'
-], function(declare, Templated, Button, ComplexWidget, rights, topics, template, i18n){
+], function(require, declare, Templated, Button, ComplexWidget, rights, topics, template, i18n){
 
 	return declare('evf.layout.forms.AccountSummaryForm', [ComplexWidget, Templated], {
 
@@ -32,7 +33,9 @@ define([
 			this.inherited(arguments);
 			this.name = this.dojoConfig.user.name;
 			this.login = this.dojoConfig.user.login;
-			this.avatarSrc = this.dojoConfig.user.avatar;
+			this.avatarSrc = this.dojoConfig.user.avatar 
+				|| this.dojoConfig.noImage 
+				|| require.toUrl('evf/resources/noImage.png');
 		},
 
 		postCreate: function(){
