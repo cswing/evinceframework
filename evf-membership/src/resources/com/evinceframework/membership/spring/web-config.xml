@@ -12,10 +12,18 @@
 		
 		evf.environment.jsonStoreEngine
 		evf.environment.transformFactory
+		evf.environment.anonymousRights List<GrantedAuthority>
 	-->
 
     <bean id="evf.membership.web.authenticationProvider" 
-        class="com.evinceframework.membership.web.AuthenticationDetailsProviderImpl" />
+        class="com.evinceframework.membership.web.AuthenticationDetailsProviderImpl"/>
+    
+    <bean id="evf.membership.web.anonymousFilter" 
+    		class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
+    	<constructor-arg index="0" value="${evf.membership.web.anonymousKey}" />
+    	<constructor-arg index="1" value="${evf.membership.web.anonymousUser}" />
+    	<constructor-arg index="2" ref="evf.environment.anonymousRights" />
+    </bean>
     	
     <bean id="evf.membership.web.jsonFailureHandler" 
     	class="com.evinceframework.membership.web.JsonAuthenticationFailureHandler" 

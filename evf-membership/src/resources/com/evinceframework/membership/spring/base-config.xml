@@ -46,4 +46,25 @@
        	p:observers-ref="evf.membership.authenticationObservers"
        	p:messageSource-ref="evf.membership.securityMessageAccessor" />
     
+    <!-- anonymous rights -->
+    <bean id="evf.membership.anonymousRight.anonymous"
+    		class="org.springframework.security.core.authority.SimpleGrantedAuthority.SimpleGrantedAuthority">
+		<constructor-arg value="${evf.membership.anonymousRight}" />
+    </bean>
+   	<bean id="evf.membership.anonymousRight.standardAuthentication"
+   			class="org.springframework.security.core.authority.SimpleGrantedAuthority.SimpleGrantedAuthority">
+   		<constructor-arg value="evf.membership.standardAuthentication" />
+   	</bean>
+   	<bean id="evf.membership.anonymousRight.rememberMe"
+   			class="org.springframework.security.core.authority.SimpleGrantedAuthority.SimpleGrantedAuthority">
+   		<constructor-arg value="evf.membership.rememberMe" />
+   	</bean>
+   	<bean id="evf.membership.anonymousRight.register"
+   			class="org.springframework.security.core.authority.SimpleGrantedAuthority.SimpleGrantedAuthority">
+   		<constructor-arg value="evf.membership.register" />
+   	</bean>
+   	<bean id="evf.membership.anonymousRight.resetPassword"
+   			class="org.springframework.security.core.authority.SimpleGrantedAuthority.SimpleGrantedAuthority">
+   		<constructor-arg value="evf.membership.resetPassword" />
+   	</bean>
 </beans>

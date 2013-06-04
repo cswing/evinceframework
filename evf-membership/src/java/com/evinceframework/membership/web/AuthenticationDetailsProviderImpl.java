@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -64,8 +65,12 @@ public class AuthenticationDetailsProviderImpl implements AuthenticationDetailsP
 
 	private User getCurrentUser() {
 		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Object principal = authentication == null ? null : authentication.getPrincipal();
 
+		if(principal == null)
+			return null; // throw
+		
 		if (principal instanceof User) {
 		  return (User)principal;
 		}
