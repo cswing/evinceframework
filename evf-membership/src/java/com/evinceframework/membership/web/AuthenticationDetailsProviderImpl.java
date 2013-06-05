@@ -25,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.evinceframework.membership.model.AnonymousUser;
 import com.evinceframework.membership.model.User;
 import com.evinceframework.web.dojo.mvc.view.AuthenticationDetailsProvider;
 
@@ -40,42 +41,93 @@ public class AuthenticationDetailsProviderImpl implements AuthenticationDetailsP
 	
 	@Override
 	public Set<String> getSecurityRights() {
-		
-		Set<String> rights = new HashSet<String>();
-		
-		Collection<GrantedAuthority> authorities = getCurrentUser().getAuthorities();
-		for(GrantedAuthority ga : authorities) {
-			rights.add(ga.getAuthority());
-		}
-		
-		return rights;
+		return getDelegate().getSecurityRights();
 	}
 
 	@Override
 	public Map<String, Object> getUserDetails() {
-		
-		User user = getCurrentUser();
-		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("name", user.getDisplayName());
-		map.put("login", user.getUsername());
-		
-		return map;
+		return getDelegate().getUserDetails();
 	}
-
-	private User getCurrentUser() {
+	
+	private AuthenticationDetailsProvider<Map<String, Object>> getDelegate() {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Object principal = authentication == null ? null : authentication.getPrincipal();
 
-		if(principal == null)
-			return null; // throw
-		
 		if (principal instanceof User) {
-		  return (User)principal;
+			return new UserDetailsProvider((User)principal);
 		}
 		
-		throw new RuntimeException("Current principal is not an instance of User.");
+		if (principal instanceof AnonymousUser) {
+			return new AnonymousUserDetailsProvider((AnonymousUser)principal);
+		}
+		
+		throw new RuntimeException("Current principal is not an instance of User or AnonymousUser.");
+	}
+	
+	private class UserDetailsProvider implements AuthenticationDetailsProvider<Map<String, Object>> {
+
+		private User user;
+		
+		public UserDetailsProvider(User user) {
+			this.user = user;
+		}
+		
+		@Override
+		public Set<String> getSecurityRights() {
+			
+			Set<String> rights = new HashSet<String>();
+			
+			Collection<GrantedAuthority> authorities = user.getAuthorities();
+			for(GrantedAuthority ga : authorities) {
+				rights.add(ga.getAuthority());
+			}
+			
+			return rights;
+		}
+
+		@Override
+		public Map<String, Object> getUserDetails() {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("name", user.getDisplayName());
+			map.put("login", user.getUsername());
+			
+			return map;
+		}
+		
+	}
+	
+	private class AnonymousUserDetailsProvider implements AuthenticationDetailsProvider<Map<String, Object>> {
+
+		private AnonymousUser user;
+		
+		public AnonymousUserDetailsProvider(AnonymousUser user) {
+			this.user = user;
+		}
+		
+		@Override
+		public Set<String> getSecurityRights() {
+			
+			Set<String> rights = new HashSet<String>();
+			
+			Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+			for(GrantedAuthority ga : authorities) {
+				rights.add(ga.getAuthority());
+			}
+			
+			return rights;
+		}
+
+		@Override
+		public Map<String, Object> getUserDetails() {
+//			Map<String, Object> map = new HashMap<String, Object>();
+//			map.put("name", user.getUsername());
+//			map.put("login", user.getUsername());
+//			return map;
+			
+			return null;
+		}
+		
 	}
 	
 }

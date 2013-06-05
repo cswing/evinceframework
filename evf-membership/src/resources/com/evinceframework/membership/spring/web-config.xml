@@ -18,10 +18,15 @@
     <bean id="evf.membership.web.authenticationProvider" 
         class="com.evinceframework.membership.web.AuthenticationDetailsProviderImpl"/>
     
+    <bean id="evf.membership.web.anonymousUser" 
+    		class="com.evinceframework.membership.model.AnonymousUser" 
+    		p:username="${evf.membership.web.anonymousUser}"
+    		p:authorities-ref="evf.environment.anonymousRights" />
+    		
     <bean id="evf.membership.web.anonymousFilter" 
     		class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
     	<constructor-arg index="0" value="${evf.membership.web.anonymousKey}" />
-    	<constructor-arg index="1" value="${evf.membership.web.anonymousUser}" />
+    	<constructor-arg index="1" ref="evf.membership.web.anonymousUser" />
     	<constructor-arg index="2" ref="evf.environment.anonymousRights" />
     </bean>
     	
