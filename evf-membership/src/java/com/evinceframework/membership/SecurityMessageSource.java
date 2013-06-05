@@ -15,7 +15,6 @@
  */
 package com.evinceframework.membership;
 
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
 import com.evinceframework.membership.authentication.AuthenticationProviderImpl;
