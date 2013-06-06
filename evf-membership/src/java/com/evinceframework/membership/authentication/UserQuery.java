@@ -42,6 +42,8 @@ public class UserQuery extends AbstractJpaQuery<User> {
 	protected void createCriteria(CriteriaBuilder builder,
 			CriteriaQuery<User> criteria, Root<User> root) {
 		
+		emailParameter = builder.parameter(String.class);
+		
 		criteria.where(
 			builder.equal(builder.lower(root.get(User_.emailAddress)), emailParameter));
 		
