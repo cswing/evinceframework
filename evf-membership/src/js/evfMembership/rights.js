@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Craig Swing
+ * Copyright 2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0<div>
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,6 +19,9 @@
 
 	var exports = {
 		
+		// generic authenticated user
+		authenticated: 	{ key: 'user', description: '' },
+
 		// rights for anonymous users
 		authenticate: 	{ key: 'evf.membership.standardAuthentication', description: '' },
 		rememberMe: 	{ key: 'evf.membership.rememberMe', description: '' },
