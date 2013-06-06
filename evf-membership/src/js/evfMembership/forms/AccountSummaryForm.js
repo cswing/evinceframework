@@ -1,5 +1,5 @@
 /*
-* Copyright 2013 Craig Swing.
+* Copyright 2013 the original author or authors.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ define([
 	'dijit/_TemplatedMixin',
 	'dijit/form/Button',
 	'evf/ComplexWidget',
-	'evf/layout/rights',
-	'evf/layout/topics',
+	'../rights',
+	'../topics',
 	'dojo/text!./templates/AccountSummaryForm.html',
-	'dojo/i18n!./nls/account'
+	'dojo/i18n!../nls/membership'
 ], function(require, declare, Templated, Button, ComplexWidget, rights, topics, template, i18n){
 
-	return declare('evf.layout.forms.AccountSummaryForm', [ComplexWidget, Templated], {
+	return declare('evfMembership.forms.AccountSummaryForm', [ComplexWidget, Templated], {
 
 		templateString: template,
 

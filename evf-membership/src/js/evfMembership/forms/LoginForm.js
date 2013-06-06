@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Craig Swing.
+ * Copyright 2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@
     'dijit/form/Button',
     'dijit/form/CheckBox',
     'evf/ComplexWidget',
-    'evf/layout/rights',
-    'evf/layout/topics', 
+    '../rights',
+    '../topics', 
     'dojo/text!./templates/LoginForm.html',
-    'dojo/i18n!./nls/account'
-], function(declare, Templated, ValidationTextBox, Button, CheckBox, ComplexWidget, rights, layoutTopics, template, i18n){
+    'dojo/i18n!../nls/membership'
+], function(declare, Templated, ValidationTextBox, Button, CheckBox, ComplexWidget, rights, topics, template, i18n){
     
-    return declare('evf.layout.forms.LoginForm', [ComplexWidget, Templated], {
+    return declare('evfMembership.forms.LoginForm', [ComplexWidget, Templated], {
         
         templateString: template,
         
@@ -72,7 +72,7 @@
             
                 // TODO validate
             
-                this.publish(layoutTopics.requestAuthentication, { 
+                this.publish(topics.requestAuthentication, { 
                     loginId:    this.loginTextBox.get('value'),
                     password:   this.passwordTextBox.get('value')
                 });
