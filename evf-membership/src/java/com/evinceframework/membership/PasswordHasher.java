@@ -33,7 +33,7 @@ public class PasswordHasher {
 	private int hashOperationCount = 1000;
 	private String algorithm = "SHA-256";
 	private String encoding = "UTF-8";
-	private Base64 encoder = new Base64();
+	private Base64 encoder = new Base64(76, new byte[]{});
 
 	/**
 	 * Compares the input to the known hashString by hashing the input and doing a comparison.
