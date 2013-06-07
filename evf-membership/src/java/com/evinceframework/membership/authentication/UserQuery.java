@@ -18,6 +18,7 @@ package com.evinceframework.membership.authentication;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 
@@ -47,8 +48,7 @@ public class UserQuery extends AbstractJpaQuery<User> {
 		criteria.where(
 			builder.equal(builder.lower(root.get(User_.emailAddress)), emailParameter));
 		
-		root.join(User_.rights);
-		root.fetch(User_.rights);
+		root.fetch(User_.rights, JoinType.LEFT);
 	}
 
 	/**
