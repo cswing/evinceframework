@@ -52,6 +52,7 @@
             
             this.passwordTextBox = this.constructWidget(ValidationTextBox, {
                 name:           'password',
+                type: 			'password', 
                 value:          '',
                 placeHolder:    i18n.password
             }, this.passwordNode);
