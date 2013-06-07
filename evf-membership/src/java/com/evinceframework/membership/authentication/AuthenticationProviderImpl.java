@@ -145,7 +145,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 		User user = query.findByEmailAddress(username);
 		if(user == null) {
 			
-			String message = messages.getMessage(
+			String message = messageAccessor.getMessage(
 					SecurityMessageSource.UNKNOWN_USER, new Object[] { username }, locale);
 					
 			notifyFailedAuthenticationAttempt(null, username, message);
@@ -158,7 +158,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 			if (!hasher.verifyPassword(
 					authentication.getCredentials().toString(), salt, user.getPassword())) {
 				
-				String message = messages.getMessage(
+				String message = messageAccessor.getMessage(
 						SecurityMessageSource.BAD_CREDENTIALS, new Object[] { username }, locale);
 				
 				notifyFailedAuthenticationAttempt(user, username, message);
@@ -167,7 +167,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 		
 		} catch (NoSuchAlgorithmException e) {
 			
-			String message = messages.getMessage(
+			String message = messageAccessor.getMessage(
 					SecurityMessageSource.SERVICE_FAILURE, new Object[] { username }, locale);
 			
 			notifyAuthenticationServiceFailure(user, username, message, e);
@@ -175,7 +175,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 		
 		} catch (UnsupportedEncodingException e) {
 			
-			String message = messages.getMessage(
+			String message = messageAccessor.getMessage(
 					SecurityMessageSource.SERVICE_FAILURE, new Object[] { username }, locale);
 			
 			notifyAuthenticationServiceFailure(user, username, message, e);
