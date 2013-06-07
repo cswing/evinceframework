@@ -29,7 +29,7 @@ import com.evinceframework.membership.authentication.AuthenticationProviderImpl;
 public class SecurityMessageSource extends ResourceBundleMessageSource {
 
 	private static final String BASE_NAME = 
-			"com.evinceframework.membership.i18n.evf_membership_messages_en_US.properties";
+			"com.evinceframework.membership.i18n.evf_membership_messages";
 	
 	/**
 	 * A key used to retrieve the unknown user message.
