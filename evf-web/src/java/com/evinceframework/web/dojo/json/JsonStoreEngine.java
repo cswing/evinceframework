@@ -45,6 +45,7 @@ import com.evinceframework.web.dojo.json.conversion.PojoConverter;
 import com.evinceframework.web.dojo.navigation.NavigationCategory;
 import com.evinceframework.web.dojo.navigation.NavigationCommand;
 import com.evinceframework.web.dojo.navigation.Navigator;
+import com.evinceframework.web.messaging.UserMessage;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 
@@ -147,6 +148,7 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConve
 		
 		setDefaultImplementation(new PojoConverter());
 		getLookupMap().put(Map.class, new MapConverter());
+		getLookupMap().put(UserMessage.class, new UserMessage.JsonConverter());
 		getLookupMap().put(Navigator.class, new Navigator.JsonConverter());
 		getLookupMap().put(NavigationCategory.class, new NavigationCategory.JsonConverter());
 		getLookupMap().put(NavigationCommand.class, new NavigationCommand.JsonConverter());

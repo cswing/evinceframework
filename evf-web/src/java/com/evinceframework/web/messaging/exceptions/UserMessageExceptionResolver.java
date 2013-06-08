@@ -15,6 +15,8 @@
  */
 package com.evinceframework.web.messaging.exceptions;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver;
 
 import com.evinceframework.core.factory.MapBackedClassLookupFactory;
+import com.evinceframework.web.dojo.mvc.model.ViewModelUtils;
 import com.evinceframework.web.messaging.UserMessage;
 
 /**
@@ -39,12 +42,12 @@ public class UserMessageExceptionResolver extends AbstractHandlerExceptionResolv
 
 	private static final Log logger = LogFactory.getLog(UserMessageExceptionResolver.class);
 
-	public static final String MESSAGES_VARIABLE_NAME = "_messages"; 
-
 	public static final String DEFAULT_VIEW_NAME = "system.error";
 
 	private String viewName = DEFAULT_VIEW_NAME;
 
+	private ViewModelUtils modelUtils = new ViewModelUtils();
+	
 	private MapBackedClassLookupFactory<UserMessageTransform> transformFactory;
 
 	public String getViewName() {
@@ -70,9 +73,8 @@ public class UserMessageExceptionResolver extends AbstractHandlerExceptionResolv
 		logger.error("Handling an exception.", ex);
 
 		ModelAndView mnv = new ModelAndView(viewName);
-
-		UserMessageTransform transform =  transformFactory.lookup(ex.getClass()); 
-		mnv.addObject(MESSAGES_VARIABLE_NAME, transform.transform(ex));
+		UserMessageTransform transform = transformFactory.lookup(ex.getClass());
+		modelUtils.findOrCreateViewModel(mnv.getModel()).addAll(Arrays.asList(transform.transform(ex)));
 
 		return mnv;
 	}

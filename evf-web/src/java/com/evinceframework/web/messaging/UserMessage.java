@@ -15,6 +15,11 @@
  */
 package com.evinceframework.web.messaging;
 
+import java.io.IOException;
+
+import com.evinceframework.web.dojo.json.JsonSerializationContext;
+import com.evinceframework.web.dojo.json.conversion.AbstractTypedJsonConverter;
+
 /**
  * A UserMessage is a message that is to be displayed to the user.
  * 
@@ -92,5 +97,40 @@ public class UserMessage {
 
 	public void setField(String field) {
 		this.field = field;
+	}
+	
+	public static class JsonConverter extends AbstractTypedJsonConverter<UserMessage>{
+
+		public static final String TYPE = "evf.msg";
+		
+		private static final String MSG_TYPE_PROPERTY = "msgType";
+		private static final String CODE_PROPERTY = "code";
+		private static final String MESSAGE_PROPERTY = "message";
+		private static final String DESCRIPTION_PROPERTY = "description";
+		private static final String FIELD_PROPERTY = "field";
+		
+		public JsonConverter() {
+			super(UserMessage.class);
+		}
+
+		@Override
+		protected String onDetermineIdentifier(UserMessage userMessage) {
+			return String.valueOf(System.identityHashCode(userMessage));
+		}
+
+		@Override
+		protected String onDetermineType(UserMessage userMessage) {
+			return TYPE;
+		}
+
+		@Override
+		protected void onWriteObjectProperties(JsonSerializationContext context, UserMessage userMessage)
+				throws IOException {			
+			context.writeProperty(MSG_TYPE_PROPERTY, userMessage.getMessageType().typeCode);
+			context.writeProperty(CODE_PROPERTY, userMessage.getCode());
+			context.writeProperty(MESSAGE_PROPERTY, userMessage.getMessage());
+			context.writeProperty(DESCRIPTION_PROPERTY, userMessage.getDescription());
+			context.writeProperty(FIELD_PROPERTY, userMessage.getField());
+		}
 	}
 }

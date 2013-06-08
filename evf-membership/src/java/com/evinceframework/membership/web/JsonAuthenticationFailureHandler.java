@@ -16,6 +16,7 @@
 package com.evinceframework.membership.web;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,9 +29,9 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 
 import com.evinceframework.core.factory.MapBackedClassLookupFactory;
 import com.evinceframework.web.dojo.json.JsonStoreEngine;
+import com.evinceframework.web.dojo.mvc.model.ViewModelUtils;
 import com.evinceframework.web.dojo.mvc.view.JsonStoreView;
 import com.evinceframework.web.messaging.UserMessage;
-import com.evinceframework.web.messaging.exceptions.UserMessageExceptionResolver;
 import com.evinceframework.web.messaging.exceptions.UserMessageTransform;
 
 /**
@@ -46,6 +47,8 @@ import com.evinceframework.web.messaging.exceptions.UserMessageTransform;
 public class JsonAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
 	private JsonStoreEngine jsonStoreEngine;
+	
+	private ViewModelUtils modelUtils = new ViewModelUtils();
     
 	private MapBackedClassLookupFactory<UserMessageTransform> transformFactory;
    
@@ -72,7 +75,7 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
     	UserMessageTransform t = transformFactory.lookup(exception.getClass());
 		
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(UserMessageExceptionResolver.MESSAGES_VARIABLE_NAME, t.transform(exception));
+		modelUtils.findOrCreateViewModel(model).addAll(Arrays.asList(t.transform(exception)));
 		
 		try {
 			new JsonStoreView(jsonStoreEngine).render(model, request, response);
