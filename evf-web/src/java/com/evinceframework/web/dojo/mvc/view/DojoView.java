@@ -158,7 +158,7 @@ public class DojoView implements View {
 		writer.write("<script type=\"text/javascript\">");
 		
 		writer.write("\nrequire(['dojo/_base/lang', 'dojo/io-query', 'dojo/ready', 'dojo/store/Observable', ");
-		writer.write("'evf/store/ViewModel', 'dojo/domReady!'],");
+		writer.write("'evf/store/ViewModel', 'evf/_lang', 'dojo/domReady!'],");
 		writer.write("\nfunction(lang, ioQuery, ready, Observable, ViewModel) {");
 		
 		writer.write("\nready(20, function(){");
