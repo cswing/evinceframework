@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 define([
-    'dojo/_base/array',
+	'dojo/_base/array',
 	'dojo/_base/declare',
 	'dojo/topic',
 	'dojo/Evented',	
@@ -37,26 +37,26 @@ define([
 		//		statement.  The widget also adds the Evented mixin.  The result is the base for a 
 		//		complex widget.
 		
-        _startupWidgets: null,
+		_startupWidgets: null,
 			// summary:
 			// 		[protected] An array of widgets that should have their startup method called when 
-            //      this widget has its startup method called.
-        
-        postMixInProperties: function() {
-            this.inherited(arguments);
-            this.viewModel = this.dojoLang.getObject('viewModel');
-        },
+			//      this widget has its startup method called.
 
-        startup: function(){
-            if(this._started) return;
-            this.inherited(arguments);
-            
-            if(this._startupWidgets) {
-                array.forEach(this._startupWidgets, function(w){w.startup();});
-            }
-        },
-        
-        listen: function(target, type, listener, dontFix) {
+		postMixInProperties: function() {
+			this.inherited(arguments);
+			this.viewModel = this.dojoLang.getObject('viewModel');
+		},
+
+		startup: function(){
+			if(this._started) return;
+			this.inherited(arguments);
+
+			if(this._startupWidgets) {
+				array.forEach(this._startupWidgets, function(w){w.startup();});
+			}
+		},
+
+		listen: function(target, type, listener, dontFix) {
 			// summary:
 			// 		A convenience method that registers an event listener in the 
 			// 		context of the current widget.  When using this method, the 
@@ -72,24 +72,24 @@ define([
 			this.own(hndl);
 			return hndl;
 		}, 
-        
-        publish: function(topic, event){
-            // summary:
+
+		publish: function(topic, event){
+			// summary:
 			// 		A convenience method to publish on a topic.
-            
-            dojoTopic.publish(topic, event);
-        },
-        
-        subscribe: function(topic, listener) {
-            // summary:
+
+			dojoTopic.publish(topic, event);
+		},
+
+		subscribe: function(topic, listener) {
+			// summary:
 			// 		A convenience method to subscribe on a topic.  The listener will 
-            //      automatically be hitched to the widget and the widget will 
-            //      automatically take ownership of resulting handle.
-			
-            var hndl = dojoTopic.subscribe(topic, this.hitch(listener));
-            this.own(hndl);
-            return hndl;
-        },
+			//      automatically be hitched to the widget and the widget will 
+			//      automatically take ownership of resulting handle.
+
+			var hndl = dojoTopic.subscribe(topic, this.hitch(listener));
+			this.own(hndl);
+			return hndl;
+		},
 		
 		ensureCtor: function(/*String|Widget ctor*/ctor) {
 			// summary: 
@@ -98,36 +98,36 @@ define([
 			//		Otherwise, it assumes the value passed in is the actual constructor,
 
 			if(this.dojoLang.isString(ctor)) {
-                return this.dojoLang.getObject(ctor);
-            }
-            return ctor;
+				return this.dojoLang.getObject(ctor);
+			}
+			return ctor;
 		},
 
-        constructWidget: function(/*String|Widget ctor*/ctor, /*Object*/ props, /*DomNode*/ node) {
-            // summary:
+		constructWidget: function(/*String|Widget ctor*/ctor, /*Object*/ props, /*DomNode*/ node) {
+			// summary:
 			// 		A convenience method to build a widget where the construtctor is either 
-            //      the actual constructor or a string that represents the widget name.
-            
-            var wctor = this.ensureCtor(ctor);
-            var w = new wctor(props, node);
-            this.registerWidgetForStartup(w);
+			//      the actual constructor or a string that represents the widget name.
 
-            return w;
-        },
-        
-        registerWidgetForStartup: function(w) {
-            // summary:
+			var wctor = this.ensureCtor(ctor);
+			var w = new wctor(props, node);
+			this.registerWidgetForStartup(w);
+
+			return w;
+		},
+
+		registerWidgetForStartup: function(w) {
+			// summary:
 			// 		A method to register to have its startup method called when the startup of this
-            //      widget is called.
-            
-            if(!this._startupWidgets) {
-                this._startupWidgets = [];
-            }
-            this._startupWidgets.push(w);
+			//      widget is called.
 
-            if(this._started && !w._started){
+			if(!this._startupWidgets) {
+				this._startupWidgets = [];
+			}
+			this._startupWidgets.push(w);
+
+			if(this._started && !w._started){
 				w.startup();
 			}
-        }
+		}
 	});
 });
