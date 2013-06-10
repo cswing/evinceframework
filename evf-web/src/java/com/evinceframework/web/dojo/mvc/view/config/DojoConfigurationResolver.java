@@ -63,10 +63,11 @@ public class DojoConfigurationResolver {
 	public DojoConfiguration resolve(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) {
 		
 		Object objDjc = request.getParameterMap().get(parameterName);
-		if (objDjc != null && objDjc instanceof String[] && ((String[])objDjc).length > 0) {			
-			DojoConfiguration config = configurations.get(((String[])objDjc)[0]);
+		if (objDjc != null && objDjc instanceof String[] && ((String[])objDjc).length > 0) {
+			String key = ((String[])objDjc)[0];
+			DojoConfiguration config = configurations.get(key);
 			if (config != null) {
-				request.getSession().setAttribute(parameterName, objDjc);
+				request.getSession().setAttribute(parameterName, key);
 				return config;
 			}
 		}
