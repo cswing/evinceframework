@@ -44,12 +44,12 @@
 			// Only add the right hand drop down if there is an authenticated user or support for authentication.
 
 			var showAuthenticationDropdown = array.some([rights.authenticate, rights.register], this.hasSecurityRight, this);
-			var showUserProfileDropdown = array.some([rights.user], this.hasSecurityRight, this);
+			var showUserProfileDropdown = array.some([rights.authenticatedUser], this.hasSecurityRight, this);
 
 			if(!showAuthenticationDropdown && !showUserProfileDropdown)
 				return;
 
-			var dlgContentClass = this.dojoConfig.user ? AccountSummaryForm : LoginForm;
+			var dlgContentClass = showUserProfileDropdown ? AccountSummaryForm : LoginForm;
 			var dlgContent = this.constructWidget(dlgContentClass, {
 				viewModel: this.viewModel
 			});

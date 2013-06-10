@@ -20,7 +20,10 @@
 	var exports = {
 		
 		// generic authenticated user
-		authenticated: 	{ key: 'user', description: '' },
+		authenticatedUser: 	{ key: 'USER', description: '' },
+
+		// generic authenticated user
+		anonymousUser: 	{ key: 'ANONYMOUS', description: '' },
 
 		// rights for anonymous users
 		authenticate: 	{ key: 'evf.membership.standardAuthentication', description: '' },
