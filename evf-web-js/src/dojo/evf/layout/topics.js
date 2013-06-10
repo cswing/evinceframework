@@ -16,7 +16,8 @@
 define([], function() {
 
 	var topics = {
-		goHome: 'goHome'
+		goHome: 'goHome',
+		messageNotification: 'messages'
 	};
 
 	return topics;

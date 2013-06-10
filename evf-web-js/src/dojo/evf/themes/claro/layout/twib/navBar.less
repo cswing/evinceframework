@@ -44,3 +44,83 @@
     border-width:           0px;
     .box-shadow(none);
 }
+
+/* Tooltip Dialogs that drop off of the navigation toolbar */
+.claro .evfToolbarDialog {
+    padding:                6px 0px 0px;
+}
+
+.claro .evfToolbarDialog:focus {  
+	outline: none;  
+}
+
+.claro .evfToolbarDialog .dijitTooltipContainer {
+    background-image:       none;
+    border-width:           0 10px 10px 10px;
+    border-color:           @primary-color;
+    border-radius:          0 0 4px 4px;
+    .box-shadow(0 1px 5px rgba(0, 0, 0, 0.25));
+}
+
+.claro .evfToolbarDialog .dijitTooltipConnector {
+    display:                none;
+}
+
+/* Messages Button & Dialog */
+.claro .navBar .messagesButton .messagesIcon {
+	width: 16px;
+	height: 16px;
+}
+
+.claro .navBar .messagesButton.error .messagesIcon {
+	background: 			url(../../images/fchi/16x16/exclamation.png);
+}
+.claro .navBar .messagesButton.warn .messagesIcon {
+	background: 			url(../../images/fchi/16x16/error.png);
+}
+.claro .navBar .messagesButton.info .messagesIcon {
+	background: 			url(../../images/fchi/16x16/information.png);
+}
+
+.claro .navBar .messagesButton .dijitButtonText {
+	padding: 0;
+}
+
+.claro .evfMessagesTooltipDialog {
+	min-width: 400px;
+	max-width: 900px;
+}
+
+.claro .evfMessagesTooltipDialog .evfMessages .message {
+	white-space: nowrap;
+}
+
+.claro .evfMessagesTooltipDialog .evfMessages .message .icon,
+.claro .evfMessagesTooltipDialog .evfMessages .message .code,
+.claro .evfMessagesTooltipDialog .evfMessages .message .text {
+	vertical-align: top;
+}
+
+.claro .evfMessagesTooltipDialog .evfMessages .message .icon {
+	width: 16px;
+	height: 16px;
+	margin-top: 3px;
+}
+
+.claro .evfMessagesTooltipDialog .evfMessages .message .code {
+	padding: 0 0.5em;
+}
+
+.claro .evfMessagesTooltipDialog .evfMessages .message .text {
+	white-space: normal;
+}
+
+.claro .evfMessagesTooltipDialog .evfMessages .message.error .icon {
+	background: 			url(../../images/fchi/16x16/exclamation.png) center top no-repeat;
+}
+.claro .evfMessagesTooltipDialog .evfMessages .message.warn .icon {
+	background: 			url(../../images/fchi/16x16/error.png) center top no-repeat;
+}
+.claro  .evfMessagesTooltipDialog .evfMessages .message.info .icon {
+	background: 			url(../../images/fchi/16x16/information.png) center top no-repeat;
+}

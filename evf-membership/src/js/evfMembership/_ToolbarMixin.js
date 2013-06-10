@@ -57,7 +57,7 @@
 			this.userDialog = new TooltipDialog({
 				content: dlgContent
 			});
-			this.domClass.add(this.userDialog.domNode, 'evfMembershipTooltipDialog');
+			this.domClass.add(this.userDialog.domNode, 'evfToolbarDialog evfMembershipTooltipDialog');
 
 			this.accountDropDown = this.constructWidget(DropDownButton, {
 				label:      this.dojoConfig.user ? this.dojoConfig.user.name : i18n.signIn,
