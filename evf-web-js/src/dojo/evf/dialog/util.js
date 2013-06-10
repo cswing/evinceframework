@@ -184,14 +184,18 @@ define([
 	};
 
 	exports._showMessageWithOkOnly = function(msgObj, callback) {
-		var dlg = new Dialog({
-			title:  msgObj.title,
-			createContent: function(node) {
+		exports.showContentWithOkOnly(msgObj.title, function(node) {
 				return new DialogMessage({
 					messageType: 	msgObj.type,
 					message: 		msgObj.message
 				}, node); 
-			},
+			}, callback);
+	};
+
+	exports.showContentWithOkOnly = function(title, contentCreator, callback) {
+		var dlg = new Dialog({
+			title:  title,
+			createContent: contentCreator,
 			createActions: function(actionBar) {
 				var btnOK = new Button({ label: i18n.action_ok });
 				actionBar.addChild(btnOK);
@@ -204,8 +208,8 @@ define([
 			}
 		});
 		dlg.domClass.add(dlg.domNode, 'evfMessageDialog');
-		dlg.show();
-	};
+		dlg.show();	
+	}
 
 	return exports;
 });

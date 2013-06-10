@@ -26,10 +26,11 @@
 	'dijit/_TemplatedMixin',
 	'dijit/Dialog',
 	'./ComplexWidget',
+	'./dialog/util',
 	'./layout/topics',
 	'./store/ViewModel'
 ], function(require, array, config, declare, aspect, Deferred, xhr, Observable, dojoTopic, 
-		Templated, Dialog, ComplexWidget, layoutTopics,  ViewModel) {
+		Templated, Dialog, ComplexWidget, dialogUtils, layoutTopics,  ViewModel) {
 
 	var SystemErrorDialogContent = declare([ComplexWidget, Templated], {
 
@@ -114,16 +115,13 @@
 	var dlg, content;
 	var showSystemErrors = function(errs) {
 
-		if(!dlg) {
-			dlg = new Dialog({
-				title: exports._systemErrorCode,
-				content: content = new exports._systemErrorContentClass({})
+		dialogUtils.showContentWithOkOnly(
+			errs.length>0 ? errs[0].code : exports._systemErrorCode,
+			function(node) {
+				return new exports._systemErrorContentClass({
+					errors: errs
+				}, node); 
 			});
-			//content = dlg.get('content');
-		}
-
-		content.set('errors', errs);
-		dlg.show();
 	};
 
 	aspect.around(require.modules['dojo/request/xhr'], 'result', function(originalXhr){
@@ -167,6 +165,7 @@
 					}
 				
 				}, function(err){
+
 					var msgs = [{
 						_type: 'evf.msg',
 						msgType: 'error',
@@ -175,6 +174,13 @@
 						description: '',
 						field: null
 					}];
+
+					// was expecting json but got something else instead
+					if(err.message =='Unexpected token <') {
+						msgs[0].code = 'HTTP-' + err.response.status
+						msgs[0].message = 'Internal Server Error'; // i18n
+					}
+					
 					showSystemErrors(msgs);
 					dfd.reject(msgs);
 
