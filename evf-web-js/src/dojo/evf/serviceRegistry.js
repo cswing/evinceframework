@@ -18,6 +18,7 @@
  	'dojo/_base/array',
 	'dojo/_base/config',
 	'dojo/_base/declare',
+	'dojo/_base/lang',
 	'dojo/aspect',
 	'dojo/Deferred',
 	'dojo/request/xhr',
@@ -29,7 +30,7 @@
 	'./dialog/util',
 	'./layout/topics',
 	'./store/ViewModel'
-], function(require, array, config, declare, aspect, Deferred, xhr, Observable, dojoTopic, 
+], function(require, array, config, declare, lang, aspect, Deferred, xhr, Observable, dojoTopic, 
 		Templated, Dialog, ComplexWidget, dialogUtils, layoutTopics,  ViewModel) {
 
 	var SystemErrorDialogContent = declare([ComplexWidget, Templated], {
@@ -92,23 +93,6 @@
 		msg._devAck = true;
 	};
 
-	/*
-		Use aop on xhr requests -> when hitting contextPath/json/..., 
-
-		before calling service, notify to clear generic error messages
-
-		on return from service
-		before -> 
-			- take the data and create a ViewModel
-			- query view model for system errors and handle. 
-			- do not continue on system error
-
-		after -> 
-			- query the viewModel for any user messages that haven't been devAckd
-			- notify generic error messages
-	*/
-
-
 	var jsonServicePath = config.contextPath + '/json/';
 	exports.registerServicePath(jsonServicePath);
 	
@@ -138,25 +122,42 @@
 			originalXhr(url, options, returnDeferred)
 				.then(function(response) {
 
+					// The web server does not send true http redirect codes, because some/most browsers 
+					// will intercept and redirect the ajax request, when what is desired is to redirect the 
+					// current page for the user.  So the server can send a json object that represents a 
+					// redirect and it is automatically handled here.
+					var isRedirect = response != null 
+						&& lang.isObject(response) && !lang.isArray(response) && !lang.isFunction(response) 
+						&& response.code && response.code == 302 && response.url && lang.isString(response.url);
+					
+					if (isRedirect) {
+						window.location = response.url;
+						return;
+					}
+
+					// It is assumed that the response from the server can be consumed using the ViewModel.
+					// It is this ViewModel, that should get passed as the resolve method on the Deferred.
 					var vm = new Observable(new ViewModel({ data: response }));
 
-					// query view model for system errors and handle. 
+					// Determine if a SystemError occured and if so, show the error in a dialog window.
 					var hasSystemError = false;
 					var result = vm.query({ _type: 'evf.msg', code: exports._systemErrorCode });
-
 					if(result.count > 0) {
 						showSystemErrors(result);
 						dfd.reject(result);
 						return;
 					}
 
+					// At this point, the call was successful and Deferred should be resolved.
 					dfd.resolve(vm);
 
+					// After being resolved, determine if any user messages were not handled by the calling 
+					// code.  These messages should be displayed to the user using the general user message 
+					// mechanism.
 					result = array.filter(vm.query({ _type: 'evf.msg' }),
 						function(msg) {
 							return msg._devAck !== true;
 						});
-					
 					if(result.length > 0) {
 						dojoTopic.publish(layoutTopics.messageNotification, {
 								messages: result,
