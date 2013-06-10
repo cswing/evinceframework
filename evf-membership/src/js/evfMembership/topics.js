@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- define([], function() {
- 
-    var topics = {
-        
-        requestAuthentication: 'requestAuthentication',
-        // summary: 
-        //      The user has provided user credentials and they must be verified.
-        //      
-        //      data:
-        //          login:      the user's login id.
-        //          password:   the user's password.
-        //          remeberMe:  whether or not to remember the user the next 
-        //                      time they return.
-        
-        signout: 'signout',
-        
-        viewProfile: 'viewProfile',
+define([], function() {
 
-        goHome: 'goHome'
-    };
-    
-    return topics;
- });
+	var topics = {
+
+		requestAuthentication: 'requestAuthentication',
+		// summary: 
+		//		The user has provided user credentials and they must be verified.
+		//
+		//		data:
+		//			login:  	the user's login id.
+		//			password: 	the user's password.
+		//			remeberMe: 	whether or not to remember the user the next 
+		//						time they return.
+
+		signout: 'signout',
+
+		viewProfile: 'viewProfile'
+	};
+
+	return topics;
+});
