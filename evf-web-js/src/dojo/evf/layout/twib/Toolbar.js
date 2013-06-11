@@ -19,11 +19,11 @@
 	'dijit/_TemplatedMixin',
 	'dijit/form/DropDownButton', 
 	'dijit/TooltipDialog',
-	//'evf/layout/navigation/menuUtil',
 	'evf/ComplexWidget',
+	'evf/layout/navigation/menuUtil',
 	'evf/layout/topics', 
-	'dojo/text!./templates/NavToolbar.html'
-], function(array, declare, Templated, DropDownButton, TooltipDialog, /*menuUtils,*/ ComplexWidget, layoutTopics, template){
+	'dojo/text!./templates/Toolbar.html'
+], function(array, declare, Templated, DropDownButton, TooltipDialog, ComplexWidget, menuUtils, layoutTopics, template){
 
 	var messageTypeOrder = {
 		'error': 0,
@@ -69,15 +69,21 @@
 
 	});
 
-	return declare('evf.layout.twib.NavToolbar', [ComplexWidget, Templated], {
+	return declare('evf.layout.twib.Toolbar', [ComplexWidget, Templated], {
 
 		templateString: template,
+
+		viewModel: null,
 
 		messageDisplay: null, 
 
 		postCreate: function(){
 			this.inherited(arguments);
 			
+			// menu
+			this._buildMenu();
+
+			// messaging
 			this.messageDisplay = new MessageDisplay({});
 			this.messageDialog = new TooltipDialog({
 				content: this.messageDisplay
@@ -90,6 +96,16 @@
 			}, this.messageNode);
 			this.domClass.add(this.messageDropDown.domNode, 'messagesButton');
 			this.domStyle.set(this.messageDropDown.domNode, 'display', 'none');
+		},
+
+		_buildMenu: function() {
+			var qr = this.viewModel.query({_type: 'evf.siteNav'});
+
+			if (qr.length == 0) return;
+			if (qr.length > 1)
+				throw 'multiple navigation mechanisms are not supported.';
+
+			menuUtils.buildNavigation(qr[0], this.menuNode, 'toolbarMenuPopup');
 		},
 
 		startup: function() {

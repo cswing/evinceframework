@@ -29,13 +29,13 @@
         
         viewModel: null,
 
-        navBarClass: null,
+        toolbarClass: null,
         
-        navBarInnerNode: null, 
+        toolbarInnerNode: null, 
         
-        navBarNode: null,
+        toolbarNode: null,
         
-        navBar: null,
+        toolbar: null,
         
         contentNode: null,
         
@@ -49,15 +49,15 @@
         postCreate: function(){
             this.inherited(arguments);
             
-            var navBarClass = this.navBarClass;
-            if (this.dojoLang.isString(navBarClass)) {
-                navBarClass = this.dojoLang.getObject(navBarClass);
+            var toolbarClass = this.toolbarClass;
+            if (this.dojoLang.isString(toolbarClass)) {
+                toolbarClass = this.dojoLang.getObject(toolbarClass);
             }
             
-            if(navBarClass) {
-                this.navBar = new navBarClass({viewModel: this.viewModel}, this.navBarNode);
+            if(toolbarClass) {
+                this.toolbar = new toolbarClass({viewModel: this.viewModel}, this.toolbarNode);
             } else {
-                console.warn('Unknown navigation bar: ' + navBarClass);
+                console.warn('Unknown navigation bar: ' + toolbarClass);
             }
         },
         
@@ -65,8 +65,8 @@
             if(this._started){ return; }
             this.inherited(arguments);
             
-            if(this.navBar)
-                this.navBar.startup();
+            if(this.toolbar)
+                this.toolbar.startup();
             
             this.set('pageTitle', win.doc.title);
 
@@ -76,7 +76,7 @@
         
         resize: function() {
             var vp = winUtils.getBox(),
-                navHeight = domGeom.getMarginBox(this.navBarInnerNode).h;
+                navHeight = domGeom.getMarginBox(this.toolbarInnerNode).h;
             
             this.domStyle.set(this.contentLayoutNode, 'paddingTop', navHeight + 'px');
             this.domStyle.set(this.contentLayoutNode, 'minHeight', (vp.h - navHeight) + 'px');
