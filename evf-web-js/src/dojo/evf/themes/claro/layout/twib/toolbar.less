@@ -20,29 +20,48 @@
 .claro .twibLayout960 .toolbar {
     width:                  960px;
     margin:                 0 auto;
+    line-height:			36px;
 }
 
 .claro .toolbar .logo {
     background:             url(@image-twib-toolbar-logo) no-repeat;
     height:                 24px;
     width:                  34px;
-    margin-top:             6px;
     cursor:                 pointer;
 }
 
 .claro .toolbar .userName {
     float:                  right;
-    line-height:            34px;
 }
 
 .claro .toolbar .dijitDropDownButton {
-    margin-top:             0.5em;
+	vertical-align: 		bottom;
 }
 
 .claro .toolbar .dijitButtonNode {
     background:             transparent;
     border-width:           0px;
     .box-shadow(none);
+}
+
+/* Menu */
+.claro  .toolbarMenuPopup {
+	background-image:		none;
+	border-width:			0 5px 5px 5px;
+	border-color:			@primary-color;
+	border-radius:			0 0 4px 4px;
+	.box-shadow(0 1px 5px rgba(0, 0, 0, 0.25));
+}
+
+.claro .dijitMenuPopup {
+	margin-top:				6px;
+}
+
+.claro .dijitButtonContents:focus {
+	outline: 				none; /*
+	border-color:			@hovered-border-color;
+	background-color: 		@hovered-background-color;
+	color:					@hovered-text-color;*/
 }
 
 /* Tooltip Dialogs that drop off of the navigation toolbar */
