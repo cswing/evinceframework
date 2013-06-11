@@ -27,7 +27,7 @@ define([], function() {
 		//			remeberMe: 	whether or not to remember the user the next 
 		//						time they return.
 
-		signout: 'signout',
+		logout: 'logout',
 
 		viewProfile: 'viewProfile'
 	};

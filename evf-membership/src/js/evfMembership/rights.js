@@ -33,7 +33,7 @@
 
 		// rights for authenticated users
 		viewProfile: 	{ key: 'evf.membership.viewProfile', description: '' },
-		signOut: 		{ key: 'evf.membership.signOut', description: '' }
+		logout: 		{ key: 'evf.membership.logout', description: '' }
 	};
 
 	security.registerRights(exports);

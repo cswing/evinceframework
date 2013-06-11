@@ -9,7 +9,7 @@ define({ root:
     registerAction:     'Register',
     signIn:             'Sign In',
     viewProfileAction:  'View Profile',
-    signOutAction:      'Sign Out'
+    logoutAction:      	'Sign Out'
 })
 //end v1.x content
 /*,

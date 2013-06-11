@@ -22,8 +22,13 @@
 	'dojo/i18n!./nls/membership'
 ], function(config, declare, xhr, serviceRegistry, topics, i18n){
 
-	var authenticationUrl = (config.contextPath ? config.contextPath : '') + '/security/authenticate';
+	var contextPath = (config.contextPath ? config.contextPath : '');
+	
+	var authenticationUrl = contextPath + '/security/authenticate';
 	serviceRegistry.registerServicePath(authenticationUrl);
+	
+	var logoutUrl = contextPath + '/security/logout';
+	
 
 	return declare('evfMembership._ServiceMixin', [/*assumes ComplexWidget*/], {
 		// summary:
@@ -34,6 +39,8 @@
 			this.inherited(arguments);
 
 			this.subscribe(topics.requestAuthentication, 'authenticate');
+			this.subscribe(topics.logout, 'logout');
+			this.subscribe(topics.viewProfile, 'viewProfile');
 		},
 
 		authenticate: function(data) {
@@ -41,16 +48,19 @@
 			xhr(authenticationUrl, {
 				method: 'POST',
 				preventCache: true,
-				//handleAs: 'json',
 				data: {
 					emailAddress: data.loginId,
 					password: data.password
 				}
-			}).then(function(response) {
-				//console.dir(response);
-			}, function(err) {
-				console.dir(err);
 			});
+		},
+
+		logout: function() {
+			window.location = logoutUrl;
+		},
+
+		viewProfile: function() {
+			throw 'viewProfile is not implemented.';
 		}
 	});
 });

@@ -50,12 +50,12 @@ define([
 				});
 			}
 
-			if(this.hasSecurityRight(rights.signOut)) {
-				var signOutBtn = this.constructWidget(Button, {
-					label: i18n.signOutAction
+			if(this.hasSecurityRight(rights.logout)) {
+				var logoutBtn = this.constructWidget(Button, {
+					label: i18n.logoutAction
 				}, this.logoffNode);
-				this.listen(signOutBtn, 'click', function() {
-					this.publish(topics.signout, {});
+				this.listen(logoutBtn, 'click', function() {
+					this.publish(topics.logout, {});
 				});
 			}
 		}
