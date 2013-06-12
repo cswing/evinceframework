@@ -90,6 +90,39 @@ define([
 			this.own(hndl);
 			return hndl;
 		},
+
+		aopBefore: function(target, methodName, advice) {
+			// summary:
+			// 		A convenience method to perform aop using dojo/aspect. The advice is
+			//		automatically be hitched to the widget and the widget will automatically 
+			//		take ownership of resulting handle.			
+
+			var hndl = this.aspect.before(target, methodName, this.hitch(advice));
+			this.own(hndl);
+			return hndl;
+		},
+
+		aopAfter: function(target, methodName, advice, receiveArguments) {
+			// summary:
+			// 		A convenience method to perform aop using dojo/aspect. The advice is
+			//		automatically be hitched to the widget and the widget will automatically 
+			//		take ownership of resulting handle.			
+
+			var hndl = this.aspect.after(target, methodName, this.hitch(advice), receiveArguments);
+			this.own(hndl);
+			return hndl;
+		},
+
+		aopAround: function(target, methodName, advice) {
+			// summary:
+			// 		A convenience method to perform aop using dojo/aspect. The advice is
+			//		automatically be hitched to the widget and the widget will automatically 
+			//		take ownership of resulting handle.			
+
+			var hndl = this.aspect.around(target, methodName, this.hitch(advice));
+			this.own(hndl);
+			return hndl;
+		},
 		
 		ensureCtor: function(/*String|Widget ctor*/ctor) {
 			// summary: 
