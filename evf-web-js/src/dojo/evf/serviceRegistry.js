@@ -89,7 +89,7 @@
 		return array.some(exports._servicePaths, function(path) { return url.startsWith(path); }); 
 	};
 
-	exports.ackknoledgeMessage = function(msg) {
+	exports.acknowledgeMessage = function(msg) {
 		msg._devAck = true;
 	};
 
