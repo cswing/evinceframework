@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 define([
-    "dojo/_base/array",
-    "dojo/_base/lang",
-    "dojo/dom-construct",
-    "dojo/on",
-    "dijit/form/Button",
-    "dijit/form/DropDownButton", 
-    "dijit/DropDownMenu", 
-    "dijit/MenuItem",
-    "evf/_lang",
-    "evf/store/util"
-], function(array, lang, domConstruct, on, Button, DropDownButton, DropDownMenu, MenuItem, evfLang, storeUtils){
+	'dojo/_base/array',
+	'dojo/_base/config',
+	'dojo/_base/lang',
+	'dojo/dom-construct',
+	'dojo/on',
+	'dijit/form/Button',
+	'dijit/form/DropDownButton', 
+	'dijit/DropDownMenu', 
+	'dijit/MenuItem',
+	'evf/store/util'
+], function(array, config, lang, domConstruct, on, Button, DropDownButton, DropDownMenu, MenuItem, storeUtils){
 
     var util = {};
     
@@ -63,7 +63,8 @@ define([
             if (item.url) {
 	        	var url = item.url;
 	        	if (!url.startsWith("http")) {
-	        		var ctxPath = lang.getObject('contextPath');
+	        		var ctxPath = config.contextPath;
+
 	        		if (ctxPath && ctxPath != '') {
 	        			url = lang.replace("{0}/{1}", [ctxPath, url]).replace('//', '/');
 	        		}
