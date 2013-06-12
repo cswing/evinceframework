@@ -52,7 +52,11 @@
 					emailAddress: data.loginId,
 					password: data.password
 				}
-			});
+			}).then(this.hitch(function(response) {
+				var fn = data.callback;
+				if(fn && this.dojoLang.isFunction(fn))
+					fn(response);
+			}));
 		},
 
 		logout: function() {

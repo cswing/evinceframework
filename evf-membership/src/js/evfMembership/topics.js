@@ -26,6 +26,9 @@ define([], function() {
 		//			password: 	the user's password.
 		//			remeberMe: 	whether or not to remember the user the next 
 		//						time they return.
+		//			callback: 	function to execute after an authentication attempt 
+		//						has been performed.  Authentication may or may not 
+		//						have been successful.
 
 		logout: 'logout',
 
