@@ -14,17 +14,19 @@
 * limitations under the License.
 */
 define([
-	'dojo/_base/declare', 
+	'dojo/_base/declare',
+	'dojo/keys', 
 	'dijit/_TemplatedMixin',
 	'dijit/form/ValidationTextBox',
 	'dijit/form/Button',
 	'dijit/form/CheckBox',
 	'evf/ComplexWidget',
+	'evf/MessageDisplay',
 	'../rights',
 	'../topics', 
 	'dojo/text!./templates/LoginForm.html',
 	'dojo/i18n!../nls/membership'
-], function(declare, Templated, ValidationTextBox, Button, CheckBox, ComplexWidget, rights, topics, template, i18n){
+], function(declare, keys, Templated, ValidationTextBox, Button, CheckBox, ComplexWidget, MessageDisplay, rights, topics, template, i18n){
 
 	return declare('evfMembership.forms.LoginForm', [ComplexWidget, Templated], {
 
@@ -43,6 +45,11 @@ define([
 
 		postCreate: function(){
 			this.inherited(arguments);
+
+			this.messageDisplay = 
+				this.constructWidget(MessageDisplay, {
+					showMessageCodes: false
+				}, this.messagesNode);
 
 			this.loginTextBox = this.constructWidget(ValidationTextBox, {
 				name: 'loginId',
@@ -69,15 +76,7 @@ define([
 			this.submitButton = this.constructWidget(Button, {
 				label: i18n.loginAction
 			}, this.submitNode);
-			this.listen(this.submitButton, 'click', function() {
-
-				// TODO validate
-
-				this.publish(topics.requestAuthentication, {
-					loginId: this.loginTextBox.get('value'),
-					password: this.passwordTextBox.get('value')
-				});
-			});
+			this.listen(this.submitButton, 'click', '_authenticate');
 
 			// Forgot Password link
 			if(this.hasSecurityRight(rights.resetPassword)) {
@@ -96,7 +95,34 @@ define([
 			} else {
 				this.domStyle.set(this.registerContainerNode, 'display', 'none');
 			}
-		}
+		},
 
+		_authenticate: function() {
+			// TODO validate
+
+			this.publish(topics.requestAuthentication, {
+				loginId: this.loginTextBox.get('value'),
+				password: this.passwordTextBox.get('value'),
+				callback: this.hitch(this._onAuthentication)
+			});
+		},
+
+		_onAuthentication: function(vm) {
+			// Assumption that on successful authentication, the service will perform
+			// the redirect.  This function is only responsible for showing security 
+			// related error messages.
+
+			this.messageDisplay.set('messages', {
+				messages: vm.query({ _type: 'evf.msg', code: 'HTTP-401' }),
+				clearPrevious: true
+			});
+		},
+
+		_onKeyUp: function(keyEvent) {
+			if(keyEvent.keyCode != keys.ENTER)
+				return;
+
+			this._authenticate();
+		}
 	});
 });

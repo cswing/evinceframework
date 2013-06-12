@@ -1,7 +1,8 @@
-<div class="loginForm"
+<div class="loginForm" data-dojo-attach-event="onkeyup: _onKeyUp"
     ><input id="${id}_loginId" data-dojo-attach-point="loginIdNode"></input
     ><input id="${id}_password" data-dojo-attach-point="passwordNode"></input
     ><input id="${id}_checkbox" data-dojo-attach-point="rememberMeNode"></input><label for="${id}_checkbox" class="checkboxLabel">${i18n.rememberMe}</label
+    ><div data-dojo-attach-point="messagesNode"></div
     ><div class="actionContainer"
         ><div data-dojo-attach-point="submitNode"></div><div data-dojo-attach-point="forgotPasswordNode"></div
     ></div
