@@ -20,54 +20,11 @@
 	'dijit/form/DropDownButton', 
 	'dijit/TooltipDialog',
 	'evf/ComplexWidget',
+	'evf/MessageDisplay',
 	'evf/layout/navigation/menuUtil',
 	'evf/layout/topics', 
 	'dojo/text!./templates/Toolbar.html'
-], function(array, declare, Templated, DropDownButton, TooltipDialog, ComplexWidget, menuUtils, layoutTopics, template){
-
-	var messageTypeOrder = {
-		'error': 0,
-		'warn': 10,
-		'info': 20
-	};
-
-	var MessageDisplay = declare([ComplexWidget, Templated], {
-
-		templateString: '<div class="evfMessages"><div data-dojo-attach-point="containerNode" class="messageContainer"></div></div>',
-
-		mostSignificantMessageType: null,
-
-		postCreate: function() {
-			this.inherited(arguments);
-			this.domClass.add(this.domNode);
-		},
-
-		_setMessagesAttr: function(msgWrapper) {
-
-			if(msgWrapper.clearPrevious === true) {
-				this.mostSignificantMessageType = null;
-				this.domConstruct.empty(this.containerNode);
-			}
-
-			var html = [],
-				currentSignificantOrder = this.mostSignificantMessageType ? messageTypeOrder[this.mostSignificantMessageType] : 9999;
-
-			array.forEach(msgWrapper.messages, function(msg) {
-				html.push(this.dojoLang.replace(
-					'<div class="message {msgType}" title="{description}"><div class="dijitInline icon"></div><div class="dijitInline code">[{code}]</div><div class="dijitInline text"><span>{message}</span></div></div>', 
-					msg));
-
-				// determine the most significant message type
-				var order = messageTypeOrder[msg.msgType];
-				if(order != null && order < currentSignificantOrder){
-					this.mostSignificantMessageType = msg.msgType;
-					currentSignificantOrder = order;
-				}
-			}, this);
-			this.domHtml.set(this.containerNode, html.join(''));
-		}
-
-	});
+], function(array, declare, Templated, DropDownButton, TooltipDialog, ComplexWidget, MessageDisplay, menuUtils, layoutTopics, template){
 
 	return declare('evf.layout.twib.Toolbar', [ComplexWidget, Templated], {
 
@@ -127,7 +84,7 @@
 				this.messageDisplay.mostSignificantMessageType ? '' : 'none');
 
 			// show the icon of the most significant message
-			for(var k in messageTypeOrder) {
+			for(var k in this.messageDisplay.messageTypeOrder) {
 				this.domClass.remove(this.messageDropDown.domNode, k);
 			}
 			this.domClass.add(this.messageDropDown.domNode, this.messageDisplay.mostSignificantMessageType);
