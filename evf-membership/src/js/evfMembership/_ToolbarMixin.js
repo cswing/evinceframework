@@ -59,6 +59,14 @@
 			});
 			this.domClass.add(this.userDialog.domNode, 'evfToolbarDialog evfMembershipTooltipDialog');
 
+			var wireEventCascade = this.hitch(function(parent, target, event) {
+				if(target[event] && this.dojoLang.isFunction(target[event])) {
+					this.aopAfter(parent, event, function() { target[event](); });
+				}
+			});
+			wireEventCascade(this.userDialog, dlgContent, 'onOpen');
+			wireEventCascade(this.userDialog, dlgContent, 'onClose');			
+
 			this.accountDropDown = this.constructWidget(DropDownButton, {
 				label:      this.dojoConfig.user ? this.dojoConfig.user.name : i18n.signIn,
 				dropDown:   this.userDialog
