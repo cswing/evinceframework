@@ -34,6 +34,8 @@
 
 		showMessageCodes: null,
 
+		showDescriptions: null,
+
 		mostSignificantMessageType: null,
 
 		postMixInProperties: function() {
@@ -60,8 +62,14 @@
 
 			array.forEach(msgWrapper.messages, function(msg) {
 				html.push(this.dojoLang.replace(
-					'<tr class="message {msgType}" title="{description}"><td><div class="icon"></div></td><td class="code" data-dojo-attach-point="codeNode">[{code}]</td><td class="text"><span>{message}</span></td></tr>', 
+					'<tr class="message {msgType}" title="{description}"><td class="iconCell"><div class="icon"></div></td><td class="code" data-dojo-attach-point="codeNode">[{code}]</td><td class="text"><span>{message}</span></td></tr>', 
 					msg));
+
+				if(this.showDescriptions) {
+					html.push(this.dojoLang.replace(
+					'<tr class="messageDescription {msgType}"><td colspan="3">{description}</td></tr>', 
+					msg));
+				}
 
 				// determine the most significant message type
 				var order = this.messageTypeOrder[msg.msgType];
