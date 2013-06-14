@@ -2,7 +2,8 @@ define({ root:
 //begin v1.x content
 ({
 	sorry: 		'Oops!!!',
-	apologyExplaination: 'We know what you were trying to do is really important, but we encountered an unexpected error trying to do what you asked.'
+	apologyExplaination: 'We know what you were trying to do is really important, but we encountered an unexpected error trying to do what you asked.',
+	accessDeniedTitle: 'Access Denied'
 })
 //end v1.x content
 /*,

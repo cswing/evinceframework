@@ -58,5 +58,12 @@
 		p:errorCode="HTTP-401" 
 		p:messageSourceAccessor-ref="evf.membership.securityMessageAccessor" 
 		p:messageKey="authentication.authenticationFailure" />
-    	
+    
+    <bean id="evf.membership.web.transformFactory.map.security.accessDenied" 
+		class="com.evinceframework.web.messaging.exceptions.transforms.StaticMessageTransform"
+		p:errorCode="HTTP-403"
+		p:messageSourceAccessor-ref="evf.membership.securityMessageAccessor" 
+		p:messageKey="authentication.accessDenied"
+		p:viewName="evf.security.accessDenied" />
+			
 </beans>
