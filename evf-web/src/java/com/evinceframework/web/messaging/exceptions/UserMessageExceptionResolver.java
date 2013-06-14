@@ -41,23 +41,11 @@ import com.evinceframework.web.messaging.UserMessage;
 public class UserMessageExceptionResolver extends AbstractHandlerExceptionResolver {
 
 	private static final Log logger = LogFactory.getLog(UserMessageExceptionResolver.class);
-
-	public static final String DEFAULT_VIEW_NAME = "system.error";
-
-	private String viewName = DEFAULT_VIEW_NAME;
-
+	
 	private ViewModelUtils modelUtils = new ViewModelUtils();
 	
 	private MapBackedClassLookupFactory<UserMessageTransform> transformFactory;
-
-	public String getViewName() {
-		return viewName;
-	}
-
-	public void setViewName(String viewName) {
-		this.viewName = viewName;
-	}
-
+	
 	public MapBackedClassLookupFactory<UserMessageTransform> getTransformFactory() {
 		return transformFactory;
 	}
@@ -71,9 +59,9 @@ public class UserMessageExceptionResolver extends AbstractHandlerExceptionResolv
 			HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
 
 		logger.error("Handling an exception.", ex);
-
-		ModelAndView mnv = new ModelAndView(viewName);
+		
 		UserMessageTransform transform = transformFactory.lookup(ex.getClass());
+		ModelAndView mnv = new ModelAndView(transform.getViewName());
 		modelUtils.findOrCreateViewModel(mnv.getModel()).addAll(Arrays.asList(transform.transform(ex)));
 
 		return mnv;

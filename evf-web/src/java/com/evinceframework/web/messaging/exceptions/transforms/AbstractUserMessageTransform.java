@@ -33,11 +33,24 @@ import com.evinceframework.web.messaging.exceptions.UserMessageTransform;
  */
 public abstract class AbstractUserMessageTransform implements UserMessageTransform {
 
+	public static final String DEFAULT_VIEW_NAME = "evf.system.error";
+
+	private String viewName = DEFAULT_VIEW_NAME;
+	
 	@Override
 	public UserMessage[] transform(Throwable t) {
 		Set<UserMessage> messages = new HashSet<UserMessage>();		
 		onTransform(t, messages);				
 		return messages.toArray(new UserMessage[] {});
+	}
+	
+	@Override
+	public String getViewName() {
+		return viewName;
+	}
+
+	public void setViewName(String viewName) {
+		this.viewName = viewName;
 	}
 
 	/**

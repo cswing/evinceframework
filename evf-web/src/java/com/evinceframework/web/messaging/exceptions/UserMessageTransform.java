@@ -35,4 +35,11 @@ public interface UserMessageTransform {
 	 */
 	public UserMessage[] transform(Throwable t);
 	
+	/**
+	 * The view to use to render this error.
+	 * 
+	 * @return
+	 */
+	public String getViewName();
+	
 }
