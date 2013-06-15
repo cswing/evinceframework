@@ -28,12 +28,12 @@ import java.util.Set;
 public interface AuthenticationDetailsProvider<T> {
 
 	/**
-	 * A set of security rights that the currently authenticated user has.  If the user is not 
-	 * authenticated, then this should return the set of rights that an a anonymous user has.
+	 * A set of security roles that the currently authenticated user has.  If the user is not 
+	 * authenticated, then this should return the set of roles that an a anonymous user has.
 	 * 
-	 * @return security rights.
+	 * @return security roles.
 	 */
-	public Set<String> getSecurityRights();
+	public Set<String> getSecurityRoles();
 
 	/**
 	 * Details about the user.

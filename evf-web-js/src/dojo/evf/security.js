@@ -22,38 +22,38 @@
 
 	var exports = {
 		// summary:
-		//		Security provides functionality to determine whether or not the user has a security right.
+		//		Security provides functionality to determine whether or not the user has a security role.
 		//		Because this is javascript, this is not really security and more a mechanism to provider 
 		//		a better user experience based on what you should have.  It is possible for the user to modify
-		//		the underlying rights in the web browser.  Any server implementation should validate securtity
+		//		the underlying roles in the web browser.  Any server implementation should validate securtity
 		//		before proceeding with a call.
-		_rights: []
+		_roles: []
 	};
 
-	exports.registerRights = function(rights) {
-		for(var k in rights) {
-			if(k != '_rights') {
-				exports._rights.push(rights[k]);
+	exports.registerRoles = function(roles) {
+		for(var k in roles) {
+			if(k != '_roles') {
+				exports._roles.push(roles[k]);
 			}
 		}
 	};
 
-	exports.hasSecurityRight = function(rightOrObject){
+	exports.hasSecurityRole = function(roleOrObject){
 		// summary:
 		//		A security method that returns true or false based on whether or not the 
-		//		user has the right specified.  This method will look in the dojo configuration
-		//		for a rights property that is a hash of right names and a boolean value 
-		//		representing whether or not the user has the right.  If the right does not 
-		//		exist in this hash, then the user is not considered to have the right.
+		//		user has the role specified.  This method will look in the dojo configuration
+		//		for a roles property that is a hash of role names and a boolean value 
+		//		representing whether or not the user has the role.  If the role does not 
+		//		exist in this hash, then the user is not considered to have the role.
 		//
-		// rightOrObject:
+		// roleOrObject:
 		//		Either a string or an object that has a key property that specifies the 
-		//		security right.
-		if(!rightOrObject) return false;
+		//		security role.
+		if(!roleOrObject) return false;
 
-		var right = lang.isString(rightOrObject) ? rightOrObject : rightOrObject['key'];
+		var role = lang.isString(roleOrObject) ? roleOrObject : roleOrObject['key'];
 
-		return config.rights && config.rights.indexOf(right) != -1;
+		return config.roles && config.roles.indexOf(role) != -1;
 	};
 	
 	return exports;

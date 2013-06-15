@@ -37,7 +37,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.evinceframework.membership.SaltProvider;
 import com.evinceframework.membership.PasswordHasher;
 import com.evinceframework.membership.SecurityMessageSource;
-import com.evinceframework.membership.model.SecurityRight;
+import com.evinceframework.membership.model.Role;
 import com.evinceframework.membership.model.User;
 
 /**
@@ -48,7 +48,7 @@ import com.evinceframework.membership.model.User;
  *
  * @see AuthenticationProvider
  * @see User
- * @see SecurityRight
+ * @see Role
  */
 public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticationProvider {
 

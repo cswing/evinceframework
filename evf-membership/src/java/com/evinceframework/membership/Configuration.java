@@ -28,6 +28,8 @@ public class Configuration {
 	private int lockoutDuration;
 	
 	private int accountExpirationDuration;
+	
+	private String rolePrefix;
 
 	/**
 	 * The number of failed attempts since the last successful login that can occur before the
@@ -73,4 +75,18 @@ public class Configuration {
 	public void setAccountExpirationDuration(int accountExpiration) {
 		this.accountExpirationDuration = accountExpiration;
 	}
+
+	/**
+	 * Spring security assumes that the their granted authorities begin with "ROLE_" by default.   
+	 * 
+	 * @return the prefix
+	 */
+	public String getRolePrefix() {
+		return rolePrefix;
+	}
+
+	public void setRolePrefix(String rolePrefix) {
+		this.rolePrefix = rolePrefix;
+	}
+	
 }

@@ -19,7 +19,7 @@ CREATE UNIQUE INDEX ui_evf_membership_user_email
 	ON evf_membership_user (emailAddress);
 
 	
-CREATE TABLE evf_membership_right(
+CREATE TABLE evf_membership_role(
         id						INT				NOT NULL AUTO_INCREMENT,
         oid                     VARCHAR(36)     NOT NULL,
         version                 INT				NOT NULL DEFAULT 0,
@@ -29,22 +29,22 @@ PRIMARY KEY(id)
 );
 ALTER TABLE evf_membership_user ENGINE = innodb;
 CREATE UNIQUE INDEX ui_evf_membership_user_token
-	ON evf_membership_right (token);
+	ON evf_membership_role (token);
 
 	
-CREATE TABLE evf_membership_userright(
+CREATE TABLE evf_membership_userrole(
         user_id                 INT				NOT NULL,
-		right_id				INT				NOT NULL,
-PRIMARY KEY(user_id, right_id)
+		role_id					INT				NOT NULL,
+PRIMARY KEY(user_id, role_id)
 );
-ALTER TABLE evf_membership_userright ENGINE = innodb;
+ALTER TABLE evf_membership_userrole ENGINE = innodb;
 
-ALTER TABLE evf_membership_userright
+ALTER TABLE evf_membership_userrole
         ADD CONSTRAINT  fk_evf_membership_user FOREIGN KEY (user_id) 
                 REFERENCES evf_membership_user(id)
                 ON DELETE CASCADE;
                 
-ALTER TABLE evf_membership_userright
-        ADD CONSTRAINT  fk_evf_membership_right FOREIGN KEY (right_id) 
-                REFERENCES evf_membership_right(id)
+ALTER TABLE evf_membership_userrole
+        ADD CONSTRAINT  fk_evf_membership_role FOREIGN KEY (role_id) 
+                REFERENCES evf_membership_role(id)
                 ON DELETE CASCADE;

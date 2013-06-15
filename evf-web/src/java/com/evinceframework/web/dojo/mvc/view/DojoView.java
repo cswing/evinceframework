@@ -145,7 +145,7 @@ public class DojoView implements View {
 		
 		params.put("paths", cfg.getSourcePaths());
 		params.put("user", authenticationDetailsProvider.getUserDetails());
-		params.put("rights", authenticationDetailsProvider.getSecurityRights()); 
+		params.put("roles", authenticationDetailsProvider.getSecurityRoles()); 
 				
 		writer.write("\n\n<script type=\"text/javascript\">");
 		writer.write("var dojoConfig =");

@@ -19,11 +19,11 @@ define([
 	'dijit/_TemplatedMixin',
 	'dijit/form/Button',
 	'evf/ComplexWidget',
-	'../rights',
+	'../roles',
 	'../topics',
 	'dojo/text!./templates/AccountSummaryForm.html',
 	'dojo/i18n!../nls/membership'
-], function(require, declare, Templated, Button, ComplexWidget, rights, topics, template, i18n){
+], function(require, declare, Templated, Button, ComplexWidget, roles, topics, template, i18n){
 
 	return declare('evfMembership.forms.AccountSummaryForm', [ComplexWidget, Templated], {
 
@@ -41,7 +41,7 @@ define([
 		postCreate: function(){
 			this.inherited(arguments);
 
-			if(this.hasSecurityRight(rights.viewProfile)) {
+			if(this.hasSecurityRole(roles.viewProfile)) {
 				var profileBtn = this.constructWidget(Button, {
 					label: i18n.viewProfileAction
 				}, this.viewProfileNode);
@@ -50,7 +50,7 @@ define([
 				});
 			}
 
-			if(this.hasSecurityRight(rights.logout)) {
+			if(this.hasSecurityRole(roles.logout)) {
 				var logoutBtn = this.constructWidget(Button, {
 					label: i18n.logoutAction
 				}, this.logoffNode);

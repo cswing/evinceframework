@@ -6,11 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
        						http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
                            	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-	<!--  
-	<bean id="evf.membership.securityMessageAccessor" 
-		class="com.evinceframework.membership.SecurityMessageSource"
-		factory-method="getAccessor" />
-	-->
+                           	
 	<bean id="evf.membership.securityMessageSource" 
 		class="com.evinceframework.membership.SecurityMessageSource" />
 		
@@ -24,9 +20,13 @@
         p:attemptsBeforeAccountLockedOut="${evf.membership.attemptsBeforeAccountLockedOut}"
         p:lockoutDuration="${evf.membership.lockoutDuration}"
         p:accountExpirationDuration="${evf.membership.accountExpirationDuration}"
+        p:rolePrefix="${evf.membership.rolePrefix}"
         />
     
     <bean id="evf.membership.user" lazy-init="true" scope="prototype"
+        p:configuration-ref="evf.membership.configuration"/>
+    
+    <bean id="evf.membership.role" lazy-init="true" scope="prototype"
         p:configuration-ref="evf.membership.configuration"/>
         
     <bean id="evf.membership.authenticationQuery"
@@ -46,25 +46,44 @@
        	p:observers-ref="evf.membership.authenticationObservers"
        	p:messageSource-ref="evf.membership.securityMessageAccessor" />
     
-    <!-- anonymous rights -->
-    <bean id="evf.membership.anonymousRight.anonymous"
+    <!-- anonymous roles -->
+    <bean id="evf.membership.anonymousRole.anonymous"
     		class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-		<constructor-arg value="${evf.membership.anonymousRight}" />
+		<constructor-arg value="${evf.membership.anonymousRole}" />
     </bean>
-   	<bean id="evf.membership.anonymousRight.standardAuthentication"
+   	<bean id="evf.membership.anonymousRole.standardAuthentication"
    			class="org.springframework.security.core.authority.SimpleGrantedAuthority">
    		<constructor-arg value="evf.membership.standardAuthentication" />
    	</bean>
-   	<bean id="evf.membership.anonymousRight.rememberMe"
+   	<bean id="evf.membership.anonymousRole.rememberMe"
    			class="org.springframework.security.core.authority.SimpleGrantedAuthority">
    		<constructor-arg value="evf.membership.rememberMe" />
    	</bean>
-   	<bean id="evf.membership.anonymousRight.register"
+   	<bean id="evf.membership.anonymousRole.register"
    			class="org.springframework.security.core.authority.SimpleGrantedAuthority">
    		<constructor-arg value="evf.membership.register" />
    	</bean>
-   	<bean id="evf.membership.anonymousRight.resetPassword"
+   	<bean id="evf.membership.anonymousRole.resetPassword"
    			class="org.springframework.security.core.authority.SimpleGrantedAuthority">
    		<constructor-arg value="evf.membership.resetPassword" />
    	</bean>
+   	
+   	<!-- Voters -->
+   	<bean id="evf.membership.security.authenticatedVoter"
+   		class="org.springframework.security.access.vote.AuthenticatedVoter" />
+
+	<bean id="evf.membership.security.roleVoter"
+   		class="org.springframework.security.access.vote.RoleVoter" 
+   		p:rolePrefix="${evf.membership.rolePrefix}"/>
+   	
+   	<bean id="evf.membership.security.accessDecisionManager"
+   			class="org.springframework.security.access.vote.AffirmativeBased">
+		<property name="decisionVoters">
+			<list>
+				<ref bean="evf.membership.security.roleVoter" />
+				<ref bean="evf.membership.security.authenticatedVoter" />
+			</list>
+		</property>
+	</bean>
+	
 </beans>

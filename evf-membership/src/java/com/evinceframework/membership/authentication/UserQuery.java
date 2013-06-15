@@ -48,11 +48,11 @@ public class UserQuery extends AbstractJpaQuery<User> {
 		criteria.where(
 			builder.equal(builder.lower(root.get(User_.emailAddress)), emailParameter));
 		
-		root.fetch(User_.rights, JoinType.LEFT);
+		root.fetch(User_.roles, JoinType.LEFT);
 	}
 
 	/**
-	 * Query for a user based on an email address. The user's rights are also fetched as part of
+	 * Query for a user based on an email address. The user's roles are also fetched as part of
 	 * the query.
 	 * 
 	 * @param emailAddress

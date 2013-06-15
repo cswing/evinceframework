@@ -38,7 +38,7 @@ import com.evinceframework.jpa.BaseEntity;
 import com.evinceframework.membership.Configuration;
 
 /**
- * A JPA backed implementation of {@link UserDetails}. Users and their {@link SecurityRight}s are
+ * A JPA backed implementation of {@link UserDetails}. Users and their {@link Role}s are
  * stored in a database.
  * 
  * @author Craig Swing
@@ -70,7 +70,7 @@ public class User extends BaseEntity implements UserDetails {
 	
 	private DateTime lastFailedAuthentication;
 	
-	private Set<SecurityRight> rights = new HashSet<SecurityRight>();
+	private Set<Role> roles = new HashSet<Role>();
 	
 	@Transient
 	public Configuration getConfiguration() {
@@ -217,15 +217,15 @@ public class User extends BaseEntity implements UserDetails {
 	}
 
 	@ManyToMany(cascade = CascadeType.MERGE)
-	@JoinTable(name = "evf_membership_userright", 
+	@JoinTable(name = "evf_membership_userrole", 
 	            joinColumns = { @JoinColumn(name = "user_id")}, 
-	            inverseJoinColumns={@JoinColumn(name="right_id")})
-	public Set<SecurityRight> getRights() {
-		return rights;
+	            inverseJoinColumns={@JoinColumn(name="role_id")})
+	public Set<Role> getRoles() {
+		return roles;
 	}
 
-	public void setRights(Set<SecurityRight> rights) {
-		this.rights = rights;
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
 
 	@Override
@@ -233,9 +233,9 @@ public class User extends BaseEntity implements UserDetails {
 	public Collection<GrantedAuthority> getAuthorities() {
 		
 		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-		authorities.add(new SimpleGrantedAuthority("USER"));
+		authorities.add(new SimpleGrantedAuthority(String.format("%sUSER", configuration.getRolePrefix())));
 		
-		for(SecurityRight r : rights) {
+		for(Role r : roles) {
 			authorities.add(r);
 		}
 		

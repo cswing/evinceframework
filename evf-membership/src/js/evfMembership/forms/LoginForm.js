@@ -22,11 +22,11 @@ define([
 	'dijit/form/CheckBox',
 	'evf/ComplexWidget',
 	'evf/MessageDisplay',
-	'../rights',
+	'../roles',
 	'../topics', 
 	'dojo/text!./templates/LoginForm.html',
 	'dojo/i18n!../nls/membership'
-], function(declare, keys, Templated, ValidationTextBox, Button, CheckBox, ComplexWidget, MessageDisplay, rights, topics, template, i18n){
+], function(declare, keys, Templated, ValidationTextBox, Button, CheckBox, ComplexWidget, MessageDisplay, roles, topics, template, i18n){
 
 	return declare('evfMembership.forms.LoginForm', [ComplexWidget, Templated], {
 
@@ -64,7 +64,7 @@ define([
 				placeHolder: i18n.password
 			}, this.passwordNode);
 
-			if(this.hasSecurityRight(rights.rememberMe)) {
+			if(this.hasSecurityRole(roles.rememberMe)) {
 				this.rememberMeCheckBox = this.constructWidget(CheckBox, {
 					name: 'rememberMe'
 				}, this.rememberMeNode);
@@ -79,7 +79,7 @@ define([
 			this.listen(this.submitButton, 'click', '_authenticate');
 
 			// Forgot Password link
-			if(this.hasSecurityRight(rights.resetPassword)) {
+			if(this.hasSecurityRole(roles.resetPassword)) {
 				this.forgotButton = this.constructWidget(Button, {
 					label: i18n.forgotAction
 				}, this.forgotPasswordNode);
@@ -88,7 +88,7 @@ define([
 			}
 
 			// Register link
-			if(this.hasSecurityRight(rights.register)) {
+			if(this.hasSecurityRole(roles.register)) {
 				this.forgotButton = this.constructWidget(Button, {
 					label: i18n.registerAction
 				}, this.registerNode);

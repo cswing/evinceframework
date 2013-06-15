@@ -19,13 +19,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.evinceframework.jpa.BaseEntity;
+import com.evinceframework.membership.Configuration;
 import com.evinceframework.membership.authentication.AuthenticationProviderImpl;
 
 /**
- * A JPA backed implementation of {@link GrantedAuthority}.  Security rights and their relationship 
+ * A JPA backed implementation of {@link GrantedAuthority}.  Security roles and their relationship 
  * to {@link User}s are stored in a database.
  * 
  * @author Craig Swing
@@ -34,19 +36,31 @@ import com.evinceframework.membership.authentication.AuthenticationProviderImpl;
  * @see User
  * @see AuthenticationProviderImpl
  */
-@Entity(name="evf_membership_right")
-public class SecurityRight extends BaseEntity implements GrantedAuthority {
+@Configurable("evf.membership.role")
+@Entity(name="evf_membership_role")
+public class Role extends BaseEntity implements GrantedAuthority {
 
 	private static final long serialVersionUID = 313449404324420067L;
 
+	private Configuration configuration;
+	
 	private String token;
 	
 	private String description;
 
-	protected SecurityRight(){}
+	protected Role(){}
+	
+	@Transient
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
 	
 	/**
-	 * A token that uniquely identifies the security right.
+	 * A token that uniquely identifies the security role.
 	 * 
 	 * @return the token
 	 */
@@ -60,7 +74,7 @@ public class SecurityRight extends BaseEntity implements GrantedAuthority {
 	}
 
 	/**
-	 * The description of the security right.
+	 * The description of the security role.
 	 * 
 	 * @return the description
 	 */
@@ -76,6 +90,6 @@ public class SecurityRight extends BaseEntity implements GrantedAuthority {
 	@Override
 	@Transient
 	public String getAuthority() {
-		return token;
+		return String.format("%s%s", token);
 	}	
 }

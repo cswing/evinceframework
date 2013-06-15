@@ -91,7 +91,7 @@ public class DojoViewResolver extends AbstractCachingViewResolver {
 			implements AuthenticationDetailsProvider<Map<String, Object>> {
 		
 		@Override
-		public Set<String> getSecurityRights() {
+		public Set<String> getSecurityRoles() {
 			return new HashSet<String>();
 		}
 		

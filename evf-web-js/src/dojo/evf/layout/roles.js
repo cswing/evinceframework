@@ -19,18 +19,18 @@
 
 	var exports = {
 		
-		// rights for anonymous users
+		// roles for anonymous users
 		authenticate: 	{ key: 'evf.membership.standardAuthentication', description: '' },
 		rememberMe: 	{ key: 'evf.membership.rememberMe', description: '' },
 		register: 		{ key: 'evf.membership.register', description: '' },
 		resetPassword: 	{ key: 'evf.membership.rememberMe', description: '' },
 
-		// rights for authenticated users
+		// roles for authenticated users
 		viewProfile: 	{ key: 'evf.membership.viewProfile', description: '' },
 		signOut: 		{ key: 'evf.membership.signOut', description: '' }
 	};
 
-	security.registerRights(exports);
+	security.registerRoles(exports);
 
 	return exports;
 });

@@ -18,11 +18,11 @@
 	'dojo/_base/declare',
 	'dijit/form/DropDownButton', 
 	'dijit/TooltipDialog',
-	'./rights',
+	'./roles',
 	'./forms/AccountSummaryForm',
 	'./forms/LoginForm',
 	'dojo/i18n!./nls/membership'
-], function(array, declare, DropDownButton, TooltipDialog, rights, AccountSummaryForm, LoginForm, i18n){
+], function(array, declare, DropDownButton, TooltipDialog, roles, AccountSummaryForm, LoginForm, i18n){
 
 	return declare('evfMembership._ToolbarMixin', [/*assumes ComplexWidget*/], {
 		// summary:
@@ -43,8 +43,8 @@
 
 			// Only add the right hand drop down if there is an authenticated user or support for authentication.
 
-			var showAuthenticationDropdown = array.some([rights.authenticate, rights.register], this.hasSecurityRight, this);
-			var showUserProfileDropdown = array.some([rights.authenticatedUser], this.hasSecurityRight, this);
+			var showAuthenticationDropdown = array.some([roles.authenticate, roles.register], this.hasSecurityRole, this);
+			var showUserProfileDropdown = array.some([roles.authenticatedUser], this.hasSecurityRole, this);
 
 			if(!showAuthenticationDropdown && !showUserProfileDropdown)
 				return;

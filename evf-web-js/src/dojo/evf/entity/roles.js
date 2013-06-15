@@ -23,7 +23,7 @@
 		updateField: 	{ key: 'evf.entity.deleteField', description: '' }
 	};
 
-	security.registerRights(exports);
+	security.registerRoles(exports);
 
 	return exports;
 });

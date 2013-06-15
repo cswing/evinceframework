@@ -25,18 +25,18 @@
 		// generic authenticated user
 		anonymousUser: 	{ key: 'ANONYMOUS', description: '' },
 
-		// rights for anonymous users
+		// roles for anonymous users
 		authenticate: 	{ key: 'evf.membership.standardAuthentication', description: '' },
 		rememberMe: 	{ key: 'evf.membership.rememberMe', description: '' },
 		register: 		{ key: 'evf.membership.register', description: '' },
 		resetPassword: 	{ key: 'evf.membership.resetPassword', description: '' },
 
-		// rights for authenticated users
+		// roles for authenticated users
 		viewProfile: 	{ key: 'evf.membership.viewProfile', description: '' },
 		logout: 		{ key: 'evf.membership.logout', description: '' }
 	};
 
-	security.registerRights(exports);
+	security.registerRoles(exports);
 
 	return exports;
 });

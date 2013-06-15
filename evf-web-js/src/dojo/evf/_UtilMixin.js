@@ -87,15 +87,15 @@ define([
 			return this.dojoLang.hitch(this, fn);
 		},
 
-		hasSecurityRight: function(rightOrObject){
+		hasSecurityRole: function(roleOrObject){
 			// summary:
 			//		A security method that calls into the security module to determine 
-			//		if the user has a particular security right.
+			//		if the user has a particular security role.
 			//
-			// rightOrObject:
+			// roleOrObject:
 			//		Either a string or an object that has a key property that specifies the 
-			//		security right.
-			return security.hasSecurityRight(rightOrObject);
+			//		security role.
+			return security.hasSecurityRole(roleOrObject);
 		}
 	});
 });

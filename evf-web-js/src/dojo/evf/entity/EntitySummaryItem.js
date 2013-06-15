@@ -27,12 +27,12 @@
 	'./AddFieldDialog',
 	'./EditFieldDialog',
 	'./serviceFactory',
-	'./rights',
+	'./roles',
 	'dojo/text!./templates/EntitySummaryItem.html',
 	'dojo/i18n!../nls/common',
 	'dojo/i18n!./nls/entity'
 ], function(declare, Templated, Destroyable, TabContainer, StoreMixin, Grid, DijitRegistry, 
-        ComplexWidget, UtilMixin, dialogUtil, AddFieldDialog, EditFieldDialog, serviceFactory, rights, template, commonI18N, entityI18N) {
+        ComplexWidget, UtilMixin, dialogUtil, AddFieldDialog, EditFieldDialog, serviceFactory, roles, template, commonI18N, entityI18N) {
 
     var _GridSummary = declare([Grid, StoreMixin, DijitRegistry, UtilMixin, Destroyable], {
 
@@ -60,7 +60,7 @@
         renderPrimaryActionsHeader: function(td) {
             this.domClass.add(td, 'actionContainer');
 
-            if(this.hasSecurityRight(rights.addField)) {
+            if(this.hasSecurityRole(roles.addField)) {
                 var add = this.domConstruct.create('div', { 
                     'class': 'dijitInline iconActionSmall add',
                     title: commonI18N.action_add 
@@ -84,7 +84,7 @@
             
             var del = this.domConstruct.create('div', { 'class': 'dijitInline iconActionSmall delete'}, td);
 
-            if(data._canBeDeleted && this.hasSecurityRight(rights.deleteField)) {
+            if(data._canBeDeleted && this.hasSecurityRole(roles.deleteField)) {
                 this.own(this.dojoOn(del, 'click', this.hitch(function() {
                     dialogUtil.showConfirmation(this.confirmDelete, this.hitch(function() {
                         this.performDelete(data);
@@ -94,7 +94,7 @@
                 this.domClass.add(del, 'disabled');
             }
 
-            if(this.hasSecurityRight(rights.updateField)) {
+            if(this.hasSecurityRole(roles.updateField)) {
                 var edit = this.domConstruct.create('div', { 'class': 'dijitInline iconActionSmall edit'}, td);
                 this.own(this.dojoOn(edit, 'click', this.hitch(function() {
 

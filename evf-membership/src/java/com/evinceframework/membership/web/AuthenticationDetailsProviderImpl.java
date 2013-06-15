@@ -25,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.evinceframework.membership.Configuration;
 import com.evinceframework.membership.model.AnonymousUser;
 import com.evinceframework.membership.model.User;
 import com.evinceframework.web.dojo.mvc.view.AuthenticationDetailsProvider;
@@ -39,9 +40,19 @@ import com.evinceframework.web.dojo.mvc.view.AuthenticationDetailsProvider;
  */
 public class AuthenticationDetailsProviderImpl implements AuthenticationDetailsProvider<Map<String, Object>> {
 	
+	private Configuration configuration;
+	
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
 	@Override
-	public Set<String> getSecurityRights() {
-		return getDelegate().getSecurityRights();
+	public Set<String> getSecurityRoles() {
+		return getDelegate().getSecurityRoles();
 	}
 
 	@Override
@@ -74,16 +85,22 @@ public class AuthenticationDetailsProviderImpl implements AuthenticationDetailsP
 		}
 		
 		@Override
-		public Set<String> getSecurityRights() {
+		public Set<String> getSecurityRoles() {
 			
-			Set<String> rights = new HashSet<String>();
+			Set<String> roles = new HashSet<String>();
 			
 			Collection<GrantedAuthority> authorities = user.getAuthorities();
 			for(GrantedAuthority ga : authorities) {
-				rights.add(ga.getAuthority());
+				
+				String authority = ga.getAuthority();
+				if(authority.startsWith(configuration.getRolePrefix())) {
+					authority = authority.replaceFirst(configuration.getRolePrefix(), "");
+				}
+				
+				roles.add(authority);
 			}
 			
-			return rights;
+			return roles;
 		}
 
 		@Override
@@ -106,25 +123,20 @@ public class AuthenticationDetailsProviderImpl implements AuthenticationDetailsP
 		}
 		
 		@Override
-		public Set<String> getSecurityRights() {
+		public Set<String> getSecurityRoles() {
 			
-			Set<String> rights = new HashSet<String>();
+			Set<String> roles = new HashSet<String>();
 			
 			Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
 			for(GrantedAuthority ga : authorities) {
-				rights.add(ga.getAuthority());
+				roles.add(ga.getAuthority());
 			}
 			
-			return rights;
+			return roles;
 		}
 
 		@Override
 		public Map<String, Object> getUserDetails() {
-//			Map<String, Object> map = new HashMap<String, Object>();
-//			map.put("name", user.getUsername());
-//			map.put("login", user.getUsername());
-//			return map;
-			
 			return null;
 		}
 		
