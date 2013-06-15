@@ -90,6 +90,6 @@ public class Role extends BaseEntity implements GrantedAuthority {
 	@Override
 	@Transient
 	public String getAuthority() {
-		return String.format("%s%s", token);
+		return String.format("%s%s", configuration.getRolePrefix(), token);
 	}	
 }
