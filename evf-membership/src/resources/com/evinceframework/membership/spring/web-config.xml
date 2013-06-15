@@ -16,7 +16,8 @@
 	-->
 
     <bean id="evf.membership.web.authenticationProvider" 
-        class="com.evinceframework.membership.web.AuthenticationDetailsProviderImpl"/>
+        class="com.evinceframework.membership.web.AuthenticationDetailsProviderImpl"
+        p:configuration-ref="evf.membership.configuration"/>
     
     <bean id="evf.membership.web.anonymousUser" 
     		class="com.evinceframework.membership.model.AnonymousUser" 

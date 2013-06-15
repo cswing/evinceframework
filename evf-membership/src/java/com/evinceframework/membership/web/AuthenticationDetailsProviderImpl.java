@@ -76,6 +76,21 @@ public class AuthenticationDetailsProviderImpl implements AuthenticationDetailsP
 		throw new RuntimeException("Current principal is not an instance of User or AnonymousUser.");
 	}
 	
+	private Set<String> convertAuthorities(Collection<? extends GrantedAuthority> authorities) {
+		
+		Set<String> roles = new HashSet<String>();
+		
+		for(GrantedAuthority ga : authorities) {
+			String authority = ga.getAuthority();
+			if(authority.startsWith(configuration.getRolePrefix())) {
+				authority = authority.replaceFirst(configuration.getRolePrefix(), "");
+			}
+			roles.add(authority);
+		}
+		
+		return roles;
+	}
+	
 	private class UserDetailsProvider implements AuthenticationDetailsProvider<Map<String, Object>> {
 
 		private User user;
@@ -86,21 +101,7 @@ public class AuthenticationDetailsProviderImpl implements AuthenticationDetailsP
 		
 		@Override
 		public Set<String> getSecurityRoles() {
-			
-			Set<String> roles = new HashSet<String>();
-			
-			Collection<GrantedAuthority> authorities = user.getAuthorities();
-			for(GrantedAuthority ga : authorities) {
-				
-				String authority = ga.getAuthority();
-				if(authority.startsWith(configuration.getRolePrefix())) {
-					authority = authority.replaceFirst(configuration.getRolePrefix(), "");
-				}
-				
-				roles.add(authority);
-			}
-			
-			return roles;
+			return convertAuthorities(user.getAuthorities());
 		}
 
 		@Override
@@ -124,22 +125,12 @@ public class AuthenticationDetailsProviderImpl implements AuthenticationDetailsP
 		
 		@Override
 		public Set<String> getSecurityRoles() {
-			
-			Set<String> roles = new HashSet<String>();
-			
-			Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-			for(GrantedAuthority ga : authorities) {
-				roles.add(ga.getAuthority());
-			}
-			
-			return roles;
+			return convertAuthorities(user.getAuthorities());
 		}
 
 		@Override
 		public Map<String, Object> getUserDetails() {
 			return null;
-		}
-		
-	}
-	
+		}		
+	}	
 }
