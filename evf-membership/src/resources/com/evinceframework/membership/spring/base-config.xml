@@ -53,19 +53,19 @@
     </bean>
    	<bean id="evf.membership.anonymousRole.standardAuthentication"
    			class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-   		<constructor-arg value="evf.membership.standardAuthentication" />
+   		<constructor-arg value="ROLE_evf.membership.standardAuthentication" />
    	</bean>
    	<bean id="evf.membership.anonymousRole.rememberMe"
    			class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-   		<constructor-arg value="evf.membership.rememberMe" />
+   		<constructor-arg value="ROLE_evf.membership.rememberMe" />
    	</bean>
    	<bean id="evf.membership.anonymousRole.register"
    			class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-   		<constructor-arg value="evf.membership.register" />
+   		<constructor-arg value="ROLE_evf.membership.register" />
    	</bean>
    	<bean id="evf.membership.anonymousRole.resetPassword"
    			class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-   		<constructor-arg value="evf.membership.resetPassword" />
+   		<constructor-arg value="ROLE_evf.membership.resetPassword" />
    	</bean>
    	
    	<!-- Voters -->
