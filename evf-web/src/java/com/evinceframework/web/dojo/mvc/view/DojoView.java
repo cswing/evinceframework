@@ -141,7 +141,8 @@ public class DojoView implements View {
 		params.put("contextPath", ctx.getRequest().getContextPath());
 		
 		Locale locale = RequestContextUtils.getLocale(ctx.getRequest());
-		params.put("locale", locale.toString());
+		// Locales must be specified in all lowercase with dashes separating variants.
+		params.put("locale", locale.toString().toLowerCase().replaceAll("_", "-"));
 		
 		params.put("paths", cfg.getSourcePaths());
 		params.put("user", authenticationDetailsProvider.getUserDetails());
