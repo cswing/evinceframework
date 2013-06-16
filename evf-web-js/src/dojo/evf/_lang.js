@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-define(["dijit/form/_TextBoxMixin", "dijit/form/TextBox"], function(_TextBoxMixin, TextBox) {
+define([
+	'dojo/_base/config',
+	'dijit/form/_TextBoxMixin', 
+	'dijit/form/TextBox'
+], function(config, _TextBoxMixin, TextBox) {
 
 	// String enhancements
 	String.prototype.startsWith = function(str) { 
@@ -69,4 +73,8 @@ define(["dijit/form/_TextBoxMixin", "dijit/form/TextBox"], function(_TextBoxMixi
 		this._updatePlaceHolder();
 	};
 
+	// set a default contextPath
+	if(!config.contextPath) {
+		config.contextPath = '';
+	}
 });

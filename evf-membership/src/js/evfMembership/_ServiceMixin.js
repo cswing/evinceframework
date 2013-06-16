@@ -22,12 +22,10 @@
 	'dojo/i18n!./nls/membership'
 ], function(config, declare, xhr, serviceRegistry, topics, i18n){
 
-	var contextPath = (config.contextPath ? config.contextPath : '');
-	
-	var authenticationUrl = contextPath + '/security/authenticate';
+	var authenticationUrl = config.contextPath + '/security/authenticate';
 	serviceRegistry.registerServicePath(authenticationUrl);
 	
-	var logoutUrl = contextPath + '/security/logout';
+	var logoutUrl = config.contextPath + '/security/logout';
 	
 
 	return declare('evfMembership._ServiceMixin', [/*assumes ComplexWidget*/], {
