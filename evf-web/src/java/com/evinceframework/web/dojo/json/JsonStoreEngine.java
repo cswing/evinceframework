@@ -143,8 +143,8 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConve
 		
 		// Joda Time Support
 		primitiveFactory.getLookupMap().put(DateTime.class, new DateTimePrimitiveWriter());
-		primitiveFactory.getLookupMap().put(LocalDateTime.class, new LocalDatePrimitiveWriter());
-		primitiveFactory.getLookupMap().put(LocalDate.class, new LocalDateTimePrimitiveWriter());
+		primitiveFactory.getLookupMap().put(LocalDateTime.class, new LocalDateTimePrimitiveWriter());
+		primitiveFactory.getLookupMap().put(LocalDate.class, new LocalDatePrimitiveWriter());
 		
 		setDefaultImplementation(new PojoConverter());
 		getLookupMap().put(Map.class, new MapConverter());
