@@ -24,6 +24,7 @@ import java.util.Set;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -140,7 +141,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
 			String username, UsernamePasswordAuthenticationToken authentication) 
 					throws AuthenticationException {		
 		
-		Locale locale = Locale.US;
+		Locale locale = LocaleContextHolder.getLocale();
 		
 		User user = query.findByEmailAddress(username);
 		if(user == null) {
