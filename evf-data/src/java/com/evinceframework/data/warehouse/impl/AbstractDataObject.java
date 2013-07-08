@@ -15,11 +15,18 @@
  */
 package com.evinceframework.data.warehouse.impl;
 
+import java.util.Locale;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 
 public abstract class AbstractDataObject {
 
+	private final Log logger = LogFactory.getLog(getClass());
+	
 	private MessageSourceAccessor messageAccessor;
 	
 	private String nameKey;
@@ -30,13 +37,46 @@ public abstract class AbstractDataObject {
 		this.messageAccessor = messageAccessor;
 		this.nameKey = nameKey;
 		this.descriptionKey = descriptionKey;
+		
+		validateMessages(LocaleContextHolder.getLocale());
 	}
 
+	protected void validateMessages(Locale locale) {
+		
+		if (getName(locale).equals(nameKey)) {
+			logger.warn(String.format("No message with the key [%s] and the %s locale", nameKey, locale.toString()));
+		}
+		
+		if (getDescription(locale).equals(descriptionKey)) {
+			logger.warn(String.format("No message with the key [%s] and the %s locale", descriptionKey, locale.toString()));
+		}
+	}
+	
 	public String getName() {
-		return messageAccessor.getMessage(nameKey, LocaleContextHolder.getLocale());
+		return getName(LocaleContextHolder.getLocale());
+	}
+	
+	protected String getName(Locale locale) {
+		try {
+		
+			return messageAccessor.getMessage(nameKey, locale);
+		
+		} catch (NoSuchMessageException e) {
+			return nameKey;
+		}
 	}
 
 	public String getDescription() {
-		return messageAccessor.getMessage(descriptionKey, LocaleContextHolder.getLocale());
+		return getDescription(LocaleContextHolder.getLocale());
+	}
+	
+	protected String getDescription(Locale locale) {
+		try {
+			
+			return messageAccessor.getMessage(descriptionKey, locale);
+		
+		} catch (NoSuchMessageException e) {
+			return descriptionKey;
+		}
 	}	
 }
