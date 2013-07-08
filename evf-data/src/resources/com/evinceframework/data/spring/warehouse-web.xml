@@ -8,18 +8,30 @@
                            	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	
-	<bean id="evf.data.web.DimensionJsonConverter" 
+	<bean id="evf.data.web.DimensionTableJsonConverter" 
 			class="com.evinceframework.web.dojo.json.conversion.InterfaceConverter">
 		<constructor-arg type="java.lang.Class" value="com.evinceframework.data.warehouse.DimensionTable" />
-		<constructor-arg type="java.lang.String" value="evfData.dimension" />
+		<constructor-arg type="java.lang.String" value="evfData.dimensionTable" />
 	</bean>
 
     <bean id="evf.data.web.DimensionalAttrJsonConverter" 
 			class="com.evinceframework.web.dojo.json.conversion.InterfaceConverter">
 		<constructor-arg type="java.lang.Class" value="com.evinceframework.data.warehouse.DimensionalAttribute" />
-		<constructor-arg type="java.lang.String" value="evfData.dimensionalGrain" />
+		<constructor-arg type="java.lang.String" value="evfData.dimensionAttr" />
 	</bean>
     
+    <bean id="evf.data.web.DimensionJsonConverter" 
+			class="com.evinceframework.web.dojo.json.conversion.InterfaceConverter">
+		<constructor-arg type="java.lang.Class" value="com.evinceframework.data.warehouse.Dimension" />
+		<constructor-arg type="java.lang.String" value="evfData.dimension" />
+	</bean>
+	
+    <bean id="evf.data.web.FactTableJsonConverter" 
+			class="com.evinceframework.web.dojo.json.conversion.InterfaceConverter">
+		<constructor-arg type="java.lang.Class" value="com.evinceframework.data.warehouse.FactTable" />
+		<constructor-arg type="java.lang.String" value="evfData.factTable" />
+	</bean>
+	
     <bean id="evf.data.web.FactJsonConverter" 
 			class="com.evinceframework.web.dojo.json.conversion.InterfaceConverter">
 		<constructor-arg type="java.lang.Class" value="com.evinceframework.data.warehouse.Fact" />
