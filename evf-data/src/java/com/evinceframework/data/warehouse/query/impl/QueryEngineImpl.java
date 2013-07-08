@@ -99,15 +99,15 @@ public class QueryEngineImpl {
 				int paramIdx = 0;
 				
 				if(sqlResult.limitHandler != null)
-					paramIdx =+ sqlResult.limitHandler.bindLimitParametersAtStartOfQuery(stmt, paramIdx);
+					paramIdx += sqlResult.limitHandler.bindLimitParametersAtStartOfQuery(stmt, paramIdx);
 				
 				// set parameters
 				for(DimensionCriterion dc : query.getDimensionCriterion()) {
-					paramIdx =+ dc.setParameterValue(stmt, paramIdx);
+					paramIdx += dc.setParameterValue(stmt, paramIdx);
 				}
 				
 				if(sqlResult.limitHandler != null)
-					paramIdx =+ sqlResult.limitHandler.bindLimitParametersAtEndOfQuery(stmt, paramIdx);
+					paramIdx += sqlResult.limitHandler.bindLimitParametersAtEndOfQuery(stmt, paramIdx);
 				
 				return stmt;
 			}
