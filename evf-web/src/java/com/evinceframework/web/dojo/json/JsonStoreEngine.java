@@ -34,6 +34,7 @@ import com.evinceframework.core.factory.MapBackedClassLookupFactory;
 import com.evinceframework.data.QueryParameters;
 import com.evinceframework.data.QueryResult;
 import com.evinceframework.web.dojo.json.JsonSerializationContext.DeferredSerialization;
+import com.evinceframework.web.dojo.json.conversion.ClassPrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.DatePrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.DateTimePrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.DefaultPrimitiveWriter;
@@ -140,6 +141,7 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConve
 		primitiveFactory.getLookupMap().put(Boolean.class, defaultPrimitiveWriter);
 		primitiveFactory.getLookupMap().put(BigDecimal.class, defaultPrimitiveWriter);
 		primitiveFactory.getLookupMap().put(Date.class, new DatePrimitiveWriter());
+		primitiveFactory.getLookupMap().put(Class.class, new ClassPrimitiveWriter());
 		
 		// Joda Time Support
 		primitiveFactory.getLookupMap().put(DateTime.class, new DateTimePrimitiveWriter());
