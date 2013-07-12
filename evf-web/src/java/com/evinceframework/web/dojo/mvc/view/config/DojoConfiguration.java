@@ -40,6 +40,8 @@ public class DojoConfiguration {
 	
 	private String favoriteIconLink = "";
 	
+	private Set<String> initializationRequires = new HashSet<String>();
+	
 	private String cacheKey = DEFAULT_CACHE_KEY;
 	
 	private Set<String> javascriptSnippets = new HashSet<String>();
@@ -124,6 +126,14 @@ public class DojoConfiguration {
 		this.javascriptSnippets = javascriptSnippets;
 	}
 	
+	public Set<String> getInitializationRequires() {
+		return initializationRequires;
+	}
+
+	public void setInitializationRequires(Set<String> initializationRequires) {
+		this.initializationRequires = initializationRequires;
+	}
+
 	public void renderJavascript(PrintWriter writer, DojoViewRenderingContext ctx) {
 		for(String snippet : javascriptSnippets) {
 			writer.write(snippet);

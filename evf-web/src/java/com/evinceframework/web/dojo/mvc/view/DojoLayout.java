@@ -16,6 +16,7 @@
 package com.evinceframework.web.dojo.mvc.view;
 
 import java.io.PrintWriter;
+import java.util.Set;
 
 /**
  * A {@link DojoView} will delegate to an implementation of this interface to provide 
@@ -26,6 +27,8 @@ import java.io.PrintWriter;
 public interface DojoLayout {
 
 	public String getDocType(DojoViewRenderingContext ctx);
+	
+	public Set<String> getInitializationRequires();
 	
 	public void renderHeadContent(PrintWriter writer, DojoViewRenderingContext ctx);
 	

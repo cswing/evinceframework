@@ -52,6 +52,8 @@ public class SingleWidgetLayout implements DojoLayout {
 	
 	private String layoutWidget;
 	
+	private Set<String> initializationRequires = new HashSet<String>(); 
+	
 	private Set<String> javascriptSnippets = new HashSet<String>();
 	
 	public String getPageTitle() {
@@ -91,6 +93,15 @@ public class SingleWidgetLayout implements DojoLayout {
 		return docType;
 	}
 	
+	@Override
+	public Set<String> getInitializationRequires() {
+		return initializationRequires;
+	}
+
+	public void setInitializationRequires(Set<String> initializationRequires) {
+		this.initializationRequires = initializationRequires;
+	}
+
 	@Override
 	public void renderHeadContent(PrintWriter writer, DojoViewRenderingContext ctx) {
 		

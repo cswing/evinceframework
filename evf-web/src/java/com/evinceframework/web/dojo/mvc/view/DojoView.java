@@ -18,8 +18,10 @@ package com.evinceframework.web.dojo.mvc.view;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -158,8 +160,34 @@ public class DojoView implements View {
 		
 		writer.write("<script type=\"text/javascript\">");
 		
+		Set<String> additionalRequires = new HashSet<String>();
+		additionalRequires.addAll(cfg.getInitializationRequires());
+		additionalRequires.addAll(layout.getInitializationRequires());
+		
+		// Remove hardcoded requires used below
+		additionalRequires.remove("dojo/_base/lang");
+		additionalRequires.remove("dojo._base.lang");
+		additionalRequires.remove("dojo/io-query");
+		additionalRequires.remove("dojo.io-query");
+		additionalRequires.remove("dojo/ready");
+		additionalRequires.remove("dojo.ready");
+		additionalRequires.remove("dojo/store/Observable");
+		additionalRequires.remove("dojo.store.Observable");
+		additionalRequires.remove("evf/store/ViewModel");
+		additionalRequires.remove("evf.store.ViewModel");
+		additionalRequires.remove("evf/_lang");
+		additionalRequires.remove("evf._lang");
+		additionalRequires.remove("dojo/domReady!");
+		additionalRequires.remove("dojo.domReady!");		
+		
 		writer.write("\nrequire(['dojo/_base/lang', 'dojo/io-query', 'dojo/ready', 'dojo/store/Observable', ");
-		writer.write("'evf/store/ViewModel', 'evf/_lang', 'dojo/domReady!'],");
+		writer.write("'evf/store/ViewModel', 'evf/_lang'");
+		for(String req : additionalRequires) {
+			writer.write(", '");
+			writer.write(req.replace('.',  '/'));
+			writer.write("'");
+		}
+		writer.write(", 'dojo/domReady!'],");
 		writer.write("\nfunction(lang, ioQuery, ready, Observable, ViewModel) {");
 		
 		writer.write("\nready(20, function(){");
