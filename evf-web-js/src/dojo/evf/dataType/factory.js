@@ -14,8 +14,10 @@
  * limitations under the License.
  */
  define([
-	'dojo/store/Memory'
-], function(Memory) {
+ 	'dojo/on',
+	'dojo/store/Memory',
+	'evf/dataType/_Binding'
+], function(on, Memory, DefaultBinding) {
 
 	/*=====
 	evf.dataType.__DataTypeDefinition = declare(null, {
@@ -63,6 +65,14 @@
 	exports._defaultFormatter = function(data) { return data; };
 	exports._defaultGetter = function(widget) { return widget.get('value'); };
 	exports._defaultSetter = function(widget, value) { return widget.set('value', value); };
+	exports._defaultBinder = function(widget, dataObject, bindingKey, observable) {
+		return new DefaultBinding({
+			widget: widget, 
+			observable: observable, 
+			dataObject: dataObject, 
+			bindingKey: bindingKey
+		});
+	};
 
 	exports.registerDataType = function(/*dataType.__DataTypeDefinition*/dataType, replaceIfExists) {
 		// summary:
@@ -78,35 +88,41 @@
 		if(!dataType.widgetFactory)
 			throw dataType.key + ' - a widgetFactory is required.';
 
-		exports.store.add({
+		var data = {
 			id: 			dataType.key,
 			name: 			dataType.name || dataType.key,
 			createWidget: 	dataType.widgetFactory,
 			getValue: 		dataType.getter || exports._defaultGetter,
 			setValue: 		dataType.setter || exports._defaultSetter,
 			format: 		dataType.formatter || exports._defaultFormatter,
+			binder: 		dataType.binder || exports._defaultBinder,
 			fieldConfigurationClass: dataType.fieldConfigurationClass
-		});
-
-		// TODO remove
-		exports._dataTypeMap[dataType.key] = {
-			createWidget: 	dataType.widgetFactory,
-			getValue: 		dataType.getter || exports._defaultGetter,
-			setValue: 		dataType.setter || exports._defaultSetter,
-			format: 		dataType.formatter || exports._defaultFormatter
 		};
-		return exports._dataTypeMap[dataType.key];
+
+		exports.store.add(data);
+
+		return data;
 	};
 
 	exports.findDataType = function(key) {
-		var dt = exports._dataTypeMap[key];
-		if (!dt)
+		var results = exports.store.query({ id: key });
+		if(results.length < 1)
 			throw key + ' is NOT a known dataType';
-		return dt;
+
+		return results[0];
 	}
 
-	exports.createWidget = function(key, node, context) {
-		return exports.findDataType(key).createWidget(node, context);
+	exports.createWidget = function(key, node, context, dataObject, bindingKey, observable) {
+
+		var dataType = exports.findDataType(key);
+		var widget = dataType.createWidget(node, context);
+
+		var requiresBinding = dataObject && bindingKey;
+		if(requiresBinding) {
+			widget.binding = dataType.binder(widget, dataObject, bindingKey, observable);
+		}
+
+		return widget;
 	};
 
 	exports.format = function(key, data) {
