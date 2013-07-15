@@ -15,23 +15,50 @@
  */
 define([
 	'dojo/_base/declare',
-	//'dgrid/_StoreMixin',
+	'dijit/_TemplatedMixin',
 	'dgrid/Grid', 
 	'dgrid/extensions/DijitRegistry',
+	'evf/ComplexWidget',
 	'evf/_UtilMixin',
+	'evf/dialog/_FormDialogMixin',
 	'evf/dialog/util',
+	'./pivot/Configuration',
+	'dojo/text!./templates/PivotGrid.html',
 	'dojo/i18n!./nls/pivot'
-], function(declare, Grid, DijitRegistry, UtilMixin, dialogUtil, i18n) {
+], function(declare, Templated, Grid, DijitRegistry, ComplexWidget, UtilMixin, FormDialogMixin, dialogUtil, Configuration, template, i18n) {
 
-	//var InternalGrid = declare([Grid], {});
+	var InternalGrid = declare([Grid, DijitRegistry, UtilMixin], {});
 
 	var defaultQuery = {
+
+		rowSummarizations: [],
+		columnSummarizations: [],
+
+
 		summarizations: [],
 		factCriterion: [],
 		factSelections: []
 	};
 
-	return declare('evfData.PivotGrid', [Grid, DijitRegistry, UtilMixin], {
+	var ConfigurationDialog = declare([FormDialogMixin], {
+
+		contentParams: null,
+
+		createContent: function(node) {
+			return new Configuration(this.contentParams, node);
+		},
+
+		onSubmit: function() {
+			console.dir(this.content.queryDefinition);
+
+			return true;
+		}
+
+	});
+
+	return declare('evfData.PivotGrid', [ComplexWidget, Templated], {
+
+		templateString: template,
 
 		factTable: null,
 
@@ -41,18 +68,42 @@ define([
 			this.inherited(arguments);
 			this.query = this.query || this.dojoLang.mixin({}, defaultQuery);
 
-			this.columns = [];
+			//factSelectionNode
+			//hDimSelectionNode
 
-			// summarization column
-			var summaryDef = this.factTable.dimensions[0];
-			if(!summaryDef) {
-				dialogUtil.showErrorMessage(this.dojoLang.replace(i18n.error_noDimensions, [this.factTable.name]));
+
+			if (this.factTable.dimensions.length < 2) {
+				dialogUtil.showErrorMessage(this.dojoLang.replace(i18n.error_notEnoughDimensions, [this.factTable.name]));
 			}
 
-			this.columns.push({
-				label: summaryDef.table.name,
-				field: 'test'
-			})
+			this.columns = [];
+			this.availableDimensions = [];
+
+			// row sumarizations - determine how the rows are summarized
+			if (this.query.rowSummarizations.length > 0) {
+
+
+
+			} else { // default to the first dimension
+				var defaultSummarization = this.factTable.dimensions[0];
+				this.columns.push({
+					label: defaultSummarization.table.name,
+					field: 'test'
+				});
+			}
+
+			if (this.query.columnSummarizations.length > 0) {
+
+			} else { // default to the second dimension
+
+				var defaultSummarization = this.factTable.dimensions[1];
+				this.columns.push({
+					label: defaultSummarization.table.name,
+					field: 'test'
+				});	
+
+			}
+			
 
 			//if (this.columns.summarizations[0])
 
@@ -75,11 +126,24 @@ define([
 		postCreate: function() {
 			this.inherited(arguments);
 
-			//var gridNode = this.domConstruct.create('div', {}, this.domNode);
-			//this.grid = new InternalGrid();
+			this.grid = new InternalGrid({
+				columns: this.columns
+			}, this.gridNode);
 
-			console.dir(this.factTable);
+			//console.dir(this.factTable);
 			//this.domHtml.set(this.domNode, 'PivotGrid...');
+
+			this.listen(this.domNode, 'click', function() {
+				if(this._configDialog == null) {
+					this._configDialog = new ConfigurationDialog({
+						contentParams: {
+							factTable: this.factTable,
+							queryDefinition: this.queryDefinition
+						}
+					});
+				}
+				this._configDialog.show();
+			});
 		}
 
 	});

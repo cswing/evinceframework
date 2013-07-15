@@ -1,6 +1,9 @@
 define({ root:
 //begin v1.x content
 ({
+	label_queryDefinitionName: 	'Name',
+	label_factTable: 			'Fact table',
+
 
 	error_notEnoughDimensions: 'The {0} fact table does not have enough dimensions defined to support a Pivot Grid.'	
 	
