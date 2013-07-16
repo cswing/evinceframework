@@ -16,26 +16,20 @@
 define([
 	'dojo/_base/declare',
 	'dijit/_TemplatedMixin',
+	'dijit/layout/TabContainer',
 	'evf/ComplexWidget',
 	'evf/dataType/factory',
 	'evf/dialog/SimpleFormDialog',
 	'evf/dialog/util',
-	'./Configuration',
+	'./DrillPathConfiguration',
+	'./util',
 	'dojo/text!./templates/Configuration.html',
 	'dojo/i18n!./nls/configuration'
-], function(declare, Templated, ComplexWidget, dataFactory, SimpleFormDialog, dialogUtil, Configuration, template, i18n) {
+], function(declare, Templated, TabContainer, ComplexWidget, dataFactory, SimpleFormDialog, dialogUtil, DrillPathConfiguration, pivotUtil, template, i18n) {
 
-	var defaultQueryDefinition = {
-
-		name: '',
-
-		rowSummarizations: [],
-		columnSummarizations: [],
-
-		summarizations: [],
-		factCriterion: [],
-		factSelections: []
-	};
+	var FactsContentPane = declare([ComplexWidget, Templated], {
+		templateString: '<div>Facts</div>'
+	});
 
 	return declare('evfData.pivot.Configuration', [ComplexWidget, Templated], {
 
@@ -53,9 +47,7 @@ define([
 			this.inherited(arguments);
 
 			this.i18n = i18n;
-			this.queryDefinition = this.dojoLang.clone(this.queryDefinition) 
-				|| this.dojoLang.mixin({factTable: this.factTable}, defaultQueryDefinition);
-
+			this.queryDefinition = this.queryDefinition || pivotUtil.defaultQueryDefinition(this.factTable);
 
 			/*
 			if (this.factTable.dimensions.length < 2) {
@@ -96,11 +88,33 @@ define([
 
 			this.domHtml.set(this.factTableNode, this.factTable.name);
 
-			//factTableSelectNode
-			//tabContainerNode
+			this.tabContainer = this.constructWidget(TabContainer, {
+				tabPosition: 'left-h'
+			}, this.tabContainerNode);
 
-			//console.dir(this.factTable);
-			//this.domHtml.set(this.domNode, 'PivotGrid...');
+			this.factsTab = new FactsContentPane({
+				title: i18n.tab_facts
+			});
+			this.tabContainer.addChild(this.factsTab);
+
+			this.cols_PathsTab = new DrillPathConfiguration({
+				title: i18n.tab_drillPaths_Cols,
+				factTable: this.factTable
+			});
+			this.tabContainer.addChild(this.cols_PathsTab);
+
+			this.row_PathsTab = new DrillPathConfiguration({
+				title: i18n.tab_drillPaths_Rows,
+				factTable: this.factTable
+			});
+			this.tabContainer.addChild(this.row_PathsTab);
+			
+		},
+
+		startup: function() {
+			this.inherited(arguments);
+			setTimeout(this.hitch(function() { this.tabContainer.resize(); }), 0);
+			//this.tabContainer.resize(); // does not work
 		}
 
 	});

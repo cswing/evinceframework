@@ -4,6 +4,14 @@ define({ root:
 	label_queryDefinitionName: 	'Name',
 	label_factTable: 			'Fact table',
 
+	dialog_title: 				'Configuration',
+
+	tab_facts: 					'Facts',
+	tab_drillPaths_Rows:		'Rows', 	//'Drill Paths (Rows)',
+	tab_drillPaths_Cols:		'Columns', 	//'Drill Paths (Columns)',
+
+	sectionTitle_dimensions: 	'Dimensions',
+	sectionTitle_drillPath: 	'Drill path',
 
 	error_notEnoughDimensions: 'The {0} fact table does not have enough dimensions defined to support a Pivot Grid.'	
 	
