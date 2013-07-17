@@ -131,6 +131,7 @@ define([
 					});
 				}
 				this._configDialog.show();
+				this._configDialog.resize();
 			});
 
 			this.domHtml.set(this.titleNode, 
