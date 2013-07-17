@@ -21,12 +21,13 @@ define([
 	'dijit/Tree',
 	'evf/ComplexWidget',
 	'evf/dataType/factory',
+	'./DimensionTreeModel',
 	'./util',
 	'dojo/text!./templates/DrillPathConfiguration.html',
 	'dojo/i18n!./nls/configuration'
-], function(declare, MemoryStore, Templated, ObjectStoreModel, Tree, ComplexWidget, dataFactory, pivotUtil, template, i18n) {
+], function(declare, MemoryStore, Templated, ObjectStoreModel, Tree, ComplexWidget, dataFactory, DimensionTreeModel, pivotUtil, template, i18n) {
 
-	return declare('evf.Data.pivot.DrillPathConfiguration', [ComplexWidget, Templated], {
+	return declare('evfData.pivot.DrillPathConfiguration', [ComplexWidget, Templated], {
 		
 		templateString: template,
 
@@ -40,26 +41,13 @@ define([
 		postCreate: function() {
 			this.inherited(arguments);
 
-			console.dir();
-
-			var store = new MemoryStore({
-				data: this.factTable.dimensions,
-				getChildren: function(object){
-					// TODO filter out business keys
-					return object.table.attributes;
-				}
-			});
-
-			var treeModel = new ObjectStoreModel({
-				store: store,
-				query: {},
-				getRoot: function(onItem, onError){
-					return this.factTable
-				}
+			var treeModel = new DimensionTreeModel({
+				factTable: this.factTable
 			});
 
 			this.dimensionTree = this.constructWidget(Tree, {
-				model: treeModel
+				model: 		treeModel,
+				showRoot: 	false
 			});
 
 			this.dimensionTree.placeAt(this.treeNode);
