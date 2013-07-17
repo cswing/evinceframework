@@ -15,11 +15,13 @@
  */
 package com.evinceframework.data.warehouse.impl;
 
+import org.springframework.context.support.MessageSourceAccessor;
+
 import com.evinceframework.data.warehouse.Dimension;
 import com.evinceframework.data.warehouse.DimensionTable;
 import com.evinceframework.data.warehouse.FactTable;
 
-public class DimensionImpl implements Dimension {
+public class DimensionImpl extends AbstractDataObject implements Dimension {
 
 	private DimensionTableImpl table;
 	
@@ -28,6 +30,18 @@ public class DimensionImpl implements Dimension {
 	private String foreignKeyColumn;
 	
 	public DimensionImpl(DimensionTableImpl table, FactTableImpl factTable, String foreignKeyColumn) {
+		this(null, null, null, table, factTable, foreignKeyColumn);
+	}
+	
+	public DimensionImpl(MessageSourceAccessor messageAccessor, String nameKey, String descriptionKey, 
+			DimensionTableImpl table, FactTableImpl factTable, String foreignKeyColumn) {
+		
+		super(
+				messageAccessor != null ? messageAccessor : table.getMessageAccessor(),
+				nameKey != null ? nameKey : table.getNameKey(),
+				descriptionKey != null ? descriptionKey : table.getDescriptionKey()
+		);
+		
 		this.table = table;
 		this.factTable = factTable;
 		this.foreignKeyColumn = foreignKeyColumn;

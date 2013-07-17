@@ -25,6 +25,10 @@ package com.evinceframework.data.warehouse;
  */
 public interface Dimension {
 
+	public String getName();
+	
+	public String getDescription();
+	
 	public DimensionTable getTable();
 	
 	public FactTable getFactTable();

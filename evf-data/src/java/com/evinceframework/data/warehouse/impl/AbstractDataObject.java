@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.util.StringUtils;
 
 public abstract class AbstractDataObject {
 
@@ -52,6 +53,18 @@ public abstract class AbstractDataObject {
 		}
 	}
 	
+	/*package*/ MessageSourceAccessor getMessageAccessor() {
+		return messageAccessor;
+	}
+	
+	/*package*/ String getNameKey() {
+		return nameKey;
+	}
+
+	/*package*/ String getDescriptionKey() {
+		return descriptionKey;
+	}
+
 	public String getName() {
 		return getName(LocaleContextHolder.getLocale());
 	}
@@ -59,7 +72,8 @@ public abstract class AbstractDataObject {
 	protected String getName(Locale locale) {
 		try {
 		
-			return messageAccessor.getMessage(nameKey, locale);
+			String name = messageAccessor.getMessage(nameKey, locale);
+			return StringUtils.hasText(name) ? name : nameKey;
 		
 		} catch (NoSuchMessageException e) {
 			return nameKey;
@@ -73,7 +87,8 @@ public abstract class AbstractDataObject {
 	protected String getDescription(Locale locale) {
 		try {
 			
-			return messageAccessor.getMessage(descriptionKey, locale);
+			String description = messageAccessor.getMessage(descriptionKey, locale);
+			return StringUtils.hasText(description) ? description : descriptionKey;
 		
 		} catch (NoSuchMessageException e) {
 			return descriptionKey;
