@@ -2,8 +2,8 @@ define([
     "dojo/_base/declare",
     "dijit/_Widget",
     "dijit/_Templated",
-    "evf/layout/navigation/menuUtil",
-    "dojo/text!./templates/Toolbar.html"
+    "evf/layout/navigation/menuUtil"//,
+    //"dojo/text!./templates/Toolbar.html"
 ], function(declare, Widget, Templated, menuUtils, template){
 
     return declare("evf.layout.navigation.NavigationToolbar", [Widget, Templated], {

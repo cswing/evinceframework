@@ -19,7 +19,7 @@
     "dojo/topic",
     "dijit/_Widget",
     "dijit/_Templated",
-    "evf/dataTypeFactory",
+    "evf/dataType/factory",
     "evf/store/util",
     "dojo/text!./templates/Editor.html"
 ], function(declare, domConstruct, topic, Widget, Templated, dataTypeFactory, storeUtil, template) {
