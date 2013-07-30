@@ -58,6 +58,25 @@ define([
 				model: this.drillPathModel,
 				query: { _type: modelTypeKeys.drillPathRoot, isRows: this.isRows }
 			}, this.drillPathTreeNode);
+		},
+
+		resize: function(cb){
+			
+			if(!cb) return;
+
+			this.domStyle.set(this.domNode, 'height', cb.h + 'px');
+
+			var dim_mb = this.domGeom.getMarginBox(this.dimensionNode),
+			  dimcn_mb = this.domGeom.getMarginBox(this.dimensionContentNode),
+			  dp_mb = this.domGeom.getMarginBox(this.drillPathNode),
+			  dpcn_mb = this.domGeom.getMarginBox(this.drillPathContentNode);
+			
+			this.domStyle.set(this.dimensionTree.dndNode, 'height', 
+				(cb.h - (dim_mb.h - dimcn_mb.h)) + 'px');
+			this.domStyle.set(this.drillPathTree.domNode, 'height', 
+				(cb.h - (dp_mb.h - dpcn_mb.h)) + 'px');
+
+			this.domStyle.set(this.drillPathTree.domNode, 'width', (cb.w - dim_mb.w) + 'px');
 		}
 
 	});

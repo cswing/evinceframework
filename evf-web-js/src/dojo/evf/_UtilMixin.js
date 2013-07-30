@@ -23,11 +23,12 @@ define([
 	'dojo/dom-attr',
 	'dojo/dom-class',
 	'dojo/dom-construct',
+	'dojo/dom-geometry',
     'dojo/html',
 	'dojo/dom-style',
 	'dojo/on',
 	'evf/security'
-], function(array, config, declare, kernel, lang, aspect, domAttr, domClass, domConstruct, domHtml, domStyle, on, security){
+], function(array, config, declare, kernel, lang, aspect, domAttr, domClass, domConstruct, domGeom, domHtml, domStyle, on, security){
 
 	return declare('evf._UtilMixin', [], {
 		// summary:
@@ -68,6 +69,10 @@ define([
 			// summary:
 			// 		Provides convenient access to the dojo/dom-construct module. 
 		
+		domGeom: domGeom,
+			// summary:
+			// 		Provides convenient access to the dojo/dom-geometry module. 
+
         domHtml: domHtml,
 			// summary:
 			// 		Provides convenient access to the dojo/dom-html module. 

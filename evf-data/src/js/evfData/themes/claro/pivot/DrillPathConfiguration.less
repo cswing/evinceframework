@@ -4,14 +4,14 @@
 .claro .evfDataDimensionConfig .dimensions {
 	vertical-align: 		top;
 	width: 					250px;
-	padding: 				5px 5px 0 5px;
+	padding: 				5px 0 0 5px;
 }
 
 .claro .evfDataDimensionConfig .drillPath {
 	vertical-align: 		top;
 	width: 					360px;
 	padding: 				5px 0 0 5px;
-	border-left:			solid 1px @minor-border-color;
+	/*border-left:			solid 1px @minor-border-color;*/
 }
 
 .claro .evfDataDimensionConfig .dimensions .title,
@@ -29,12 +29,13 @@
 /* Trees */
 .claro .evfDataDimensionTree ul,
 .claro .evfDataDrillPathConfigurationTree ul {
+	overflow: 				auto;
 	list-style-type: 		none;
-	-webkit-margin-before: 	1em;
-	-webkit-margin-after: 	1em;
-	-webkit-margin-start: 	0px;
-	-webkit-margin-end: 	0px;
-	-webkit-padding-start: 	0px;
+	-webkit-margin-before: 	0;
+	-webkit-margin-after: 	0;
+	-webkit-margin-start: 	0;
+	-webkit-margin-end: 	0;
+	-webkit-padding-start: 	0;
 }
 
 .claro .evfDataDrillPathConfigurationTree ul.top {
@@ -46,6 +47,7 @@
 	min-height:				1.5em;
 	border:					solid 1px  @minor-border-color;
 	background-color: 		@primary-color;
+	margin-top: 			1em;
 }
 
 .claro .evfDataDrillPathConfigurationTree ul.bottom {
