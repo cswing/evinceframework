@@ -14,24 +14,33 @@
  * limitations under the License.
  */
 define([
+	'dojo/_base/array',
 	'dojo/_base/declare',
-	'dojo/store/Memory',
+	'dojo/_base/lang',
+	'dojo/DeferredList',
+	'dojo/when',
+	'dijit/_Container',
 	'dijit/_TemplatedMixin',
-	'dijit/tree/ObjectStoreModel', 
-	'dijit/Tree',
 	'evf/ComplexWidget',
 	'evf/dataType/factory',
-	'./DimensionTreeModel',
+	'./DimensionTree',
+	'./DrillPathConfigurationModel',
+	'./DrillPathConfigurationTree',
 	'./util',
 	'dojo/text!./templates/DrillPathConfiguration.html',
 	'dojo/i18n!./nls/configuration'
-], function(declare, MemoryStore, Templated, ObjectStoreModel, Tree, ComplexWidget, dataFactory, DimensionTreeModel, pivotUtil, template, i18n) {
+], function(array, declare, lang, DeferredList, when, _Container, Templated, ComplexWidget, dataFactory,
+		DimensionTree, DrillPathConfigurationModel, DrillPathConfigurationTree, pivotUtil, template, i18n) {
+
+	var modelTypeKeys = DrillPathConfigurationModel.prototype.modelTypeKeys;
 
 	return declare('evfData.pivot.DrillPathConfiguration', [ComplexWidget, Templated], {
 		
 		templateString: template,
 
-		factTable: null,
+		drillPathModel: null,
+
+		isRows: null,
 
 		postMixInProperties: function() {
 			this.inherited(arguments);
@@ -41,17 +50,14 @@ define([
 		postCreate: function() {
 			this.inherited(arguments);
 
-			var treeModel = new DimensionTreeModel({
-				factTable: this.factTable
-			});
+			this.dimensionTree = this.constructWidget(DimensionTree, {
+				model: this.drillPathModel,
+			}, this.dimensionTreeNode);
 
-			this.dimensionTree = this.constructWidget(Tree, {
-				model: 		treeModel,
-				showRoot: 	false
-			});
-
-			this.dimensionTree.placeAt(this.treeNode);
-
+			this.drillPathTree = this.constructWidget(DrillPathConfigurationTree, {
+				model: this.drillPathModel,
+				query: { _type: modelTypeKeys.drillPathRoot, isRows: this.isRows }
+			}, this.drillPathTreeNode);
 		}
 
 	});

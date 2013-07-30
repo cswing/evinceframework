@@ -26,10 +26,13 @@
 
 	exports._defaultQueryDefinition = {
 		
-		name: 			'',
-		
-		rowSummarizations: [],
-		columnSummarizations: [],
+		_type: 					'evfData.queryDefinition',
+		name: 					'',
+		rowDrillPath: 			null,
+		columnDrillPath: 		null,
+
+		rowSummarizations: 		[],
+		columnSummarizations: 	[],
 
 		summarizations: [],
 		factCriterion: [],
