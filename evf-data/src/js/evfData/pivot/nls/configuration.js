@@ -10,6 +10,8 @@ define({ root:
 	tab_drillPaths_Rows:		'Rows', 	//'Drill Paths (Rows)',
 	tab_drillPaths_Cols:		'Columns', 	//'Drill Paths (Columns)',
 
+	sectionTitle_facts: 		'Facts',
+	sectionTitle_factSelections:'Fact selections',
 	sectionTitle_dimensions: 	'Dimensions',
 	sectionTitle_drillPath: 	'Drill path',
 
