@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +44,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import com.evinceframework.data.warehouse.Dimension;
 import com.evinceframework.data.warehouse.DimensionalAttribute;
 import com.evinceframework.data.warehouse.FactTable;
+import com.evinceframework.data.warehouse.impl.FactTableImpl;
 import com.evinceframework.data.warehouse.query.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.Query;
@@ -57,6 +59,8 @@ public class QueryEngineImpl {
 	private static final Log logger = LogFactory.getLog(QueryEngineImpl.class);
 	
 	private Dialect dialect;
+	
+	private FactTable[] factTables = new FactTable[] {};
 	
 	private JdbcTemplate jdbcTemplate;
 	
@@ -294,5 +298,12 @@ public class QueryEngineImpl {
 		public String sql;
 		
 		public LimitHandler limitHandler;
+	}
+
+	/*package*/ public void addFactTable(FactTableImpl factTable) {
+		List<FactTable> f = new LinkedList<FactTable>(Arrays.asList(factTables));
+		assert(factTable.getQueryEngine().equals(this));
+		f.add(factTable);
+		factTables = f.toArray(new FactTable[]{});
 	}
 }

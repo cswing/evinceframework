@@ -15,17 +15,13 @@
  */
 package com.evinceframework.data.warehouse;
 
-public interface FactTable {
+public interface FactCategory {
 
 	public String getName();
 	
 	public String getDescription();
 	
-	public String getTableName();
+	public FactTable getFactTable();
 	
-	public Dimension[] getDimensions();
-	
-	public Fact<? extends Object>[] getFacts();
-	
-	public FactCategory[] getCategories();
+	public Fact<?>[] getFacts();
 }

@@ -32,6 +32,12 @@
 		<constructor-arg type="java.lang.String" value="evfData.factTable" />
 	</bean>
 	
+	<bean id="evf.data.web.FactCategoryJsonConverter" 
+			class="com.evinceframework.web.dojo.json.conversion.InterfaceConverter">
+		<constructor-arg type="java.lang.Class" value="com.evinceframework.data.warehouse.FactCategory" />
+		<constructor-arg type="java.lang.String" value="evfData.factCategory" />
+	</bean>
+	
     <bean id="evf.data.web.FactJsonConverter" 
 			class="com.evinceframework.web.dojo.json.conversion.InterfaceConverter">
 		<constructor-arg type="java.lang.Class" value="com.evinceframework.data.warehouse.Fact" />

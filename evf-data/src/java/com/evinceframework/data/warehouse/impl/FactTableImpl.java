@@ -23,21 +23,31 @@ import org.springframework.context.support.MessageSourceAccessor;
 
 import com.evinceframework.data.warehouse.Dimension;
 import com.evinceframework.data.warehouse.Fact;
+import com.evinceframework.data.warehouse.FactCategory;
 import com.evinceframework.data.warehouse.FactTable;
+import com.evinceframework.data.warehouse.query.impl.QueryEngineImpl;
 
 public class FactTableImpl extends AbstractDataObject implements FactTable {
 	
 	private String tableName;
 	
+	private QueryEngineImpl queryEngine;
+	
 	private Fact<? extends Object>[] facts = new Fact<?>[]{};
+	
+	private FactCategory[] factCategories;
 	
 	private Dimension[] dimensions = new Dimension[] {};
 	
-	public FactTableImpl(MessageSourceAccessor messageAccessor, String nameKey, String descriptionKey, String tableName) {
+	public FactTableImpl(MessageSourceAccessor messageAccessor, String nameKey, String descriptionKey, 
+			QueryEngineImpl queryEngine, String tableName) {
 		super(messageAccessor, nameKey, descriptionKey);
 		this.tableName = tableName;
+		this.queryEngine = queryEngine;
+		
+		this.queryEngine.addFactTable(this);
 	}
-
+	
 	@Override
 	public String getTableName() {
 		return tableName;
@@ -53,6 +63,15 @@ public class FactTableImpl extends AbstractDataObject implements FactTable {
 		return facts;
 	}
 
+	@Override
+	public FactCategory[] getCategories() {
+		return factCategories;
+	}
+	
+	public QueryEngineImpl getQueryEngine() {
+		return queryEngine;
+	}
+
 	/*package*/ void addFact(FactImpl<? extends Object> fact) {
 		List<Fact<? extends Object>> f = new LinkedList<Fact<? extends Object>>(Arrays.asList(facts));
 		assert(fact.getFactTable().equals(this));
@@ -60,10 +79,21 @@ public class FactTableImpl extends AbstractDataObject implements FactTable {
 		facts = f.toArray(new Fact<?>[]{});
 	}
 	
+	/*package*/ void addFactCategory(FactCategoryImpl category) {
+		List<FactCategory> f = new LinkedList<FactCategory>(Arrays.asList(factCategories));
+		
+		assert(category.getFactTable().equals(this));
+		for(Fact<?> fact : category.getFacts())
+			assert(fact.getFactTable().equals(this));
+		
+		f.add(category);
+		factCategories = f.toArray(new FactCategory[]{});
+	}
+	
 	/*package*/ void addDimension(Dimension dimension) {
 		List<Dimension> d = new LinkedList<Dimension>(Arrays.asList(dimensions));
 		assert(dimension.getFactTable().equals(this));
 		d.add(dimension);
 		dimensions = d.toArray(new Dimension[]{});
-	}
+	}	
 }

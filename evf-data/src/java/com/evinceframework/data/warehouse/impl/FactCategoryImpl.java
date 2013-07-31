@@ -15,49 +15,48 @@
  */
 package com.evinceframework.data.warehouse.impl;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.springframework.context.support.MessageSourceAccessor;
 
 import com.evinceframework.data.warehouse.Fact;
+import com.evinceframework.data.warehouse.FactCategory;
 import com.evinceframework.data.warehouse.FactTable;
 
-public class FactImpl<T> extends AbstractDataObject implements Fact<T> {
+public class FactCategoryImpl extends AbstractDataObject implements FactCategory {
 
-	private Class<T> valueType;
+	private FactTableImpl factTable;
 	
-	private FactTableImpl table;
+	private Fact<?>[] facts;
 	
-	private String columnName;
-	
-	public FactImpl(MessageSourceAccessor messageAccessor, String nameKey, String descriptionKey, 
-			Class<T> valueType, FactCategoryImpl category, String columnName) {
-		this(messageAccessor, nameKey, descriptionKey, valueType, category.getFactTableImpl(), columnName);
-		
-		category.addFact(this);
-	}
-	
-	public FactImpl(MessageSourceAccessor messageAccessor, String nameKey, String descriptionKey, 
-			Class<T> valueType, FactTableImpl table, String columnName) {
+	public FactCategoryImpl(MessageSourceAccessor messageAccessor, String nameKey, String descriptionKey, FactTableImpl factTable) {
 		super(messageAccessor, nameKey, descriptionKey);
 		
-		this.table = table;
-		this.columnName = columnName;
-		this.valueType = valueType;
+		this.factTable = factTable;
 		
-		this.table.addFact(this);
-	}
-	
-	@Override
-	public FactTable getFactTable() {
-		return table;
-	}
-	
-	@Override
-	public String getColumnName() {
-		return columnName;
+		factTable.addFactCategory(this);
 	}
 
 	@Override
-	public Class<T> getValueType() {
-		return valueType;
+	public FactTable getFactTable() {
+		return factTable;
+	}
+	
+	/*package*/ FactTableImpl getFactTableImpl() {
+		return factTable;
+	}
+
+	@Override
+	public Fact<?>[] getFacts() {
+		return facts;
+	}
+
+	/*package*/ void addFact(FactImpl<?> fact) {
+		List<Fact<?>> l = new LinkedList<Fact<?>>(Arrays.asList(facts));
+		assert(fact.getFactTable().equals(this.getFactTable()));
+		l.add(fact);
+		facts = l.toArray(new Fact<?>[]{});
 	}
 }

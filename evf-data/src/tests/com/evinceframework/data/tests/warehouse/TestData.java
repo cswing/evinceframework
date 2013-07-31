@@ -17,6 +17,7 @@ package com.evinceframework.data.tests.warehouse;
 
 import java.util.Locale;
 
+import org.hibernate.dialect.MySQL5Dialect;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.StaticMessageSource;
@@ -27,6 +28,7 @@ import com.evinceframework.data.warehouse.impl.DimensionTableImpl;
 import com.evinceframework.data.warehouse.impl.DimensionalAttributeImpl;
 import com.evinceframework.data.warehouse.impl.FactImpl;
 import com.evinceframework.data.warehouse.impl.FactTableImpl;
+import com.evinceframework.data.warehouse.query.impl.QueryEngineImpl;
 
 public class TestData {
 
@@ -58,6 +60,8 @@ public class TestData {
 	
 	public static final DimensionalAttributeImpl<Integer> dimensionalAttrA2;
 	
+	public static final QueryEngineImpl queryEngine;
+	
 	public static final FactTableImpl factTable;
 	
 	public static final DimensionImpl dimensionA;
@@ -84,13 +88,16 @@ public class TestData {
 		
 		MessageSourceAccessor sourceAccessor = new MessageSourceAccessor(messageSource);
 		
+		// queryEngine
+		queryEngine = new QueryEngineImpl(new MySQL5Dialect());
+		
 		// dimension tables
 		dimensionTableA = new DimensionTableImpl(sourceAccessor, DIMENSION_TABLE_A_NAME, DIMENSION_TABLE_A_DESC, "dimA", "dimA_id");
 		dimensionalAttrA1 = new DimensionalAttributeImpl<String>(sourceAccessor, DIMENSIONAL_ATTR_A1_NAME, DIMENSIONAL_ATTR_A1_DESC, dimensionTableA, "attr1", String.class, true);
 		dimensionalAttrA2 = new DimensionalAttributeImpl<Integer>(sourceAccessor, DIMENSIONAL_ATTR_A2_NAME, DIMENSIONAL_ATTR_A2_DESC, dimensionTableA, "attr2", Integer.class);
 		
 		// build FOO fact table
-		factTable = new FactTableImpl(sourceAccessor, FACT_TABLE_FOO_NAME, FACT_TABLE_FOO_DESC, "fooTable");
+		factTable = new FactTableImpl(sourceAccessor, FACT_TABLE_FOO_NAME, FACT_TABLE_FOO_DESC, queryEngine, "fooTable");
 		dimensionA = new DimensionImpl(dimensionTableA, factTable, "dimA1_id");
 		//dimensionA2 = new DimensionImpl(dimensionalAttrA2, factTable, "dimA2_id");
 		
