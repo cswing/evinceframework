@@ -23,15 +23,12 @@ define([
 	'evf/dialog/util',
 	'./DrillPathConfiguration',
 	'./DrillPathConfigurationModel',
+	'./FactConfiguration',
 	'./util',
 	'dojo/text!./templates/Configuration.html',
 	'dojo/i18n!./nls/configuration'
 ], function(declare, Templated, TabContainer, ComplexWidget, dataFactory, SimpleFormDialog, dialogUtil, DrillPathConfiguration,
-		DrillPathConfigurationModel, pivotUtil, template, i18n) {
-
-	var FactsContentPane = declare([ComplexWidget, Templated], {
-		templateString: '<div>Facts</div>'
-	});
+		ConfigurationModel, FactConfiguration, pivotUtil, template, i18n) {
 
 	return declare('evfData.pivot.Configuration', [ComplexWidget, Templated], {
 
@@ -41,7 +38,7 @@ define([
 
 		queryDefinition: null,
 
-		drillPathModel: null,
+		configModel: null,
 
 		nameConstraints: {
 			maxLength: 50
@@ -53,7 +50,7 @@ define([
 			this.i18n = i18n;
 			this.queryDefinition = this.queryDefinition || pivotUtil.defaultQueryDefinition(this.factTable);
 
-			this.drillPathModel = new DrillPathConfigurationModel({
+			this.configModel = new ConfigurationModel({
 				factTable: this.factTable,
 				queryDefinition: this.queryDefinition
 			});
@@ -74,21 +71,22 @@ define([
 				tabPosition: 'left-h'
 			}, this.tabContainerNode);
 
-			this.factsTab = new FactsContentPane({
-				title: i18n.tab_facts
+			this.factsTab = new FactConfiguration({
+				title: i18n.tab_facts,
+				configModel: this.configModel
 			});
 			this.tabContainer.addChild(this.factsTab);
 
 			this.cols_PathsTab = new DrillPathConfiguration({
 				title: i18n.tab_drillPaths_Cols,
-				drillPathModel: this.drillPathModel,
+				configModel: this.configModel,
 				isRows: false
 			});
 			this.tabContainer.addChild(this.cols_PathsTab);
 
 			this.row_PathsTab = new DrillPathConfiguration({
 				title: i18n.tab_drillPaths_Rows,
-				drillPathModel: this.drillPathModel,
+				configModel: this.configModel,
 				isRows: true
 			});
 			this.tabContainer.addChild(this.row_PathsTab);

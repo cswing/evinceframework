@@ -27,9 +27,9 @@ define([
 	'./DrillPathConfigurationModel',
 	'dojo/i18n!./nls/configuration'
 ], function(array, declare, lang, dnd, _DndSource, fx, query, Container, Templated, ComplexWidget,
-		DrillPathConfigurationModel, i18n) {
+		ConfigurationModel, i18n) {
 
-	var modelTypeKeys = DrillPathConfigurationModel.prototype.modelTypeKeys;
+	var modelTypeKeys = ConfigurationModel.prototype.modelTypeKeys;
 
 	var DndSource = declare([_DndSource], {
 

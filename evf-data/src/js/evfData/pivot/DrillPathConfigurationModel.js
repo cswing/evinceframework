@@ -26,7 +26,8 @@
 	return declare('evfData.pivot.DrillPathConfigurationModel', null, {
 		
 		modelTypeKeys: {
-
+			fact:               'VM::evfData.fact',
+			factSelection:      'VM::evfData.factSelection',
 			dimensionRoot:      'VM::evfData.dimensionRoot',
 			dimension:          'VM::evfData.dimension',
 			dimensionalAttr:    'VM::evfData.dimensionalAttr',
@@ -47,6 +48,19 @@
 		_buildStore: function() {
 
 			var dataArray = [], counter = 0;
+
+			// Facts
+			array.forEach(this.factTable.facts, function(f) {
+				dataArray.push({
+					_type: this.modelTypeKeys.fact,
+					_fact: f,
+					name: f.name,
+					selection: null
+				});
+			}, this);
+			
+			//Fact Selections
+			// TODO
 
 			// Root for dimensions 
 			var root = {
@@ -113,111 +127,7 @@
 					data: dataArray
 				})
 			);
-		},
-
-		_buildAvailableDimensions: function() {
-			return array.map(this.factTable.dimensions, function(dim) {
-				return {
-					_type:      this.modelTypeKeys.dimension,
-					dimension:  dim,
-					name:       dim.name
-				};
-			}, this);
-		},
-
-		getAvailableDimensions: function(/* boolean  forRowDrillPath*/){
-			// summary:
-			//      returns dimensions that are available to add to the drill path.
-
-			if(!this.availableDimensions) {
-				this.availableDimensions = this._buildAvailableDimensions();
-			}
-
-			// TODO filter out dimensions that are already used in the query definition.
-
-			return this.availableDimensions;
-		},
-
-		getAvailableDimensionalAttributes: function(/* boolean */ forRowDrillPath, /* VM::evfData.dimension */ item){
-			// summary:
-			//		returns dimensional attributes that are available to add to the drill path.
-
-			// TODO filter out dimensions that are already used in the query definition
-
-			var children = item.availableDimensionAttributes;
-			if(!children) {
-				children = item.availableDimensionAttributes =
-					array.map(item.dimension.table.attributes, function(attr) {
-						return {
-							_type: this.modelTypeKeys.dimensionalAttr,
-							attribute: attr,
-							name: attr.name
-						};
-					}, this);
-			}
-			return children;
-		},
-
-		getFirstDrillPathEntry: function(isRows){
-			return isRows === true ? this.queryDefinition.rowDrillPath : this.queryDefinition.columnDrillPath;
-		},
-
-		setFirstDrillPathEntry: function(isRows, item){
-			
-			var previousRoot;
-			var changeNotifications = [];
-
-			if (isRows === true) {
-				
-				previousRoot = this.queryDefinition.rowDrillPath;
-				this.queryDefinition.rowDrillPath = item;
-
-			} else {
-
-				previousRoot = this.queryDefinition.columnDrillPath;
-				this.queryDefinition.columnDrillPath = item;
-
-			}
-
-			if(item === previousRoot)
-				return changeNotifications;
-
-			changeNotifications.push([this.queryDefinition, [item]]);
-
-			item.prev = null;
-
-			if(previousRoot) {
-				
-				// update drillpath, removing new root.
-				var curr = previousRoot.next,
-					prev = previousRoot;
-
-				while(curr) {
-					if (curr === item) {
-						prev.next = curr.next;
-						
-						changeNotifications.push([prev, [prev.next]]);
-
-						if(curr.next) {
-							curr.next.prev = prev;
-						}
-					}
-					
-					curr = curr.next;
-				}
-
-				item.next = previousRoot;
-				previousRoot.prev = item;
-
-				changeNotifications.splice(1,0,[item, [item.next]]);
-
-			} else {
-				item.next = null;
-			}
-
-			return changeNotifications;
 		}
 
 	});
-
 });

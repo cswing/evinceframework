@@ -38,7 +38,7 @@ define([
 		
 		templateString: template,
 
-		drillPathModel: null,
+		configModel: null,
 
 		isRows: null,
 
@@ -51,11 +51,11 @@ define([
 			this.inherited(arguments);
 
 			this.dimensionTree = this.constructWidget(DimensionTree, {
-				model: this.drillPathModel,
+				model: this.configModel,
 			}, this.dimensionTreeNode);
 
 			this.drillPathTree = this.constructWidget(DrillPathConfigurationTree, {
-				model: this.drillPathModel,
+				model: this.configModel,
 				query: { _type: modelTypeKeys.drillPathRoot, isRows: this.isRows }
 			}, this.drillPathTreeNode);
 		},
