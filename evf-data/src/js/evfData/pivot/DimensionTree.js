@@ -27,13 +27,13 @@ define([
 	'dijit/_Container',
 	'dijit/_TemplatedMixin',
 	'evf/ComplexWidget',
-	'./DrillPathConfigurationModel',
+	'./ConfigurationModel',
 	'./DrillPathConfigurationTree',
 	'dojo/i18n!./nls/configuration'
 ], function(array, declare, lang, domClass, domConstruct, domStyle, dnd, _DndSource, fx, query, Container, Templated, ComplexWidget,
-		DrillPathConfigurationModel, DrillPathConfigurationTree, i18n) {
+		ConfigurationModel, DrillPathConfigurationTree, i18n) {
 
-	var modelTypeKeys = DrillPathConfigurationModel.prototype.modelTypeKeys;
+	var modelTypeKeys = ConfigurationModel.prototype.modelTypeKeys;
 
 	var DndSource = declare([_DndSource], {
 		checkAcceptance: function(/*source, nodes*/){

@@ -22,7 +22,7 @@ define([
 	'evf/dialog/SimpleFormDialog',
 	'evf/dialog/util',
 	'./DrillPathConfiguration',
-	'./DrillPathConfigurationModel',
+	'./ConfigurationModel',
 	'./FactConfiguration',
 	'./util',
 	'dojo/text!./templates/Configuration.html',

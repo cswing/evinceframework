@@ -24,15 +24,15 @@ define([
 	'evf/ComplexWidget',
 	'evf/dataType/factory',
 	'./DimensionTree',
-	'./DrillPathConfigurationModel',
+	'./ConfigurationModel',
 	'./DrillPathConfigurationTree',
 	'./util',
 	'dojo/text!./templates/DrillPathConfiguration.html',
 	'dojo/i18n!./nls/configuration'
 ], function(array, declare, lang, DeferredList, when, _Container, Templated, ComplexWidget, dataFactory,
-		DimensionTree, DrillPathConfigurationModel, DrillPathConfigurationTree, pivotUtil, template, i18n) {
+		DimensionTree, ConfigurationModel, DrillPathConfigurationTree, pivotUtil, template, i18n) {
 
-	var modelTypeKeys = DrillPathConfigurationModel.prototype.modelTypeKeys;
+	var modelTypeKeys = ConfigurationModel.prototype.modelTypeKeys;
 
 	return declare('evfData.pivot.DrillPathConfiguration', [ComplexWidget, Templated], {
 		

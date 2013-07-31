@@ -24,7 +24,7 @@ define([
 	'dijit/_Container',
 	'dijit/_TemplatedMixin',
 	'evf/ComplexWidget',
-	'./DrillPathConfigurationModel',
+	'./ConfigurationModel',
 	'dojo/i18n!./nls/configuration'
 ], function(array, declare, lang, dnd, _DndSource, fx, query, Container, Templated, ComplexWidget,
 		ConfigurationModel, i18n) {

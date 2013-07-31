@@ -25,7 +25,7 @@ define([
 	'dijit/_TemplatedMixin',
 	'evf/ComplexWidget',
 	'evf/dataType/factory',
-	'./DrillPathConfigurationModel',
+	'./ConfigurationModel',
 	'./util',
 	'dojo/text!./templates/FactConfiguration.html',
 	'dojo/i18n!./nls/configuration'

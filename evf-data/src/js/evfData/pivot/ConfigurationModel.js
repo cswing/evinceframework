@@ -23,7 +23,7 @@
 
 	var DrillPathConfigurationStore = declare([Memory], {});
 
-	return declare('evfData.pivot.DrillPathConfigurationModel', null, {
+	return declare('evfData.pivot.ConfigurationModel', null, {
 		
 		modelTypeKeys: {
 			fact:               'VM::evfData.fact',
