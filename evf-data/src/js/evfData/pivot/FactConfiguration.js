@@ -37,7 +37,7 @@ define([
 
 		templateString: template,
 
-		dndTemplate: '',
+		dndTemplate: '<li id="{0}" class="{1}"><div class="dijitInline padding"></div><div class="dijitInline icon"></div><span>{2}</span></li>',
 
 		configModel: null,
 
@@ -55,14 +55,14 @@ define([
 				creator: this.hitch('_itemCreator')
 			});
 
-			var result = this.configModel.store.query({_type: modelTypeKeys.facts});
+			var result = this.configModel.store.query({_type: modelTypeKeys.fact});
 			this.dndSource.insertNodes(false, result);
 		},
 
 		_itemCreator: function(item/*, hint*/) {
 			var type = item._type,
 				id = dnd.getUniqueId(),
-				n = domConstruct.toDom(lang.replace(this.dndTemplate, [id, type.replace('VM::evfData.', ''), item.name ]));
+				n = this.domConstruct.toDom(lang.replace(this.dndTemplate, [id, type.replace('VM::evfData.', ''), item.name ]));
 			
 			var obj = {node: n, data: item, type: [type], children: []};
 
