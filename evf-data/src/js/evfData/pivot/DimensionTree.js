@@ -28,10 +28,10 @@ define([
 	'dijit/_TemplatedMixin',
 	'evf/ComplexWidget',
 	'./ConfigurationModel',
-	'./DrillPathConfigurationTree',
+	'./DrillPathTree',
 	'dojo/i18n!./nls/configuration'
 ], function(array, declare, lang, domClass, domConstruct, domStyle, dnd, _DndSource, fx, query, Container, Templated, ComplexWidget,
-		ConfigurationModel, DrillPathConfigurationTree, i18n) {
+		ConfigurationModel, DrillPathTree, i18n) {
 
 	var modelTypeKeys = ConfigurationModel.prototype.modelTypeKeys;
 
@@ -129,7 +129,7 @@ define([
 			var type = item._type,
 				id = dnd.getUniqueId(),
 				n = domConstruct.toDom(
-					lang.replace(DrillPathConfigurationTree.prototype.dndTemplate,
+					lang.replace(DrillPathTree.prototype.dndTemplate,
 						[id, type.replace('VM::evfData.', ''), item.name ]));
 			
 			var obj = {node: n, data: item, type: [type], children: []};

@@ -25,12 +25,12 @@ define([
 	'evf/dataType/factory',
 	'./DimensionTree',
 	'./ConfigurationModel',
-	'./DrillPathConfigurationTree',
+	'./DrillPathTree',
 	'./util',
 	'dojo/text!./templates/DrillPathConfiguration.html',
 	'dojo/i18n!./nls/configuration'
 ], function(array, declare, lang, DeferredList, when, _Container, Templated, ComplexWidget, dataFactory,
-		DimensionTree, ConfigurationModel, DrillPathConfigurationTree, pivotUtil, template, i18n) {
+		DimensionTree, ConfigurationModel, DrillPathTree, pivotUtil, template, i18n) {
 
 	var modelTypeKeys = ConfigurationModel.prototype.modelTypeKeys;
 
@@ -54,7 +54,7 @@ define([
 				model: this.configModel,
 			}, this.dimensionTreeNode);
 
-			this.drillPathTree = this.constructWidget(DrillPathConfigurationTree, {
+			this.drillPathTree = this.constructWidget(DrillPathTree, {
 				model: this.configModel,
 				query: { _type: modelTypeKeys.drillPathRoot, isRows: this.isRows }
 			}, this.drillPathTreeNode);

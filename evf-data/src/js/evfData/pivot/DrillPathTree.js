@@ -92,9 +92,9 @@ define([
 		}
 	});
 
-	return declare('evfData.pivot.DrillPathConfigurationTree', [ComplexWidget, Templated], {
+	return declare('evfData.pivot.DrillPathTree', [ComplexWidget, Templated], {
 
-		templateString: '<div class="evfDataDrillPathConfigurationTree"><ul class="top" data-dojo-attach-point="dndNode"></ul><ul class="bottom" data-dojo-attach-point="endPointNode"></ul></div>',
+		templateString: '<div class="evfDataDrillPathTree"><ul class="top" data-dojo-attach-point="dndNode"></ul><ul class="bottom" data-dojo-attach-point="endPointNode"></ul></div>',
 
 		dndTemplate: '<li id="{0}" class="{1}"><div class="dijitInline padding"></div><div class="dijitInline icon"></div><span>{2}</span></li>',
 
