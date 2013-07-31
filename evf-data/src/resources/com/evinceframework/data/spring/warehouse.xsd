@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+	xmlns="http://www.evinceframework.com/schema/data/warehouse" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified"  
+	targetNamespace="http://www.evinceframework.com/schema/data/warehouse">
+
+	<xs:element name="data-warehouse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="message-source" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+						</xs:sequence>
+						<xs:attribute name="baseName" use="required" type="xs:string" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="query-engine" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+						
+						</xs:sequence>
+						<xs:attribute name="dialect" use="required" type="xs:string" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="dimension-table" minOccurs="1" maxOccurs="unbounded">
+				</xs:element>
+				<xs:element name="fact-table" minOccurs="1" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:choice>
+								<xs:element name="fact-category" minOccurs="1" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:attribute name="nameKey" type="xs:string" />
+										<xs:attribute name="descriptionKey" type="xs:string" />
+										<xs:attribute name="progammaticName" type="xs:string" />
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="fact" type="fact" minOccurs="1" maxOccurs="unbounded"></xs:element>
+							</xs:choice>
+						</xs:sequence>
+						<xs:attribute name="table" use="required" type="xs:string" />
+						<xs:attribute name="nameKey" type="xs:string" />
+						<xs:attribute name="descriptionKey" type="xs:string" />
+					</xs:complexType>
+				</xs:element>				
+			</xs:sequence>
+			<xs:attribute name="id" use="required" type="xs:ID" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="fact">
+		<xs:attribute name="column" use="required" type="xs:string" />
+		<xs:attribute name="nameKey" type="xs:string" />
+		<xs:attribute name="descriptionKey" type="xs:string" />
+		<xs:attribute name="dataType" type="xs:string" />
+	</xs:complexType>
+	
+</xs:schema>
