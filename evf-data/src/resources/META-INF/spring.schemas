@@ -1,1 +1,1 @@
-http\://www.evinceframework.com/schema/data/warehouse=com.evinceframework.data.spring.xml.WarehouseNamespaceHandler
+http\://www.evinceframework.com/schema/data/warehouse/spring-warehouse.xsd=com/evinceframework/data/spring/warehouse.xsd
