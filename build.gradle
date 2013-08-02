@@ -114,7 +114,7 @@ project('evf-core') {
         compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.0-api', version: '1.0.+'
         compile group: 'org.springframework', name: 'spring-beans', version: "${spring_version}"
         compile group: 'org.springframework', name: 'spring-core', version: "${spring_version}"
-        compile 'org.springframework:spring-orm:3.0.+'
+        compile "org.springframework:spring-orm:${spring_version}"
     }
 }
 
