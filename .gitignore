@@ -13,6 +13,7 @@ examples/petclinic/web-app/.settings
 examples/petclinic/web-app/build
 examples/empty
 examples/admin
+_codecoverage/
 ###########################################################################
 #eclipse files
 .classpath
