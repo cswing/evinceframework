@@ -35,7 +35,7 @@ public class FactTableImpl extends AbstractDataObject implements FactTable {
 	
 	private Fact<? extends Object>[] facts = new Fact<?>[]{};
 	
-	private FactCategory[] factCategories;
+	private FactCategory[] factCategories = new FactCategoryImpl[]{};
 	
 	private Dimension[] dimensions = new Dimension[] {};
 	

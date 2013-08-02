@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema 
-	xmlns="http://www.evinceframework.com/schema/data/warehouse" 
-	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:warehouse="http://www.evinceframework.com/schema/data/warehouse" 
 	elementFormDefault="qualified"  
 	targetNamespace="http://www.evinceframework.com/schema/data/warehouse">
 
@@ -36,7 +36,7 @@
 										<xs:attribute name="progammaticName" type="xs:string" />
 									</xs:complexType>
 								</xs:element>
-								<xs:element name="fact" type="fact" minOccurs="1" maxOccurs="unbounded"></xs:element>
+								<xs:element name="fact" type="warehouse:fact" minOccurs="1" maxOccurs="unbounded"></xs:element>
 							</xs:choice>
 						</xs:sequence>
 						<xs:attribute name="table" use="required" type="xs:string" />

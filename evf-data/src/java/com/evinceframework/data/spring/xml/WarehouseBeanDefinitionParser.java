@@ -36,18 +36,7 @@ import com.evinceframework.data.warehouse.impl.FactTableImpl;
 import com.evinceframework.data.warehouse.query.impl.QueryEngineImpl;
 
 public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
-	
-	/*
-	 	<bean id="m110.warehouse.ncaab.messageSource" 
-		class="org.springframework.context.support.ResourceBundleMessageSource"
-		p:basename="com.minus110.modeling.i18n.warehouse_ncaab" />
-		
-	<bean id="evf.warehouse.ncaab.messageSourceAccessor" 
-		class="org.springframework.context.support.MessageSourceAccessor">
-		<constructor-arg ref="m110.warehouse.ncaab.messageSource" />
-	</bean>
-	 */
-		
+			
 	@Override
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		
@@ -62,45 +51,33 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 	
 	protected BeanDefinition doParse(Element element, ParserContext parserContext) throws Exception {
 		
-		String rootId = element.getAttribute("id");
 		Element messageSource = DomUtils.getChildElementByTagName(element, "message-source");
 		Element queryEngine = DomUtils.getChildElementByTagName(element, "query-engine");
+		BeanNames beanNames = new BeanNames(element.getAttribute("id"));
+		
+		// Query Engine
+		BeanDefinition engineBean = register(BeanDefinitionBuilder.genericBeanDefinition(
+				queryEngine.getAttribute("dialect")), beanNames.getDialect(), parserContext);
+		
+		BeanDefinitionBuilder engineBuilder = BeanDefinitionBuilder.genericBeanDefinition(QueryEngineImpl.class);
+		engineBuilder.addConstructorArgReference(beanNames.getDialect());		
+		register(engineBuilder, beanNames.getEngine(), parserContext);
 		
 		// Message Source & Accessor
 		BeanDefinitionBuilder messageSourceBuilder = 
-				BeanDefinitionBuilder.rootBeanDefinition(ResourceBundleMessageSource.class);
-		messageSourceBuilder.addPropertyValue("baseName", messageSource.getAttribute("baseName"));
-		
-		BeanDefinition messageSourceBean = register(
-				messageSourceBuilder, String.format("%s.messageSource", rootId), parserContext);
-		
-		BeanDefinitionBuilder messageSourceAcessorBuilder = 
-				BeanDefinitionBuilder.rootBeanDefinition(MessageSourceAccessor.class);
-		messageSourceBuilder.addConstructorArgValue(messageSourceBean);
-		
-		BeanDefinition messageSourceAccessorBean = register(
-				messageSourceAcessorBuilder, String.format("%s.messageSourceAccessor", rootId), parserContext);
-		
-		// Dialect
-		BeanDefinition dialectBean = register(
-				BeanDefinitionBuilder.rootBeanDefinition(queryEngine.getAttribute("dialect")), 
-				String.format("%s.dialect", rootId),
-				parserContext); 
-		
-		// Query Engine
-		BeanDefinitionBuilder engineBuilder = 
-				BeanDefinitionBuilder.rootBeanDefinition(QueryEngineImpl.class);
-		engineBuilder.addConstructorArgValue(dialectBean);
-		
-		BeanDefinition engineBean = register(
-				BeanDefinitionBuilder.rootBeanDefinition(queryEngine.getAttribute("dialect")), 
-				String.format("%s.engine", rootId),
-				parserContext);
+				BeanDefinitionBuilder.genericBeanDefinition(ResourceBundleMessageSource.class);
+		messageSourceBuilder.addPropertyValue("basename", messageSource.getAttribute("baseName"));
+		register(messageSourceBuilder, beanNames.getMessageSource(), parserContext);
+				
+		BeanDefinitionBuilder messageSourceAccessorBuilder = 
+				BeanDefinitionBuilder.genericBeanDefinition(MessageSourceAccessor.class);
+		messageSourceAccessorBuilder.addConstructorArgReference(beanNames.getMessageSource());
+		register(messageSourceAccessorBuilder, beanNames.getMessageSourceAccessor(), parserContext);
 		
 		// Dimension Tables
-		for(Element dimTableElement : DomUtils.getChildElementsByTagName(element, "dimension-table")) {
-			
-		}
+//		for(Element dimTableElement : DomUtils.getChildElementsByTagName(element, "dimension-table")) {
+//			
+//		}
 		
 		// Fact Tables
 		for(Element factTableElement : DomUtils.getChildElementsByTagName(element, "fact-table")) {
@@ -111,14 +88,13 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 							
 			BeanDefinitionBuilder factTableBuilder = 
 					BeanDefinitionBuilder.rootBeanDefinition(FactTableImpl.class);
-			factTableBuilder.addConstructorArgValue(messageSourceAccessorBean);
+			factTableBuilder.addConstructorArgReference(beanNames.getMessageSourceAccessor());
 			factTableBuilder.addConstructorArgValue(nameKey);
 			factTableBuilder.addConstructorArgValue(descKey);
-			factTableBuilder.addConstructorArgValue(engineBean);
+			factTableBuilder.addConstructorArgReference(beanNames.getEngine());
 			factTableBuilder.addConstructorArgValue(tableName);
 			
-			BeanDefinition factTableBean = 
-					register(factTableBuilder, String.format("%s.factTable.%s", rootId, tableName), parserContext);
+			register(factTableBuilder, beanNames.buildTable(tableName), parserContext);
 			
 			// Dimensions
 			/*
@@ -134,10 +110,10 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 			List<Element> categoryElements = DomUtils.getChildElementsByTagName(element, "fact-category");
 			
 			if(categoryElements.size() > 0) {
-				parseFactCategories(categoryElements, rootId, tableName, messageSourceAccessorBean, factTableBean, parserContext);
+				parseFactCategories(categoryElements, tableName, parserContext, beanNames);
 				
 			} else { //No categories - just the facts
-				parseFacts(factTableElement, rootId, tableName, messageSourceAccessorBean, factTableBean, parserContext);	
+				parseFacts(factTableElement, tableName, beanNames.buildTable(tableName), parserContext, beanNames);	
 			}
 		}
 		
@@ -145,7 +121,9 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 	}
 	
 	protected BeanDefinition register(BeanDefinitionBuilder builder, String id, ParserContext parserContext) {
+		
 		BeanDefinition definition = builder.getBeanDefinition();
+		definition.setScope(BeanDefinition.SCOPE_SINGLETON);
 		BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id, new String[]{});
 		
 		BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
@@ -168,8 +146,9 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 		return ele.hasAttribute(attrName) ? ele.getAttribute(attrName) : defaultValue;
 	}
 	
-	protected void parseFactCategories(List<Element> categoryElements, String rootId, String tableName, BeanDefinition messageSourceAccessorBean, 
-			BeanDefinition factTableBean, ParserContext parserContext) throws Exception {
+	protected void parseFactCategories(
+			List<Element> categoryElements, String tableName, ParserContext parserContext, BeanNames beanNames) 
+					throws Exception {
 		
 		for(Element category : categoryElements) {
 			
@@ -180,22 +159,22 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 			String descKey = determineDescriptionKey(category, String.format("factTable.%s.category.%s.description", tableName, categoryName));
 			
 			BeanDefinitionBuilder factCategoryBuilder = BeanDefinitionBuilder.rootBeanDefinition(FactCategoryImpl.class);
-			factCategoryBuilder.addConstructorArgValue(messageSourceAccessorBean);
+			factCategoryBuilder.addConstructorArgReference(beanNames.getMessageSourceAccessor());
 			factCategoryBuilder.addConstructorArgValue(nameKey);
 			factCategoryBuilder.addConstructorArgValue(descKey);
-			factCategoryBuilder.addConstructorArgValue(factTableBean);
+			factCategoryBuilder.addConstructorArgReference(beanNames.buildTable(tableName));
 			
-			BeanDefinition factCategoryBean = 
-					register(factCategoryBuilder, String.format("%s.factTable.%s.category.%s", rootId, tableName, categoryName), parserContext);
+			String categoryBeanName = beanNames.buildCategory(tableName, categoryName);
+			register(factCategoryBuilder, categoryBeanName, parserContext);
 			
 			// Facts
-			parseFacts(category, rootId, tableName, messageSourceAccessorBean, factCategoryBean, parserContext);
+			parseFacts(category, tableName, categoryBeanName, parserContext, beanNames);
 		}
 	}
 	
 	@SuppressWarnings("deprecation")
-	protected void parseFacts(Element parentElement, String rootId, String tableName, BeanDefinition messageSourceAccessorBean, 
-			BeanDefinition parentBean, ParserContext parserContext) throws Exception {
+	protected void parseFacts(Element parentElement, String tableName, String parentBean, 
+			ParserContext parserContext, BeanNames beanNames) throws Exception {
 		
 		for(Element factElement : DomUtils.getChildElementsByTagName(parentElement, "fact")) {
 		
@@ -207,16 +186,52 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 				
 			BeanDefinitionBuilder factBuilder = 
 					BeanDefinitionBuilder.rootBeanDefinition(FactImpl.class);
-			factBuilder.addConstructorArgValue(messageSourceAccessorBean);
+			factBuilder.addConstructorArgReference(beanNames.getMessageSourceAccessor());
 			factBuilder.addConstructorArgValue(nameKey);
 			factBuilder.addConstructorArgValue(descKey);
 			factBuilder.addConstructorArgValue(
 					ClassUtils.forName(getAttributeOrDefaultValue(factElement, "dataType", "java.lang.Integer")));
-			factBuilder.addConstructorArgValue(parentBean);
+			factBuilder.addConstructorArgReference(parentBean);
 			factBuilder.addConstructorArgValue(columnName);
 			
-			register(factBuilder, 
-					String.format("%s.factTable.%s.fact.%s", rootId, tableName, columnName), parserContext);
+			register(factBuilder, beanNames.buildFact(tableName, columnName), parserContext);
+		}
+	}
+	
+	private class BeanNames {
+		
+		private String rootId;
+
+		public BeanNames(String rootId) {
+			this.rootId = rootId;
+		}
+		
+		public String getDialect() {
+			return String.format("%s.dialect", rootId);
+		}
+		
+		public String getEngine() {
+			return String.format("%s.engine", rootId);
+		}
+		
+		public String getMessageSource() {
+			return String.format("%s.messageSource", rootId);
+		}
+		
+		public String getMessageSourceAccessor() {
+			return String.format("%s.messageSourceAccessor", rootId);
+		}
+		
+		public String buildTable(String tableName) {
+			return String.format("%s.factTable.%s", rootId, tableName);
+		}
+		
+		public String buildCategory(String tableName, String categoryName) {
+			return String.format("%s.factTable.%s.category.%s", tableName, categoryName);
+		}
+		
+		public String buildFact(String tableName, String columnName) {
+			return String.format("%s.factTable.%s.fact.%s", rootId, tableName, columnName);
 		}
 	}
 }
