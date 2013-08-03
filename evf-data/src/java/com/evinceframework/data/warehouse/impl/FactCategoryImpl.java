@@ -29,7 +29,7 @@ public class FactCategoryImpl extends AbstractDataObject implements FactCategory
 
 	private FactTableImpl factTable;
 	
-	private Fact<?>[] facts;
+	private Fact<?>[] facts = new Fact<?>[]{};
 	
 	public FactCategoryImpl(MessageSourceAccessor messageAccessor, String nameKey, String descriptionKey, FactTableImpl factTable) {
 		super(messageAccessor, nameKey, descriptionKey);

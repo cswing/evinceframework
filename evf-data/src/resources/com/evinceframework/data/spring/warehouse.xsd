@@ -42,9 +42,12 @@
 							<xs:choice>
 								<xs:element name="fact-category" minOccurs="1" maxOccurs="unbounded">
 									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="fact" type="fact" minOccurs="1" maxOccurs="unbounded"></xs:element>
+										</xs:sequence>
+										<xs:attribute name="name" use="required" type="xs:string" />
 										<xs:attribute name="nameKey" type="xs:string" />
 										<xs:attribute name="descriptionKey" type="xs:string" />
-										<xs:attribute name="progammaticName" type="xs:string" />
 									</xs:complexType>
 								</xs:element>
 								<xs:element name="fact" type="fact" minOccurs="1" maxOccurs="unbounded"></xs:element>

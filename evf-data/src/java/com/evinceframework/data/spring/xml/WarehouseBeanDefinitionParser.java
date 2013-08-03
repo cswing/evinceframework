@@ -104,7 +104,7 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 	}
 
 	protected String determineDescriptionKey(Element ele, String defaultValue) {
-		return getAttributeOrDefaultValue(ele, "nameKey", defaultValue);
+		return getAttributeOrDefaultValue(ele, "descriptionKey", defaultValue);
 	}
 
 	protected String getAttributeOrDefaultValue(Element ele, String attrName, String defaultValue) {
@@ -209,11 +209,11 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 		
 		for(Element category : categoryElements) {
 			
-			// TODO build default value
-			String categoryName = category.getAttribute("progammaticName");
+			String categoryName = category.getAttribute("name");
 			
 			String nameKey = determineNameKey(category, String.format("factTable.%s.category.%s.name", tableName, categoryName));
-			String descKey = determineDescriptionKey(category, String.format("factTable.%s.category.%s.description", tableName, categoryName));
+			String descKey = determineDescriptionKey(category, 
+					String.format("factTable.%s.category.%s.description", tableName, categoryName));
 			
 			BeanDefinitionBuilder factCategoryBuilder = BeanDefinitionBuilder.rootBeanDefinition(FactCategoryImpl.class);
 			factCategoryBuilder.addConstructorArgReference(beanNames.getMessageSourceAccessor());

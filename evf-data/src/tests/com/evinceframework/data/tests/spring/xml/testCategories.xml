@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:evfData="http://www.evinceframework.com/schema/data/warehouse"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.evinceframework.com/schema/data/warehouse http://www.evinceframework.com/schema/data/warehouse/spring-warehouse.xsd
+">
+
+	<evfData:data-warehouse id="evfData.basic">
+		<evfData:message-source baseName="testMessages" />
+		<evfData:query-engine dialect="org.hibernate.dialect.MySQL5Dialect" />
+		<evfData:dimension-table table="testDimension">
+			<evfData:dimensional-attribute column="dimAttrA"/>
+		</evfData:dimension-table>
+		<evfData:fact-table table="testFacts">
+			<evfData:fact-category name="categoryA">
+				<evfData:fact column="fact1"></evfData:fact>
+			</evfData:fact-category>
+		</evfData:fact-table>
+	</evfData:data-warehouse>
+
+	<evfData:data-warehouse id="evfData.custom">
+		<evfData:message-source baseName="testMessages" />
+		<evfData:query-engine dialect="org.hibernate.dialect.MySQL5Dialect" />
+		<evfData:dimension-table table="testDimension">
+			<evfData:dimensional-attribute column="dimAttrA"/>
+		</evfData:dimension-table>
+		<evfData:fact-table table="testFacts">
+			<evfData:fact-category name="categoryA"
+					nameKey="customName"
+					descriptionKey="customDescription">
+				<evfData:fact column="fact1"></evfData:fact>
+			</evfData:fact-category>
+		</evfData:fact-table>
+	</evfData:data-warehouse>
+	
+</beans>
