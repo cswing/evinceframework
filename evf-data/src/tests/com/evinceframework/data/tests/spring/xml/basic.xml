@@ -12,8 +12,10 @@
 	<evfData:data-warehouse id="evfData.basic">
 		<evfData:message-source baseName="testMessages" />
 		<evfData:query-engine dialect="org.hibernate.dialect.MySQL5Dialect" />
-		<evfData:dimension-table></evfData:dimension-table>
-		<evfData:fact-table table="test">
+		<evfData:dimension-table table="testDimension">
+			<evfData:dimensional-attribute column="dimAttrA"/>
+		</evfData:dimension-table>
+		<evfData:fact-table table="testFacts">
 			<evfData:fact column="factA"></evfData:fact>
 		</evfData:fact-table>
 	</evfData:data-warehouse>

@@ -23,6 +23,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import com.evinceframework.data.warehouse.impl.DimensionTableImpl;
+import com.evinceframework.data.warehouse.impl.DimensionalAttributeImpl;
 import com.evinceframework.data.warehouse.impl.FactImpl;
 import com.evinceframework.data.warehouse.impl.FactTableImpl;
 import com.evinceframework.data.warehouse.query.impl.QueryEngineImpl;
@@ -50,22 +52,32 @@ public class WarehouseNamespaceTests extends TestCase {
 		assertNotNull(engine.getDialect());
 		assertEquals(dialect, engine.getDialect());
 		
-		// TODO DimensionTableImpl
+		DimensionalAttributeImpl<?> dimAttr = appContext.getBean("evfData.basic.dimension.testDimension.attribute.dimAttrA", DimensionalAttributeImpl.class);
+		assertNotNull(dimAttr);
 		
-		FactImpl<?> fact = appContext.getBean("evfData.basic.factTable.test.fact.factA", FactImpl.class);
+		dimAttr.getColumnName();
+		dimAttr.getDescription();
+		dimAttr.getName();
+		dimAttr.getValueType();
+		
+		DimensionTableImpl dimTable = appContext.getBean("evfData.basic.dimension.testDimension", DimensionTableImpl.class);
+		assertNotNull(dimTable);
+		
+		FactImpl<?> fact = appContext.getBean("evfData.basic.factTable.testFacts.fact.factA", FactImpl.class);
 		assertNotNull(fact);
 		assertEquals("factA", fact.getColumnName());
-		assertEquals("factTable.test.fact.factA.description", fact.getDescription());
-		assertEquals("factTable.test.fact.factA.name", fact.getName());
+		assertEquals("factTable.testFacts.fact.factA.description", fact.getDescription());
+		assertEquals("factTable.testFacts.fact.factA.name", fact.getName());
 		assertEquals(Integer.class, fact.getValueType());
 		
 		
-		FactTableImpl factTable = appContext.getBean("evfData.basic.factTable.test", FactTableImpl.class);
+		FactTableImpl factTable = appContext.getBean("evfData.basic.factTable.testFacts", FactTableImpl.class);
 		assertNotNull(factTable);
-		assertNotNull(factTable.getQueryEngine());
+		assertNotNull(factTable.getQueryEngine());		
 		assertEquals(engine, factTable.getQueryEngine());
-		assertEquals("factTable.test.name", factTable.getName());
-		assertEquals("factTable.test.description", factTable.getDescription());
+		assertEquals("testFacts", factTable.getTableName());
+		assertEquals("factTable.testFacts.name", factTable.getName());
+		assertEquals("factTable.testFacts.description", factTable.getDescription());
 		assertNotNull(factTable.getDimensions());
 //		assertEquals(1, factTable.getDimensions());
 		
@@ -81,4 +93,6 @@ public class WarehouseNamespaceTests extends TestCase {
 	// testCategory
 	// testInValidBaseName
 	// testBadDialect
+	// testDataTypes (dimAttr, fact)
+	// testSpecificNameAndDescription (for each type)
 }

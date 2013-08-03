@@ -30,6 +30,8 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+import com.evinceframework.data.warehouse.impl.DimensionTableImpl;
+import com.evinceframework.data.warehouse.impl.DimensionalAttributeImpl;
 import com.evinceframework.data.warehouse.impl.FactCategoryImpl;
 import com.evinceframework.data.warehouse.impl.FactImpl;
 import com.evinceframework.data.warehouse.impl.FactTableImpl;
@@ -75,48 +77,11 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 		register(messageSourceAccessorBuilder, beanNames.getMessageSourceAccessor(), parserContext);
 		
 		// Dimension Tables
-//		for(Element dimTableElement : DomUtils.getChildElementsByTagName(element, "dimension-table")) {
-//			
-//		}
+		parseDimensionTables(DomUtils.getChildElementsByTagName(element, "dimension-table"), beanNames, parserContext);
 		
 		// Fact Tables
-		for(Element factTableElement : DomUtils.getChildElementsByTagName(element, "fact-table")) {
-			
-			String tableName = factTableElement.getAttribute("table");
-			String nameKey = determineNameKey(factTableElement, String.format("factTable.%s.name", tableName));
-			String descKey = determineDescriptionKey(factTableElement, String.format("factTable.%s.description", tableName)); 
-							
-			BeanDefinitionBuilder factTableBuilder = 
-					BeanDefinitionBuilder.rootBeanDefinition(FactTableImpl.class);
-			factTableBuilder.addConstructorArgReference(beanNames.getMessageSourceAccessor());
-			factTableBuilder.addConstructorArgValue(nameKey);
-			factTableBuilder.addConstructorArgValue(descKey);
-			factTableBuilder.addConstructorArgReference(beanNames.getEngine());
-			factTableBuilder.addConstructorArgValue(tableName);
-			
-			register(factTableBuilder, beanNames.buildTable(tableName), parserContext);
-			
-			// Dimensions
-			/*
-			 <bean id="m110.warehouse.ncaab.factTable.teamGameStatLine.dimension.date"
-					class="com.evinceframework.data.warehouse.impl.DimensionImpl">
-				<constructor-arg index="0" ref="m110.warehouse.dimensionTable.date" />
-				<constructor-arg index="1" ref="m110.warehouse.ncaab.factTable.teamGameStatLine" />
-				<constructor-arg index="2" value="dim_dateId" />
-			</bean>
-			 * */
-			
-			// Fact Categories
-			List<Element> categoryElements = DomUtils.getChildElementsByTagName(element, "fact-category");
-			
-			if(categoryElements.size() > 0) {
-				parseFactCategories(categoryElements, tableName, parserContext, beanNames);
+		parseFactTables(DomUtils.getChildElementsByTagName(element, "fact-table"), beanNames, parserContext);
 				
-			} else { //No categories - just the facts
-				parseFacts(factTableElement, tableName, beanNames.buildTable(tableName), parserContext, beanNames);	
-			}
-		}
-		
 		return engineBean;
 	}
 	
@@ -144,6 +109,98 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 
 	protected String getAttributeOrDefaultValue(Element ele, String attrName, String defaultValue) {
 		return ele.hasAttribute(attrName) ? ele.getAttribute(attrName) : defaultValue;
+	}
+	
+	protected void parseDimensionTables(List<Element> dimensionElements, BeanNames beanNames, ParserContext parserContext) 
+			throws Exception {
+		
+		for(Element dimension : dimensionElements) {
+			
+			String tableName = dimension.getAttribute("table");
+			String primaryKey = getAttributeOrDefaultValue(dimension, "primaryKey", String.format("%sId", tableName)); 
+			String nameKey = determineNameKey(dimension, String.format("dimension.%s.name", tableName));
+			String descKey = determineDescriptionKey(dimension, String.format("dimension.%s.description", tableName));
+			
+			BeanDefinitionBuilder dimensionBuilder = BeanDefinitionBuilder.rootBeanDefinition(DimensionTableImpl.class);
+			dimensionBuilder.addConstructorArgReference(beanNames.getMessageSourceAccessor());
+			dimensionBuilder.addConstructorArgValue(nameKey);
+			dimensionBuilder.addConstructorArgValue(descKey);
+			dimensionBuilder.addConstructorArgValue(tableName);
+			dimensionBuilder.addConstructorArgValue(primaryKey);
+			
+			register(dimensionBuilder, beanNames.buildDimension(tableName), parserContext);
+			
+			parseDimensionalAttributes(DomUtils.getChildElementsByTagName(dimension, "dimensional-attribute"), 
+					tableName, beanNames, parserContext);
+		}
+		
+	}
+	
+	@SuppressWarnings("deprecation")
+	protected void parseDimensionalAttributes(
+			List<Element> dimensionElements, String tableName, BeanNames beanNames, ParserContext parserContext) 
+			throws Exception {
+		
+		for (Element dimAttr : dimensionElements) {
+			
+			String column = dimAttr.getAttribute("column");
+			String nameKey = determineNameKey(
+					dimAttr, String.format("dimension.%s.attribute.%s.name", tableName, column));
+			String descKey = determineDescriptionKey(
+					dimAttr, String.format("dimension.%s.attribute.%s.description", tableName, column));
+			
+			BeanDefinitionBuilder attributeBuilder = BeanDefinitionBuilder.rootBeanDefinition(DimensionalAttributeImpl.class);
+			attributeBuilder.addConstructorArgReference(beanNames.getMessageSourceAccessor());
+			attributeBuilder.addConstructorArgValue(nameKey);
+			attributeBuilder.addConstructorArgValue(descKey);
+			attributeBuilder.addConstructorArgReference(beanNames.buildDimension(tableName));
+			attributeBuilder.addConstructorArgValue(column);
+			attributeBuilder.addConstructorArgValue(
+					ClassUtils.forName(getAttributeOrDefaultValue(dimAttr, "dataType", "java.lang.String")));
+			
+			register(attributeBuilder, beanNames.buildDimensionAttribute(tableName, column), parserContext);
+		}
+	}
+	
+	protected void parseFactTables(List<Element> elements, BeanNames beanNames, ParserContext parserContext) 
+			throws Exception {
+		
+		for(Element factTableElement : elements) {
+			
+			String tableName = factTableElement.getAttribute("table");
+			String nameKey = determineNameKey(factTableElement, String.format("factTable.%s.name", tableName));
+			String descKey = determineDescriptionKey(factTableElement, String.format("factTable.%s.description", tableName)); 
+							
+			BeanDefinitionBuilder factTableBuilder = 
+					BeanDefinitionBuilder.rootBeanDefinition(FactTableImpl.class);
+			factTableBuilder.addConstructorArgReference(beanNames.getMessageSourceAccessor());
+			factTableBuilder.addConstructorArgValue(nameKey);
+			factTableBuilder.addConstructorArgValue(descKey);
+			factTableBuilder.addConstructorArgReference(beanNames.getEngine());
+			factTableBuilder.addConstructorArgValue(tableName);
+			
+			register(factTableBuilder, beanNames.buildTable(tableName), parserContext);
+			
+			// Dimensions
+			/*
+			 <bean id="m110.warehouse.ncaab.factTable.teamGameStatLine.dimension.date"
+					class="com.evinceframework.data.warehouse.impl.DimensionImpl">
+				<constructor-arg index="0" ref="m110.warehouse.dimensionTable.date" />
+				<constructor-arg index="1" ref="m110.warehouse.ncaab.factTable.teamGameStatLine" />
+				<constructor-arg index="2" value="dim_dateId" />
+			</bean>
+			 * */
+			
+			// Fact Categories
+			List<Element> categoryElements = DomUtils.getChildElementsByTagName(factTableElement, "fact-category");
+			
+			if(categoryElements.size() > 0) {
+				parseFactCategories(categoryElements, tableName, parserContext, beanNames);
+				
+			} else { //No categories - just the facts
+				parseFacts(factTableElement, tableName, beanNames.buildTable(tableName), parserContext, beanNames);	
+			}
+		}
 	}
 	
 	protected void parseFactCategories(
@@ -226,8 +283,16 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 			return String.format("%s.factTable.%s", rootId, tableName);
 		}
 		
+		public String buildDimension(String tableName) {
+			return String.format("%s.dimension.%s", rootId, tableName);
+		}
+		
+		public String buildDimensionAttribute(String tableName, String column) {
+			return String.format("%s.dimension.%s.attribute.%s", rootId, tableName, column);
+		}
+		
 		public String buildCategory(String tableName, String categoryName) {
-			return String.format("%s.factTable.%s.category.%s", tableName, categoryName);
+			return String.format("%s.factTable.%s.category.%s", rootId, tableName, categoryName);
 		}
 		
 		public String buildFact(String tableName, String columnName) {
