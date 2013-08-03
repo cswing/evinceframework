@@ -64,11 +64,7 @@ public class WarehouseNamespaceTests extends TestCase {
 		assertNotNull(dimTable);
 		
 		FactImpl<?> fact = appContext.getBean("evfData.basic.factTable.testFacts.fact.factA", FactImpl.class);
-		assertNotNull(fact);
-		assertEquals("factA", fact.getColumnName());
-		assertEquals("factTable.testFacts.fact.factA.description", fact.getDescription());
-		assertEquals("factTable.testFacts.fact.factA.name", fact.getName());
-		assertEquals(Integer.class, fact.getValueType());
+		
 		
 		
 		FactTableImpl factTable = appContext.getBean("evfData.basic.factTable.testFacts", FactTableImpl.class);
@@ -81,7 +77,6 @@ public class WarehouseNamespaceTests extends TestCase {
 		assertNotNull(factTable.getDimensions());
 //		assertEquals(1, factTable.getDimensions());
 		
-		assertEquals(factTable, fact.getFactTable());
 		assertNotNull(factTable.getCategories());
 		assertEquals(0, factTable.getCategories().length);
 		assertNotNull(factTable.getFacts());
@@ -90,9 +85,8 @@ public class WarehouseNamespaceTests extends TestCase {
 		
 	}
 	
-	// testCategory
 	// testInValidBaseName
 	// testBadDialect
-	// testDataTypes (dimAttr, fact)
+	// testDataTypes (dimAttr)
 	// testSpecificNameAndDescription (for each type)
 }
