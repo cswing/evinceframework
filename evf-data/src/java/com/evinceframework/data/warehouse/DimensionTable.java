@@ -30,6 +30,7 @@ public interface DimensionTable {
 	 * 
 	 * @return the descriptive attribute of the table.
 	 */
+	@Deprecated()
 	public DimensionalAttribute<? extends Object>[] getBusinessKey();
 	
 	public DimensionalAttribute<? extends Object>[] getAttributes();

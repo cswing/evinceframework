@@ -24,7 +24,10 @@
 	<evfData:data-warehouse id="evfData.custom">
 		<evfData:message-source baseName="testMessages" />
 		<evfData:query-engine dialect="org.hibernate.dialect.MySQL5Dialect" />
-		<evfData:dimension-table table="testDimension">
+		<evfData:dimension-table table="testDimension"
+					nameKey="customName" 
+					descriptionKey="customDescription"
+					primaryKey="customPK">
 			<evfData:dimensional-attribute column="dimAttrA"/>
 		</evfData:dimension-table>
 		<evfData:fact-table table="testFacts">
