@@ -69,7 +69,7 @@ public class ObjectInstantiationTests extends TestCase {
 
 	public void testDimension_Initilaization() {
 		assertEquals(TestData.factTable, TestData.dimensionA.getFactTable());
-		assertEquals(TestData.dimensionTableA, TestData.dimensionA.getTable());
+		assertEquals(TestData.dimensionTableA, TestData.dimensionA.getDimensionTable());
 		assertEquals("dimA1_id", TestData.dimensionA.getForeignKeyColumn());
 	}
 	

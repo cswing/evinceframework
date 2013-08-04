@@ -165,7 +165,7 @@ public class QueryEngineImpl {
 				
 				String alias = joinDimension(dimensionJoinLookup, attr.getDimension(), joinFrag);
 				
-				for(DimensionalAttribute<? extends Object> dimAttr : attr.getDimension().getTable().getBusinessKey()) {
+				for(DimensionalAttribute<? extends Object> dimAttr : attr.getDimension().getDimensionTable().getBusinessKey()) {
 					selectFrag.addColumn(alias, dimAttr.getColumnName());
 					groupBy.add(StringHelper.qualify(alias, dimAttr.getColumnName()));
 				}
@@ -263,9 +263,9 @@ public class QueryEngineImpl {
 		} 
 		while(lookup.byAlias(alias) != null);
 		
-		join.addJoin(dimension.getTable().getTableName(), alias, 
+		join.addJoin(dimension.getDimensionTable().getTableName(), alias, 
 				new String[] { dimension.getForeignKeyColumn() }, 
-				new String[] { dimension.getTable().getPrimaryKeyColumn() }, 
+				new String[] { dimension.getDimensionTable().getPrimaryKeyColumn() }, 
 				JoinType.INNER_JOIN);
 		
 		lookup.register(alias, dimension);

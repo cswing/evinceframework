@@ -29,7 +29,7 @@ public interface Dimension {
 	
 	public String getDescription();
 	
-	public DimensionTable getTable();
+	public DimensionTable getDimensionTable();
 	
 	public FactTable getFactTable();
 	

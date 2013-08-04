@@ -16,6 +16,7 @@
 			<evfData:dimensional-attribute column="dimAttrA"/>
 		</evfData:dimension-table>
 		<evfData:fact-table table="testFacts">
+			<evfData:dimension dimensionTable="testDimension" />
 			<evfData:fact column="factA"></evfData:fact>
 		</evfData:fact-table>
 	</evfData:data-warehouse>
@@ -27,6 +28,10 @@
 			<evfData:dimensional-attribute column="dimAttrA"/>
 		</evfData:dimension-table>
 		<evfData:fact-table table="testFacts">
+			<evfData:dimension dimensionTable="testDimension" 
+					nameKey="customName" 
+					descriptionKey="customDescription" 
+					foreignKey="customForeignKey" />
 			<evfData:fact column="factA" 
 					nameKey="customName" 
 					descriptionKey="customDescription" 

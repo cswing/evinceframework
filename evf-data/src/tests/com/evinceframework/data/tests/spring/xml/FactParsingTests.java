@@ -29,7 +29,7 @@ public class FactParsingTests extends TestCase {
 
 	public void testBasicParsing() {
 		
-		ApplicationContext appContext = new ClassPathXmlApplicationContext("basic.xml", FactCategoryParsingTests.class);
+		ApplicationContext appContext = new ClassPathXmlApplicationContext("basic.xml", FactParsingTests.class);
 		
 		FactTableImpl factTable = appContext.getBean("evfData.basic.factTable.testFacts", FactTableImpl.class);
 		FactImpl<?> fact = appContext.getBean("evfData.basic.factTable.testFacts.fact.factA", FactImpl.class);

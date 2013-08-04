@@ -23,26 +23,31 @@ import com.evinceframework.data.warehouse.FactTable;
 
 public class DimensionImpl extends AbstractDataObject implements Dimension {
 
-	private DimensionTableImpl table;
+	private DimensionTableImpl dimensionTable;
 	
 	private FactTableImpl factTable;
 	
 	private String foreignKeyColumn;
 	
-	public DimensionImpl(DimensionTableImpl table, FactTableImpl factTable, String foreignKeyColumn) {
-		this(null, null, null, table, factTable, foreignKeyColumn);
+	public DimensionImpl(DimensionTableImpl dimensionTable, FactTableImpl factTable, String foreignKeyColumn) {
+		this(null, null, null, dimensionTable, factTable, foreignKeyColumn);
 	}
 	
 	public DimensionImpl(MessageSourceAccessor messageAccessor, String nameKey, String descriptionKey, 
-			DimensionTableImpl table, FactTableImpl factTable, String foreignKeyColumn) {
+			DimensionTableImpl dimensionTable, FactTableImpl factTable) {
+		this(messageAccessor, nameKey, descriptionKey, dimensionTable, factTable, dimensionTable.getPrimaryKeyColumn());
+	}
+	
+	public DimensionImpl(MessageSourceAccessor messageAccessor, String nameKey, String descriptionKey, 
+			DimensionTableImpl dimensionTable, FactTableImpl factTable, String foreignKeyColumn) {
 		
 		super(
-				messageAccessor != null ? messageAccessor : table.getMessageAccessor(),
-				nameKey != null ? nameKey : table.getNameKey(),
-				descriptionKey != null ? descriptionKey : table.getDescriptionKey()
+				messageAccessor != null ? messageAccessor : dimensionTable.getMessageAccessor(),
+				nameKey != null ? nameKey : dimensionTable.getNameKey(),
+				descriptionKey != null ? descriptionKey : dimensionTable.getDescriptionKey()
 		);
 		
-		this.table = table;
+		this.dimensionTable = dimensionTable;
 		this.factTable = factTable;
 		this.foreignKeyColumn = foreignKeyColumn;
 		
@@ -50,8 +55,8 @@ public class DimensionImpl extends AbstractDataObject implements Dimension {
 	}
 
 	@Override
-	public DimensionTable getTable() {
-		return table;
+	public DimensionTable getDimensionTable() {
+		return dimensionTable;
 	}
 
 	@Override

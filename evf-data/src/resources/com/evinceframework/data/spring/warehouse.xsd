@@ -39,6 +39,14 @@
 				<xs:element name="fact-table" minOccurs="1" maxOccurs="unbounded">
 					<xs:complexType>
 						<xs:sequence>
+							<xs:element name="dimension" minOccurs="1" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="dimensionTable" type="xs:string" use="required" />
+									<xs:attribute name="foreignKey" type="xs:string" />
+									<xs:attribute name="nameKey" type="xs:string" />
+									<xs:attribute name="descriptionKey" type="xs:string" />
+								</xs:complexType>
+							</xs:element>
 							<xs:choice>
 								<xs:element name="fact-category" minOccurs="1" maxOccurs="unbounded">
 									<xs:complexType>
