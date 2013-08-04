@@ -28,7 +28,10 @@
 					nameKey="customName" 
 					descriptionKey="customDescription"
 					primaryKey="customPK">
-			<evfData:dimensional-attribute column="dimAttrA"/>
+			<evfData:dimensional-attribute column="dimAttrA"
+				nameKey="customName"
+				descriptionKey="customDescription"
+				dataType="java.lang.Integer"/>
 		</evfData:dimension-table>
 		<evfData:fact-table table="testFacts">
 			<evfData:dimension dimensionTable="testDimension" 
