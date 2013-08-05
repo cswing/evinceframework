@@ -79,7 +79,7 @@ define([
 			} else { // default to the first dimension
 				var defaultSummarization = this.factTable.dimensions[0];
 				this.columns.push({
-					label: defaultSummarization.table.name,
+					label: defaultSummarization.dimensionTable.name,
 					field: 'test'
 				});
 			}
@@ -90,7 +90,7 @@ define([
 
 				var defaultSummarization = this.factTable.dimensions[1];
 				this.columns.push({
-					label: defaultSummarization.table.name,
+					label: defaultSummarization.dimensionTable.name,
 					field: 'test'
 				});	
 

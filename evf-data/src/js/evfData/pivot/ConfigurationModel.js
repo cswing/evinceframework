@@ -84,7 +84,7 @@
 				dataArray.push(dim);
 
 				// Dimension Attributes
-				array.forEach(dimension.table.attributes, function(attribute) {
+				array.forEach(dimension.dimensionTable.attributes, function(attribute) {
 					var attr = {
 							_type:      this.modelTypeKeys.dimensionalAttr,
 							_attribute: attribute,
