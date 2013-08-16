@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.warehouse.query.impl;
+package com.evinceframework.data.warehouse.query;
 
 import java.util.Locale;
 
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.DimensionCriterion;
-import com.evinceframework.data.warehouse.query.FactRangeCriterion;
-import com.evinceframework.data.warehouse.query.FactSelection;
-import com.evinceframework.data.warehouse.query.Query;
-import com.evinceframework.data.warehouse.query.SummarizationAttribute;
+import com.evinceframework.data.warehouse.query.impl.AbstractQuery;
 
-public class QueryImpl implements Query {
+
+public class PivotQuery extends AbstractQuery {
 
 	private FactTable factTable;
 	
@@ -42,15 +39,15 @@ public class QueryImpl implements Query {
 	
 	private Locale locale = LocaleContextHolder.getLocale();
 	
-	public QueryImpl(FactTable factTable, FactSelection[] selections) {
+	public PivotQuery(FactTable factTable, FactSelection[] selections) {
 		this(factTable, selections, new SummarizationAttribute[]{});
 	}
 	
-	public QueryImpl(FactTable factTable, FactSelection[] selections, SummarizationAttribute[] summarizations) {
+	public PivotQuery(FactTable factTable, FactSelection[] selections, SummarizationAttribute[] summarizations) {
 		this(factTable, selections, summarizations, new DimensionCriterion[]{});
 	}
 	
-	public QueryImpl(FactTable factTable, FactSelection[] selections, SummarizationAttribute[] summarizations, 
+	public PivotQuery(FactTable factTable, FactSelection[] selections, SummarizationAttribute[] summarizations, 
 			DimensionCriterion[] dimensionCriteria) {
 
 		this.factTable = factTable;
@@ -102,5 +99,4 @@ public class QueryImpl implements Query {
 	public void setLocale(Locale locale) {
 		this.locale = locale;
 	}
-		
 }

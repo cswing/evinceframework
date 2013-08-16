@@ -15,23 +15,8 @@
  */
 package com.evinceframework.data.warehouse.query;
 
-import java.util.Locale;
+public interface QueryCommand<Q extends Query, R extends QueryResult> {
 
-import com.evinceframework.data.warehouse.FactTable;
-
-public interface Query {
-
-	public Locale getLocale();
+	public R query(Q query);
 	
-	public FactTable getFactTable();
-	
-//	public SummarizationAttribute[] getSummarizations();
-	
-	public FactSelection[] getFactSelections();
-	
-//	public DimensionCriterion[] getDimensionCriterion();
-//	
-//	public FactRangeCriterion[] getFactCriterion();
-//	
-//	public Integer getMaximumRowCount();
 }

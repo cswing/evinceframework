@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.warehouse.query.impl;
+package com.evinceframework.data.warehouse.query.jdbc;
 
 import org.springframework.context.support.ResourceBundleMessageSource;
 

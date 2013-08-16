@@ -13,25 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.warehouse.query;
+package com.evinceframework.data.warehouse.query.impl;
 
 import java.util.Locale;
 
 import com.evinceframework.data.warehouse.FactTable;
+import com.evinceframework.data.warehouse.query.FactSelection;
+import com.evinceframework.data.warehouse.query.Query;
 
-public interface Query {
+public class AbstractQuery implements Query {
 
-	public Locale getLocale();
+	private Locale locale;
 	
-	public FactTable getFactTable();
+	private FactTable factTable;
 	
-//	public SummarizationAttribute[] getSummarizations();
-	
-	public FactSelection[] getFactSelections();
-	
-//	public DimensionCriterion[] getDimensionCriterion();
-//	
-//	public FactRangeCriterion[] getFactCriterion();
-//	
-//	public Integer getMaximumRowCount();
+	@Override
+	public Locale getLocale() {
+		return locale;
+	}
+
+	@Override
+	public FactTable getFactTable() {
+		return factTable;
+	}
+
+	@Override
+	public FactSelection[] getFactSelections() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

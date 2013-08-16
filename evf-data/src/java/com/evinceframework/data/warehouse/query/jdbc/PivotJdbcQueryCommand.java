@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.warehouse.query.impl;
+package com.evinceframework.data.warehouse.query.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +27,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.pagination.LimitHandler;
 import org.hibernate.engine.spi.RowSelection;
 import org.hibernate.internal.util.StringHelper;
 import org.hibernate.sql.JoinFragment;
@@ -44,51 +42,49 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import com.evinceframework.data.warehouse.Dimension;
 import com.evinceframework.data.warehouse.DimensionalAttribute;
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.impl.FactTableImpl;
 import com.evinceframework.data.warehouse.query.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
-import com.evinceframework.data.warehouse.query.Query;
+import com.evinceframework.data.warehouse.query.PivotQuery;
+import com.evinceframework.data.warehouse.query.PivotQueryResult;
 import com.evinceframework.data.warehouse.query.QueryException;
-import com.evinceframework.data.warehouse.query.QueryResult;
 import com.evinceframework.data.warehouse.query.SummarizationAttribute;
 
-public class QueryEngineImpl {
+public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, PivotQueryResult> {
 
+	private static final Log logger = LogFactory.getLog(PivotJdbcQueryCommand.class);
+	
 	public static final int DEFAULT_ROW_LIMIT = 10000;
-	
-	private static final Log logger = LogFactory.getLog(QueryEngineImpl.class);
-	
-	private Dialect dialect;
-	
-	private FactTable[] factTables = new FactTable[] {};
-	
-	private JdbcTemplate jdbcTemplate;
 	
 	private MessageSourceAccessor messageSourceAccessor = new MessageSourceAccessor(new QueryEngineMessageSource());
 	
 	private Integer rowLimit = null;
 	
-	public QueryEngineImpl(Dialect dialect) {
-		this(dialect, DEFAULT_ROW_LIMIT);
-	}
-	
-	public QueryEngineImpl(Dialect dialect, Integer rowLimit) {
-		this.dialect = dialect;
-		this.rowLimit = rowLimit;
+	public PivotJdbcQueryCommand(JdbcTemplate jdbcTemplate, Dialect dialect) {
+		this(jdbcTemplate, dialect, DEFAULT_ROW_LIMIT);
 	}
 
-	public Dialect getDialect() {
-		return dialect;
+	public PivotJdbcQueryCommand(JdbcTemplate jdbcTemplate, Dialect dialect, Integer rowLimit) {
+		super(jdbcTemplate, dialect);
+		this.rowLimit = rowLimit;
 	}
 	
-	public QueryResult execute(final Query query) throws QueryException {
+	public Integer getRowLimit() {
+		return rowLimit;
+	}
+
+	@Override
+	protected PivotQueryResult createResult(PivotQuery query) {
+		return null;
+	}
+
+	@Override
+	protected PreparedStatementCreator createCreator(final PivotQuery query, final PivotQueryResult result) {
 		
-		final QueryResultImpl result = new QueryResultImpl(query);
-		
-		PreparedStatementCreator psc = new PreparedStatementCreator() {
+		return new PreparedStatementCreator() {
+			
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-				
+			
 				SqlGenerationResult sqlResult = null;
 				
 				try {
@@ -106,30 +102,19 @@ public class QueryEngineImpl {
 					paramIdx += sqlResult.limitHandler.bindLimitParametersAtStartOfQuery(stmt, paramIdx);
 				
 				// set parameters
-				for(DimensionCriterion dc : query.getDimensionCriterion()) {
-					paramIdx += dc.setParameterValue(stmt, paramIdx);
-				}
+	//			for(DimensionCriterion dc : query.getDimensionCriterion()) {
+	//				paramIdx += dc.setParameterValue(stmt, paramIdx);
+	//			}
 				
 				if(sqlResult.limitHandler != null)
 					paramIdx += sqlResult.limitHandler.bindLimitParametersAtEndOfQuery(stmt, paramIdx);
 				
 				return stmt;
-			}
+			}	
 		};
-		
-		ResultSetExtractor<QueryResult> rse = new ResultSetExtractor<QueryResult>() {
-			@Override
-			public QueryResult extractData(ResultSet rs) throws SQLException, DataAccessException {
-				
-				
-				return result;
-			}
-		};
-		
-		return (QueryResult) jdbcTemplate.query(psc, rse);
 	}
-	
-	protected SqlGenerationResult generateSql(Query query, QueryResultImpl result) throws QueryException {
+
+	protected SqlGenerationResult generateSql(PivotQuery query, PivotQueryResult result) throws QueryException {
 		
 		/*
 		 A pivot table usually consists of row, column and data (or fact) fields. In this case, the column is 
@@ -230,7 +215,7 @@ public class QueryEngineImpl {
 			RowSelection rowSelection = new RowSelection();
 			rowSelection.setMaxRows(limit);
 			
-			sqlResult.limitHandler = dialect.buildLimitHandler(sqlResult.sql, rowSelection);
+			sqlResult.limitHandler = getDialect().buildLimitHandler(sqlResult.sql, rowSelection);
 			if(sqlResult.limitHandler.supportsLimit()) {
 				sqlResult.sql = sqlResult.limitHandler.getProcessedSql();
 				
@@ -238,7 +223,7 @@ public class QueryEngineImpl {
 				if(this.rowLimit != null) {
 					logger.warn(String.format(
 							"The query engine is configured to limit the number of rows but the underlying database dialect [%s] does not support this.",
-							dialect.toString()));
+							getDialect().toString()));
 				}
 				
 				if(query.getMaximumRowCount() != null) {
@@ -248,9 +233,22 @@ public class QueryEngineImpl {
 			}
 		}
 
-		return sqlResult;
+		return sqlResult;		
 	}
 	
+	@Override
+	protected ResultSetExtractor<PivotQueryResult> createExtractor(final PivotQuery query, final PivotQueryResult result) {
+		
+		return new ResultSetExtractor<PivotQueryResult>() {
+			@Override
+			public PivotQueryResult extractData(ResultSet rs) throws SQLException, DataAccessException {
+				
+				
+				return result;
+			}
+		};
+	}
+
 	protected String joinDimension(DimensionJoinAliasLookup lookup, Dimension dimension, JoinFragment join) {
 		
 		String alias = lookup.byDimension(dimension);
@@ -293,17 +291,4 @@ public class QueryEngineImpl {
 		}
 	}
 	
-	protected class SqlGenerationResult {
-		
-		public String sql;
-		
-		public LimitHandler limitHandler;
-	}
-
-	/*package*/ public void addFactTable(FactTableImpl factTable) {
-		List<FactTable> f = new LinkedList<FactTable>(Arrays.asList(factTables));
-		assert(factTable.getQueryEngine().equals(this));
-		f.add(factTable);
-		factTables = f.toArray(new FactTable[]{});
-	}
 }

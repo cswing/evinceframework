@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.tests.warehouse.query;
+package com.evinceframework.data.tests.warehouse.query.jdbc.pivot;
 
 import junit.framework.TestCase;
 
@@ -22,19 +22,18 @@ import org.hibernate.dialect.MySQL5Dialect;
 
 import com.evinceframework.data.tests.warehouse.TestData;
 import com.evinceframework.data.warehouse.query.FactSelection;
-import com.evinceframework.data.warehouse.query.Query;
+import com.evinceframework.data.warehouse.query.PivotQuery;
+import com.evinceframework.data.warehouse.query.PivotQueryResult;
 import com.evinceframework.data.warehouse.query.QueryException;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
-import com.evinceframework.data.warehouse.query.impl.QueryEngineImpl;
-import com.evinceframework.data.warehouse.query.impl.QueryImpl;
-import com.evinceframework.data.warehouse.query.impl.QueryResultImpl;
+import com.evinceframework.data.warehouse.query.jdbc.PivotJdbcQueryCommand;
 
-public class QueryEngineTests extends TestCase {
+public class PivotJdbcQueryCommandTests extends TestCase {
 	
 	public void testNullFactSelections() {
 		
-		TestQueryEngine queryEngine = new TestQueryEngine(new MySQL5Dialect());
-		QueryImpl query = new QueryImpl(TestData.factTable, null);
+		TestPivotQueryCommand queryEngine = new TestPivotQueryCommand(new MySQL5Dialect());
+		PivotQuery query = new PivotQuery(TestData.factTable, null);
 		query.setMaximumRowCount(null);
 		
 		try {
@@ -47,8 +46,8 @@ public class QueryEngineTests extends TestCase {
 	
 	public void testEmptyFactSelections() {
 		
-		TestQueryEngine queryEngine = new TestQueryEngine(new MySQL5Dialect());
-		QueryImpl query = new QueryImpl(TestData.factTable, new FactSelection[]{});
+		TestPivotQueryCommand queryEngine = new TestPivotQueryCommand(new MySQL5Dialect());
+		PivotQuery query = new PivotQuery(TestData.factTable, new FactSelection[]{});
 		query.setMaximumRowCount(null);
 		
 		try {
@@ -61,8 +60,8 @@ public class QueryEngineTests extends TestCase {
 	
 	public void testQuerySql() throws QueryException {
 		
-		TestQueryEngine queryEngine = new TestQueryEngine(new MySQL5Dialect());
-		QueryImpl query = new QueryImpl(TestData.factTable, new FactSelection[] {
+		TestPivotQueryCommand queryEngine = new TestPivotQueryCommand(new MySQL5Dialect());
+		PivotQuery query = new PivotQuery(TestData.factTable, new FactSelection[] {
 				new FactSelectionImpl(TestData.simpleIntegerFact)
 		});
 		query.setMaximumRowCount(null);
@@ -75,8 +74,8 @@ public class QueryEngineTests extends TestCase {
 	
 	public void testQueryEngineLimitSql() throws QueryException {
 		
-		TestQueryEngine queryEngine = new TestQueryEngine(new MySQL5Dialect(), 10000);
-		QueryImpl query = new QueryImpl(TestData.factTable, new FactSelection[] {
+		TestPivotQueryCommand queryEngine = new TestPivotQueryCommand(new MySQL5Dialect(), 10000);
+		PivotQuery query = new PivotQuery(TestData.factTable, new FactSelection[] {
 				new FactSelectionImpl(TestData.simpleIntegerFact)
 		});
 		query.setMaximumRowCount(null);
@@ -87,18 +86,18 @@ public class QueryEngineTests extends TestCase {
 		assertEquals("select fact.simpleInteger as simpleInteger from fooTable fact limit ?", sql);
 	}
 	
-	public static class TestQueryEngine extends QueryEngineImpl {
+	public static class TestPivotQueryCommand extends PivotJdbcQueryCommand {
 
-		public TestQueryEngine(Dialect dialect) {
-			super(dialect, null);
+		public TestPivotQueryCommand(Dialect dialect) {
+			super(null, dialect, null);
 		}
 		
-		public TestQueryEngine(Dialect dialect, Integer rowLimit) {
-			super(dialect, rowLimit);
+		public TestPivotQueryCommand(Dialect dialect, Integer rowLimit) {
+			super(null, dialect, rowLimit);
 		}
 		
-		public String generateSqlForTest(Query query) throws QueryException {			
-			return this.generateSql(query, new QueryResultImpl(query)).sql;
+		public String generateSqlForTest(PivotQuery query) throws QueryException {			
+			return this.generateSql(query, new PivotQueryResult(query)).sql;
 		}
 	}
 }

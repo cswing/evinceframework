@@ -15,6 +15,35 @@
  */
 package com.evinceframework.data.warehouse.query;
 
-public interface QueryEngine {
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
+import com.evinceframework.core.factory.MapBackedClassLookupFactory;
+import com.evinceframework.data.warehouse.FactTable;
+import com.evinceframework.data.warehouse.impl.FactTableImpl;
+
+public class QueryEngine extends MapBackedClassLookupFactory<QueryCommand<Query, QueryResult>> {
+
+	private FactTable[] factTables = new FactTable[] {};
+	
+	public QueryResult query(Query query) throws QueryException {
+		
+		if(query == null)
+			return null;
+		
+		QueryCommand<Query, QueryResult> cmd = findImplementation(query.getClass());
+		if(cmd == null) {
+			throw new QueryException(String.format("Unknown query: %s", query.getClass().getName())); // TODO i18n
+		}
+		
+		return cmd.query(query);
+	}
+	
+	/*package*/ public void addFactTable(FactTableImpl factTable) {
+		List<FactTable> f = new LinkedList<FactTable>(Arrays.asList(factTables));
+		assert(factTable.getQueryEngine().equals(this));
+		f.add(factTable);
+		factTables = f.toArray(new FactTable[]{});
+	}
 }

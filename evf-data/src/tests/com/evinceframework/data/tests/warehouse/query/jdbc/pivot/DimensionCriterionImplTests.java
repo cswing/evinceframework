@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.tests.warehouse.query;
+package com.evinceframework.data.tests.warehouse.query.jdbc.pivot;
 
 import junit.framework.TestCase;
 
 import org.hibernate.dialect.MySQL5Dialect;
 
 import com.evinceframework.data.tests.warehouse.TestData;
-import com.evinceframework.data.tests.warehouse.query.QueryEngineTests.TestQueryEngine;
+import com.evinceframework.data.tests.warehouse.query.jdbc.pivot.PivotJdbcQueryCommandTests.TestPivotQueryCommand;
 import com.evinceframework.data.warehouse.query.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
+import com.evinceframework.data.warehouse.query.PivotQuery;
 import com.evinceframework.data.warehouse.query.QueryException;
 import com.evinceframework.data.warehouse.query.SummarizationAttribute;
 import com.evinceframework.data.warehouse.query.impl.DimensionCriterionImpl;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
-import com.evinceframework.data.warehouse.query.impl.QueryImpl;
 
 public class DimensionCriterionImplTests extends TestCase {
 
 	public void test_QueryEngine() throws QueryException {
 			
-		TestQueryEngine queryEngine = new QueryEngineTests.TestQueryEngine(new MySQL5Dialect());
+		TestPivotQueryCommand queryEngine = new TestPivotQueryCommand(new MySQL5Dialect());
 		
-		QueryImpl query = new QueryImpl(TestData.factTable, 
+		PivotQuery query = new PivotQuery(TestData.factTable, 
 			new FactSelection[] {
 				new FactSelectionImpl(TestData.simpleIntegerFact)
 			},

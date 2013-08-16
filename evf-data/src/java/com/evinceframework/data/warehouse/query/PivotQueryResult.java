@@ -15,23 +15,22 @@
  */
 package com.evinceframework.data.warehouse.query;
 
-import java.util.Locale;
+import java.util.LinkedList;
+import java.util.List;
 
-import com.evinceframework.data.warehouse.FactTable;
 
-public interface Query {
+public class PivotQueryResult implements QueryResult {
 
-	public Locale getLocale();
+	private PivotQuery query;
+
+	public PivotQueryResult(PivotQuery query) {
+		this.query = query;
+	}
 	
-	public FactTable getFactTable();
-	
-//	public SummarizationAttribute[] getSummarizations();
-	
-	public FactSelection[] getFactSelections();
-	
-//	public DimensionCriterion[] getDimensionCriterion();
-//	
-//	public FactRangeCriterion[] getFactCriterion();
-//	
-//	public Integer getMaximumRowCount();
+	// TODO move to abstract base class
+	private List<String> messages = new LinkedList<String>();
+
+	public List<String> getMessages() {
+		return messages;
+	}
 }

@@ -13,33 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.tests.warehouse.query;
+package com.evinceframework.data.tests.warehouse.query.jdbc.pivot;
 
 import junit.framework.TestCase;
 
 import org.hibernate.dialect.MySQL5Dialect;
 
 import com.evinceframework.data.tests.warehouse.TestData;
-import com.evinceframework.data.tests.warehouse.query.QueryEngineTests.TestQueryEngine;
+import com.evinceframework.data.tests.warehouse.query.jdbc.pivot.PivotJdbcQueryCommandTests.TestPivotQueryCommand;
+import com.evinceframework.data.warehouse.query.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
-import com.evinceframework.data.warehouse.query.FactSelectionFunction;
+import com.evinceframework.data.warehouse.query.PivotQuery;
 import com.evinceframework.data.warehouse.query.QueryException;
 import com.evinceframework.data.warehouse.query.SummarizationAttribute;
+import com.evinceframework.data.warehouse.query.impl.DimensionalAttributeCriterionImpl;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
-import com.evinceframework.data.warehouse.query.impl.QueryImpl;
-import com.evinceframework.data.warehouse.query.impl.SummarizationAttributeImpl;
 
-public class SummarizationAttributeImplTests extends TestCase {
+public class DimensionAttributeCriterionImplTests extends TestCase {
 
-	public void testSummarizationAttributeQuery() throws QueryException {
+	public void test_QueryEngine() throws QueryException {
 		
-		TestQueryEngine queryEngine = new TestQueryEngine(new MySQL5Dialect());
-		QueryImpl query = new QueryImpl(TestData.factTable, 
+		TestPivotQueryCommand queryEngine = new TestPivotQueryCommand(new MySQL5Dialect());
+		
+		PivotQuery query = new PivotQuery(TestData.factTable, 
 			new FactSelection[] {
-				new FactSelectionImpl(TestData.simpleIntegerFact, FactSelectionFunction.SUM)
+				new FactSelectionImpl(TestData.simpleIntegerFact)
 			},
-			new SummarizationAttribute[] {
-				new SummarizationAttributeImpl(TestData.dimensionA)
+			new SummarizationAttribute[] {},
+			new DimensionCriterion[]{
+				new DimensionalAttributeCriterionImpl<String>(TestData.dimensionA, TestData.dimensionalAttrA1, "testValue")
 			}
 		);
 		query.setMaximumRowCount(null);
@@ -47,6 +49,7 @@ public class SummarizationAttributeImplTests extends TestCase {
 		String sql = queryEngine.generateSqlForTest(query);
 		
 		assertNotNull(sql);
-		assertEquals("select dim_0.attr1 as attr1, SUM(fact.simpleInteger) as SUM_simpleInteger from fooTable fact inner join dimA dim_0 on dimA1_id=dim_0.dimA_id group by dim_0.attr1", sql);
+		assertEquals("select fact.simpleInteger as simpleInteger from fooTable fact inner join dimA dim_0 on dimA1_id=dim_0.dimA_id where dim_0.attr1 = ?", sql);
 	}
+	
 }

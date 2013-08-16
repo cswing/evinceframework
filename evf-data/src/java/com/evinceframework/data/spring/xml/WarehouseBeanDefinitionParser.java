@@ -36,7 +36,7 @@ import com.evinceframework.data.warehouse.impl.DimensionalAttributeImpl;
 import com.evinceframework.data.warehouse.impl.FactCategoryImpl;
 import com.evinceframework.data.warehouse.impl.FactImpl;
 import com.evinceframework.data.warehouse.impl.FactTableImpl;
-import com.evinceframework.data.warehouse.query.impl.QueryEngineImpl;
+import com.evinceframework.data.warehouse.query.QueryEngine;
 
 public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 			
@@ -62,9 +62,12 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 		BeanDefinition engineBean = register(BeanDefinitionBuilder.genericBeanDefinition(
 				queryEngine.getAttribute("dialect")), beanNames.getDialect(), parserContext);
 		
-		BeanDefinitionBuilder engineBuilder = BeanDefinitionBuilder.genericBeanDefinition(QueryEngineImpl.class);
-		engineBuilder.addConstructorArgReference(beanNames.getDialect());		
+		BeanDefinitionBuilder engineBuilder = BeanDefinitionBuilder.genericBeanDefinition(QueryEngine.class);
+		//engineBuilder.addConstructorArgReference(beanNames.getDialect());		
 		register(engineBuilder, beanNames.getEngine(), parserContext);
+		
+		// TODO add jdbc element with dialect
+		// TODO add default commands
 		
 		// Message Source & Accessor
 		BeanDefinitionBuilder messageSourceBuilder = 

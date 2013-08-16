@@ -25,13 +25,13 @@ import com.evinceframework.data.warehouse.Dimension;
 import com.evinceframework.data.warehouse.Fact;
 import com.evinceframework.data.warehouse.FactCategory;
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.impl.QueryEngineImpl;
+import com.evinceframework.data.warehouse.query.QueryEngine;
 
 public class FactTableImpl extends AbstractDataObject implements FactTable {
 	
 	private String tableName;
 	
-	private QueryEngineImpl queryEngine;
+	private QueryEngine queryEngine;
 	
 	private Fact<? extends Object>[] facts = new Fact<?>[]{};
 	
@@ -40,7 +40,7 @@ public class FactTableImpl extends AbstractDataObject implements FactTable {
 	private Dimension[] dimensions = new Dimension[] {};
 	
 	public FactTableImpl(MessageSourceAccessor messageAccessor, String nameKey, String descriptionKey, 
-			QueryEngineImpl queryEngine, String tableName) {
+			QueryEngine queryEngine, String tableName) {
 		super(messageAccessor, nameKey, descriptionKey);
 		this.tableName = tableName;
 		this.queryEngine = queryEngine;
@@ -68,7 +68,7 @@ public class FactTableImpl extends AbstractDataObject implements FactTable {
 		return factCategories;
 	}
 	
-	public QueryEngineImpl getQueryEngine() {
+	public QueryEngine getQueryEngine() {
 		return queryEngine;
 	}
 

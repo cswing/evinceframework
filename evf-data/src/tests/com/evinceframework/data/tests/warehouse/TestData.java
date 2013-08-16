@@ -28,7 +28,7 @@ import com.evinceframework.data.warehouse.impl.DimensionTableImpl;
 import com.evinceframework.data.warehouse.impl.DimensionalAttributeImpl;
 import com.evinceframework.data.warehouse.impl.FactImpl;
 import com.evinceframework.data.warehouse.impl.FactTableImpl;
-import com.evinceframework.data.warehouse.query.impl.QueryEngineImpl;
+import com.evinceframework.data.warehouse.query.QueryEngine;
 
 public class TestData {
 
@@ -60,7 +60,7 @@ public class TestData {
 	
 	public static final DimensionalAttributeImpl<Integer> dimensionalAttrA2;
 	
-	public static final QueryEngineImpl queryEngine;
+	public static final QueryEngine queryEngine;
 	
 	public static final FactTableImpl factTable;
 	
@@ -89,7 +89,7 @@ public class TestData {
 		MessageSourceAccessor sourceAccessor = new MessageSourceAccessor(messageSource);
 		
 		// queryEngine
-		queryEngine = new QueryEngineImpl(new MySQL5Dialect());
+		queryEngine = new QueryEngine(/*new MySQL5Dialect()*/);
 		
 		// dimension tables
 		dimensionTableA = new DimensionTableImpl(sourceAccessor, DIMENSION_TABLE_A_NAME, DIMENSION_TABLE_A_DESC, "dimA", "dimA_id");
