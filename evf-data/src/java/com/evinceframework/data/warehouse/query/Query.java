@@ -21,7 +21,7 @@ import com.evinceframework.data.warehouse.FactTable;
 
 public interface Query {
 
-	public Locale getLocale();
+	//public Locale getLocale();
 	
 	public FactTable getFactTable();
 	
@@ -29,9 +29,9 @@ public interface Query {
 	
 	public FactSelection[] getFactSelections();
 	
-//	public DimensionCriterion[] getDimensionCriterion();
-//	
-//	public FactRangeCriterion[] getFactCriterion();
-//	
+	public DimensionCriterion[] getDimensionCriterion();
+	
+	public FactRangeCriterion[] getFactCriterion();
+	
 //	public Integer getMaximumRowCount();
 }

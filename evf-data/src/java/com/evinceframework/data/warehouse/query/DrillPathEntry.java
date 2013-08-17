@@ -15,17 +15,21 @@
  */
 package com.evinceframework.data.warehouse.query;
 
-import com.evinceframework.data.warehouse.Fact;
+import com.evinceframework.data.warehouse.Dimension;
+import com.evinceframework.data.warehouse.DimensionalAttribute;
 
-public interface FactRangeCriterion {
+public class DrillPathEntry<T> {
 
-	public Fact<?> getFact();
+	public DimensionalAttribute<T> getDimensionalAttribute() {
+		return null;
+	}
 	
-	public Object getUpperBound();
+	public Dimension getDimension() {
+		return null;
+	}
 	
-	public boolean isUpperBoundInclusive();
+	public DrillPathEntry<?> next() {
+		return null;
+	}
 	
-	public Object getLowerBound();
-	
-	public boolean isLowerBoundInclusive();
 }

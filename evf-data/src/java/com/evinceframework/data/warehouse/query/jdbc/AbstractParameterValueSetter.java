@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.warehouse.query;
+package com.evinceframework.data.warehouse.query.jdbc;
 
-import com.evinceframework.data.warehouse.Fact;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public interface FactRangeCriterion {
+public abstract class AbstractParameterValueSetter<T> implements ParameterValueSetter {
 
-	public Fact<?> getFact();
+	@Override
+	@SuppressWarnings("unchecked")
+	public int setParameterValues(PreparedStatement stmt, Object[] values, int paramIdx) throws SQLException {
+		int i = 0; 
+		for(Object val : values) {
+			i += setParameterValue(stmt, (T)val, paramIdx + i);
+		}	
+		return i;	
+	}
 	
-	public Object getUpperBound();
-	
-	public boolean isUpperBoundInclusive();
-	
-	public Object getLowerBound();
-	
-	public boolean isLowerBoundInclusive();
+	protected abstract int setParameterValue(PreparedStatement stmt, T value, int paramIdx) throws SQLException;
+
 }

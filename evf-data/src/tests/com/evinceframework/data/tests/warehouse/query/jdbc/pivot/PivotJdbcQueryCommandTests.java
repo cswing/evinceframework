@@ -21,10 +21,13 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.MySQL5Dialect;
 
 import com.evinceframework.data.tests.warehouse.TestData;
+import com.evinceframework.data.warehouse.query.DimensionCriterion;
+import com.evinceframework.data.warehouse.query.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.PivotQuery;
 import com.evinceframework.data.warehouse.query.PivotQueryResult;
 import com.evinceframework.data.warehouse.query.QueryException;
+import com.evinceframework.data.warehouse.query.SummarizationAttribute;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
 import com.evinceframework.data.warehouse.query.jdbc.PivotJdbcQueryCommand;
 
@@ -33,7 +36,14 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 	public void testNullFactSelections() {
 		
 		TestPivotQueryCommand queryEngine = new TestPivotQueryCommand(new MySQL5Dialect());
-		PivotQuery query = new PivotQuery(TestData.factTable, null);
+		PivotQuery query = new PivotQuery(
+				TestData.factTable,
+				null,
+				new DimensionCriterion[]{},
+				new FactRangeCriterion[]{},
+				new SummarizationAttribute[] {}
+			);
+		
 		query.setMaximumRowCount(null);
 		
 		try {
@@ -47,7 +57,13 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 	public void testEmptyFactSelections() {
 		
 		TestPivotQueryCommand queryEngine = new TestPivotQueryCommand(new MySQL5Dialect());
-		PivotQuery query = new PivotQuery(TestData.factTable, new FactSelection[]{});
+		PivotQuery query = new PivotQuery(
+				TestData.factTable,
+				new FactSelection[]{},
+				new DimensionCriterion[]{},
+				new FactRangeCriterion[]{},
+				new SummarizationAttribute[] {}
+			);
 		query.setMaximumRowCount(null);
 		
 		try {
@@ -61,9 +77,14 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 	public void testQuerySql() throws QueryException {
 		
 		TestPivotQueryCommand queryEngine = new TestPivotQueryCommand(new MySQL5Dialect());
-		PivotQuery query = new PivotQuery(TestData.factTable, new FactSelection[] {
-				new FactSelectionImpl(TestData.simpleIntegerFact)
-		});
+		PivotQuery query = new PivotQuery(
+				TestData.factTable,
+				new FactSelection[]{ new FactSelectionImpl(TestData.simpleIntegerFact) },
+				new DimensionCriterion[]{},
+				new FactRangeCriterion[]{},
+				new SummarizationAttribute[] {}
+			); 
+				
 		query.setMaximumRowCount(null);
 		
 		String sql = queryEngine.generateSqlForTest(query);
@@ -75,9 +96,14 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 	public void testQueryEngineLimitSql() throws QueryException {
 		
 		TestPivotQueryCommand queryEngine = new TestPivotQueryCommand(new MySQL5Dialect(), 10000);
-		PivotQuery query = new PivotQuery(TestData.factTable, new FactSelection[] {
-				new FactSelectionImpl(TestData.simpleIntegerFact)
-		});
+		PivotQuery query = new PivotQuery(
+				TestData.factTable,
+				new FactSelection[]{ new FactSelectionImpl(TestData.simpleIntegerFact) },
+				new DimensionCriterion[]{},
+				new FactRangeCriterion[]{},
+				new SummarizationAttribute[] {}
+			);
+		
 		query.setMaximumRowCount(null);
 		
 		String sql = queryEngine.generateSqlForTest(query);

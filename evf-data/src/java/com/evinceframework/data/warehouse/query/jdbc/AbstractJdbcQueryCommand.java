@@ -59,12 +59,5 @@ public abstract class AbstractJdbcQueryCommand<Q extends Query, R extends QueryR
 		return (R) getJdbcTemplate().query(
 				createCreator(query, result), createExtractor(query, result));
 	}
-	
-	protected class SqlGenerationResult {
 		
-		public String sql;
-		
-		public LimitHandler limitHandler;
-		
-	}	
 }

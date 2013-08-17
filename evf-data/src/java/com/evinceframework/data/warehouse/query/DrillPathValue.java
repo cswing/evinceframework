@@ -13,8 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.warehouse.query.impl;
+package com.evinceframework.data.warehouse.query;
 
-public class DrillPathEntry {
+public class DrillPathValue<T> {
 
+	private DrillPathEntry<T> entry;
+
+	private T value;
+	
+	public DrillPathValue(DrillPathEntry<T> entry, T value) {
+		this.entry = entry;
+		this.value = value;
+	}
+
+	public DrillPathEntry<T> getEntry() {
+		return entry;
+	}
+
+	public T getValue() {
+		return value;
+	}
+	
 }

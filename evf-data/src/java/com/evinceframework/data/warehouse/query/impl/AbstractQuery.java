@@ -15,21 +15,40 @@
  */
 package com.evinceframework.data.warehouse.query.impl;
 
-import java.util.Locale;
-
 import com.evinceframework.data.warehouse.FactTable;
+import com.evinceframework.data.warehouse.query.DimensionCriterion;
+import com.evinceframework.data.warehouse.query.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.Query;
 
 public class AbstractQuery implements Query {
-
-	private Locale locale;
 	
 	private FactTable factTable;
 	
-	@Override
-	public Locale getLocale() {
-		return locale;
+	private FactSelection[] factSelections = new FactSelection[]{};
+	
+	private DimensionCriterion<?>[] dimensionCriteria = new DimensionCriterion[]{};
+	
+	private FactRangeCriterion[] factCriteria = new FactRangeCriterion[]{};
+	
+	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections) {
+		this.factTable = factTable;
+		this.factSelections = factSelections;
+	}
+
+	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections, 
+			DimensionCriterion<?>[] dimensionCriteria) {
+		this.factTable = factTable;
+		this.factSelections = factSelections;
+		this.dimensionCriteria = dimensionCriteria;
+	}
+	
+	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections,
+			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion[] factCriteria) {
+		this.factTable = factTable;
+		this.factSelections = factSelections;
+		this.dimensionCriteria = dimensionCriteria;
+		this.factCriteria = factCriteria;
 	}
 
 	@Override
@@ -39,8 +58,17 @@ public class AbstractQuery implements Query {
 
 	@Override
 	public FactSelection[] getFactSelections() {
-		// TODO Auto-generated method stub
-		return null;
+		return factSelections;
+	}
+
+	@Override
+	public DimensionCriterion<?>[] getDimensionCriterion() {
+		return dimensionCriteria;
+	}
+
+	@Override
+	public FactRangeCriterion[] getFactCriterion() {
+		return factCriteria;
 	}
 
 }

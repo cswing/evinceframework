@@ -15,18 +15,37 @@
  */
 package com.evinceframework.data.warehouse.query;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import com.evinceframework.data.warehouse.Dimension;
+import com.evinceframework.data.warehouse.DimensionalAttribute;
 
-public interface DimensionCriterion {
+public class DimensionCriterion<T> {
 
-	public Dimension getDimension();
+	private Dimension dimension;
 	
-	public boolean requiresJoinOnDimensionTable();
+	private DimensionalAttribute<T> attribute;
 	
-	public String createWhereFragment(String factTableAlias, String dimensionTableAlias);
+	private T[] values;
 	
-	public int setParameterValue(PreparedStatement stmt, int paramIdx) throws SQLException;
+	@SuppressWarnings("unchecked")
+	public DimensionCriterion(Dimension dimension, DimensionalAttribute<T> attribute, T value) {
+		this(dimension, attribute, (T[])new Object[]{ value });
+	}
+	
+	public DimensionCriterion(Dimension dimension, DimensionalAttribute<T> attribute, T[] values) {
+		this.dimension = dimension;
+		this.attribute = attribute;
+		this.values = values;
+	}
+
+	public Dimension getDimension() {
+		return dimension;
+	}
+	
+	public DimensionalAttribute<T> getDimensionalAttribute() {
+		return attribute;
+	}
+	
+	public T[] getValues() {
+		return values;
+	}
 }

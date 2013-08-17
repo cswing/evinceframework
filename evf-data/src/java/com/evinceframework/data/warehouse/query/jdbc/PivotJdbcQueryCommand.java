@@ -19,31 +19,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.engine.spi.RowSelection;
-import org.hibernate.internal.util.StringHelper;
-import org.hibernate.sql.JoinFragment;
-import org.hibernate.sql.JoinType;
-import org.hibernate.sql.Select;
-import org.hibernate.sql.SelectFragment;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import com.evinceframework.data.warehouse.Dimension;
-import com.evinceframework.data.warehouse.DimensionalAttribute;
-import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.DimensionCriterion;
-import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.PivotQuery;
 import com.evinceframework.data.warehouse.query.PivotQueryResult;
 import com.evinceframework.data.warehouse.query.QueryException;
@@ -85,7 +71,7 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 			
-				SqlGenerationResult sqlResult = null;
+				SqlQueryBuilder.SqlStatementText sqlResult = null;
 				
 				try {
 					sqlResult = generateSql(query, result);
@@ -114,7 +100,7 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 		};
 	}
 
-	protected SqlGenerationResult generateSql(PivotQuery query, PivotQueryResult result) throws QueryException {
+	protected SqlQueryBuilder.SqlStatementText generateSql(PivotQuery query, PivotQueryResult result) throws QueryException {
 		
 		/*
 		 A pivot table usually consists of row, column and data (or fact) fields. In this case, the column is 
@@ -125,22 +111,9 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 		
 		if(query.getFactSelections() == null || query.getFactSelections().length == 0)
 			throw new QueryException(messageSourceAccessor.getMessage(
-					QueryEngineMessageSource.MISSING_FACT_SELECTION, query.getLocale()));
+					QueryEngineMessageSource.MISSING_FACT_SELECTION, LocaleContextHolder.getLocale()));
 		
-		SqlGenerationResult sqlResult = new SqlGenerationResult();
-		
-		FactTable fact = query.getFactTable();
-		String factTableAlias = "fact";
-		
-		Select select = new Select(getDialect());
-		select.setFromClause(fact.getTableName(), factTableAlias);
-		SelectFragment selectFrag = new SelectFragment();
-		
-		JoinFragment joinFrag = getDialect().createOuterJoinFragment();
-		List<String> groupBy = new LinkedList<String>();
-		List<String> where = new LinkedList<String>();
-		
-		DimensionJoinAliasLookup dimensionJoinLookup = new DimensionJoinAliasLookup();
+		SqlQueryBuilder builder = new SqlQueryBuilder(query, getDialect());
 		
 		// Summarization columns
 		SummarizationAttribute[] summaryAttributes = query.getSummarizations();
@@ -148,88 +121,56 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 			
 			for(SummarizationAttribute attr : summaryAttributes) {
 				
-				String alias = joinDimension(dimensionJoinLookup, attr.getDimension(), joinFrag);
+				builder.joinDimension(attr.getDimension());
 				
-				for(DimensionalAttribute<? extends Object> dimAttr : attr.getDimension().getDimensionTable().getBusinessKey()) {
-					selectFrag.addColumn(alias, dimAttr.getColumnName());
-					groupBy.add(StringHelper.qualify(alias, dimAttr.getColumnName()));
-				}
+				// TODO reimplement and test
+//				for(DimensionalAttribute<? extends Object> dimAttr : attr.getDimension().getDimensionTable().getBusinessKey()) {
+//					selectFrag.addColumn(alias, dimAttr.getColumnName());
+//					groupBy.add(StringHelper.qualify(alias, dimAttr.getColumnName()));
+//				}
 				
 				// TODO support grouping by a dimensional attribute and not just a dimension
 			}
 		}
 		
-		// Datum columns
-		for(FactSelection fs : query.getFactSelections()) {
-			
-			if(fs.getFunction() == null) {
-				selectFrag.addColumn(factTableAlias, fs.getFact().getColumnName());
-				
-			} else {
-				String qualifiedName = StringHelper.qualify(factTableAlias, fs.getFact().getColumnName());
-				String formula = String.format("%s(%s)", fs.getFunction().getSyntax(), qualifiedName);
-				String formulaAlias = String.format("%s_%s", fs.getFunction().getSyntax(), fs.getFact().getColumnName());
-				
-				selectFrag.addFormula(factTableAlias, formula, formulaAlias);
-			}
-		}
 		
-		// Dimension filtering/slicing
-		for(DimensionCriterion dc : query.getDimensionCriterion()) {
-			String dimensionTableAlias = null;
-			if(dc.requiresJoinOnDimensionTable()) {
-				dimensionTableAlias = joinDimension(dimensionJoinLookup, dc.getDimension(), joinFrag);
-			}
-			where.add(dc.createWhereFragment(factTableAlias, dimensionTableAlias));
-		}
+		builder.addFactSelections(query.getFactSelections());
+		builder.processDimensionCriterion(query);
+		builder.processFactRangeCriterion(query); // TODO write tests for this line
 		
-		// TODO Fact filtering
-		
-		
-		// Update select
-		select.setSelectClause(selectFrag);
-		select.setOuterJoins(joinFrag.toFromFragmentString(), joinFrag.toWhereFragmentString());
-		
-		if (groupBy.size() > 0)
-			select.setGroupByClause(StringHelper.join(",", groupBy.toArray(new String[]{})));
-		
-		if(where.size() > 0)
-			select.setWhereClause(StringHelper.join(" AND ", where.toArray(new String[]{})));
-		
-		sqlResult.sql = select.toStatementString();
+		Integer limit = null;
 		
 		if(query.getMaximumRowCount() != null || this.rowLimit != null) {
 			
-			Integer limit = query.getMaximumRowCount();
+			limit = query.getMaximumRowCount();
 			
 			if(limit == null) {
 				limit = this.rowLimit;
 				
 			} else if(this.rowLimit != null && limit > this.rowLimit){
 				result.getMessages().add(messageSourceAccessor.getMessage(
-						QueryEngineMessageSource.ROW_LIMIT_EXCEEDED, new Object[] { this.rowLimit }, query.getLocale()));
+						QueryEngineMessageSource.ROW_LIMIT_EXCEEDED, new Object[] { this.rowLimit }, LocaleContextHolder.getLocale()));
 				
 				limit = this.rowLimit;
 			}
+		}
+		
+		SqlQueryBuilder.SqlStatementText sqlResult = builder.generateSqlText(limit);
+		
+		if(limit == null)
+			return sqlResult; 
 			
-			RowSelection rowSelection = new RowSelection();
-			rowSelection.setMaxRows(limit);
+		if(!sqlResult.limitHandler.supportsLimit()) {
+			 
+			if(this.rowLimit != null) {
+				logger.warn(String.format(
+						"The query engine is configured to limit the number of rows but the underlying database dialect [%s] does not support this.",
+						getDialect().toString()));
+			}
 			
-			sqlResult.limitHandler = getDialect().buildLimitHandler(sqlResult.sql, rowSelection);
-			if(sqlResult.limitHandler.supportsLimit()) {
-				sqlResult.sql = sqlResult.limitHandler.getProcessedSql();
-				
-			} else { 
-				if(this.rowLimit != null) {
-					logger.warn(String.format(
-							"The query engine is configured to limit the number of rows but the underlying database dialect [%s] does not support this.",
-							getDialect().toString()));
-				}
-				
-				if(query.getMaximumRowCount() != null) {
-					result.getMessages().add(messageSourceAccessor.getMessage(
-							QueryEngineMessageSource.ROW_LIMIT_NOT_SUPPORTED, query.getLocale()));
-				}
+			if(query.getMaximumRowCount() != null) {
+				result.getMessages().add(messageSourceAccessor.getMessage(
+						QueryEngineMessageSource.ROW_LIMIT_NOT_SUPPORTED, LocaleContextHolder.getLocale()));
 			}
 		}
 
@@ -247,48 +188,6 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 				return result;
 			}
 		};
-	}
-
-	protected String joinDimension(DimensionJoinAliasLookup lookup, Dimension dimension, JoinFragment join) {
-		
-		String alias = lookup.byDimension(dimension);
-		if(alias != null)
-			return alias;
-		
-		int i = 0;
-		do {
-			alias = String.format("dim_%s", i++);
-		} 
-		while(lookup.byAlias(alias) != null);
-		
-		join.addJoin(dimension.getDimensionTable().getTableName(), alias, 
-				new String[] { dimension.getForeignKeyColumn() }, 
-				new String[] { dimension.getDimensionTable().getPrimaryKeyColumn() }, 
-				JoinType.INNER_JOIN);
-		
-		lookup.register(alias, dimension);
-		
-		return alias;
-	}
-	
-	private class DimensionJoinAliasLookup {
-		
-		private Map<String, Dimension> aliasDimensionMap = new HashMap<String, Dimension>();
-		
-		private Map<Dimension, String> dimensionAliasMap = new HashMap<Dimension, String>();
-		
-		public void register(String alias, Dimension dimension) {
-			aliasDimensionMap.put(alias, dimension);
-			dimensionAliasMap.put(dimension, alias);
-		}
-		
-		public String byDimension(Dimension dimension) {
-			return dimensionAliasMap.get(dimension);
-		}
-		
-		public Dimension byAlias(String alias) {
-			return aliasDimensionMap.get(alias);
-		}
 	}
 	
 }
