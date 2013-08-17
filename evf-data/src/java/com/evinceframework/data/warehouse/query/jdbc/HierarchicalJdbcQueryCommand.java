@@ -19,24 +19,25 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.hibernate.dialect.Dialect;
-import org.hibernate.sql.JoinFragment;
-import org.hibernate.sql.Select;
-import org.hibernate.sql.SelectFragment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import com.evinceframework.data.warehouse.FactTable;
+import com.evinceframework.data.warehouse.query.DimensionCriterion;
+import com.evinceframework.data.warehouse.query.DrillPathEntry;
+import com.evinceframework.data.warehouse.query.DrillPathValue;
+import com.evinceframework.data.warehouse.query.FactRangeCriterion;
+import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.HierarchicalQueryResult;
 import com.evinceframework.data.warehouse.query.QueryException;
 
 public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<HierarchicalQuery, HierarchicalQueryResult> {
+	
+	private ParameterValueSetterFactory parameterSupport = ParameterValueSetterFactory.DEFAULT_FACTORY;
 	
 	public HierarchicalJdbcQueryCommand(JdbcTemplate jdbcTemplate, Dialect dialect) {
 		super(jdbcTemplate, dialect);
@@ -55,68 +56,82 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				
-				SqlGenerationResult sqlResult = null;
-				
 				try {
-					sqlResult = generateSql(query, result);
+				
+					String sql = generateSql(query, result);
+					PreparedStatement stmt = con.prepareStatement(sql);
+					int paramIdx = 0;
+					
+					DrillPathValue<?> qRoot = query.getQueryRoot(); 
+					
+					if(query.getQueryRoot() != null) {
+						// Add dimension/attribute value
+						paramIdx += parameterSupport.setParameterValue(
+								qRoot.getEntry().getDimensionalAttribute().getValueType(), 
+								stmt, qRoot.getValue(), paramIdx);
+					}
+					
+					// dimension criterion
+					for(DimensionCriterion<?> dc : query.getDimensionCriterion()) {
+						paramIdx += parameterSupport.setParameterValues(dc.getDimensionalAttribute().getValueType(),
+								stmt, dc.getValues(), paramIdx);
+					}
+					
+					// fact criterion
+					for(FactRangeCriterion frc : query.getFactCriterion()) {
+						if (frc.getLowerBound() != null) {
+							paramIdx += parameterSupport.setParameterValue(
+									frc.getFact().getValueType(), stmt, frc.getLowerBound(), paramIdx);
+						}
+					}
+					
+					return stmt;
 					
 				} catch (QueryException e) {
 					throw new SQLException(e);
 				}
-				
-				PreparedStatement stmt = con.prepareStatement(sqlResult.sql);
-				
-				int paramIdx = 0;
-				
-//				if(sqlResult.limitHandler != null)
-//					paramIdx += sqlResult.limitHandler.bindLimitParametersAtStartOfQuery(stmt, paramIdx);
-//				
-//				// set parameters
-//				for(DimensionCriterion dc : query.getDimensionCriterion()) {
-//					paramIdx += dc.setParameterValue(stmt, paramIdx);
-//				}
-//				
-//				if(sqlResult.limitHandler != null)
-//					paramIdx += sqlResult.limitHandler.bindLimitParametersAtEndOfQuery(stmt, paramIdx);
-//				
-				return stmt;
 			}
 		};
 	}
 
-	protected SqlGenerationResult generateSql(
-			final HierarchicalQuery query, final HierarchicalQueryResult result) throws QueryException {
+	protected String generateSql(final HierarchicalQuery query, final HierarchicalQueryResult result) 
+			throws QueryException {
 		
-		SqlGenerationResult sqlResult = new SqlGenerationResult();
+		if(query.getFactSelections().length == 0) {
+			// TODO add message or throw
+			//return;
+		}
 		
-		FactTable fact = query.getFactTable();
-		String factTableAlias = "fact";
+		if(query.getFactSelections().length > 1) {
+			// TODO add message or throw
+			//return;
+		}
 		
-		Select select = new Select(getDialect());
-		select.setFromClause(fact.getTableName(), factTableAlias);
-		SelectFragment selectFrag = new SelectFragment();
+		FactSelection fact = query.getFactSelections()[0];
+		if(fact.getFunction() == null) {
+			// TODO throw
+		}
 		
-		JoinFragment joinFrag = getDialect().createOuterJoinFragment();
-		List<String> groupBy = new LinkedList<String>();
-		List<String> where = new LinkedList<String>();
-
-		// For each drill path entry
-		// - join dimension table if not already joined
-		// - add to select clause
-		// - add to group by clause
+		SqlQueryBuilder sqlBuilder = new SqlQueryBuilder(query, getDialect());
 		
-		// If the query root is not the root of the drill path, 
-		//  then add to the where clause based on the root of the 
-		//  query
+		sqlBuilder.addFactSelection(fact);
 		
+		if(query.getQueryRoot() == null) {
+			sqlBuilder.processDrillPath(query.getRoot(), query.getLevels());
+			
+		} else {
+			
+			DrillPathEntry<?> qRoot = query.getQueryRoot().getEntry();
+			
+			// If a query root is provided then filter based on the that and get the next X levels  
+			sqlBuilder.processDrillPath(qRoot.next(), query.getLevels());
+			sqlBuilder.addFilter(qRoot.getDimension(), qRoot.getDimensionalAttribute());
+		}
 		
-		// Update select
-		select.setSelectClause(selectFrag);
-		select.setOuterJoins(joinFrag.toFromFragmentString(), joinFrag.toWhereFragmentString());
+		sqlBuilder.processDimensionCriterion(query);
+		sqlBuilder.processFactRangeCriterion(query);
 		
-		sqlResult.sql = select.toStatementString();
-		
-		return sqlResult;
+		return sqlBuilder.generateSqlText().sql;
 	}
 	
 	@Override
@@ -127,7 +142,49 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 			@Override
 			public HierarchicalQueryResult extractData(ResultSet rs) throws SQLException, DataAccessException {
 				
+				while(rs.next()) {
+					
+					
+					
+				}
 				
+				/*
+				
+				DrillPathEntry: {
+					dimension
+					attribute
+					next()
+				}
+				
+				DrillPathValue: {
+					drillPathEntry
+					value
+				}
+				
+				HierarchicalDataEntry: {
+					value: 				23
+					DrillPathEntry: 	
+				}
+				 
+				 var item = data[idx++];
+			if(!item) return;
+
+			// create root customer node
+			var cNode = customerMap[item.customerId]
+			if (!cNode) {
+				cNode = customerMap[item.customerId] = { id: item.customerId, r: 6, tooltip: fnCompanyTooltip, _item: item };
+				nodes.push(cNode);
+				links.push({source: rootNode, target: cNode});
+			}
+
+			var hNode = { id: 'hours hours_' + counter ++, r: item.hours/2.0 };
+			nodes.push(hNode);
+			links.push({source: cNode, target: hNode});
+
+
+			//setTimeout(fnProcessIndex, 10);
+			fnProcessIndex(); 
+				 */
 				return result;
 			}
 		};

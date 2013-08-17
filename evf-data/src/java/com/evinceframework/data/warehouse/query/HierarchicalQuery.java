@@ -15,36 +15,46 @@
  */
 package com.evinceframework.data.warehouse.query;
 
-import java.util.Locale;
-
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.impl.DrillPathEntry;
+import com.evinceframework.data.warehouse.query.impl.AbstractQuery;
 
-public class HierarchicalQuery implements Query {
+public class HierarchicalQuery extends AbstractQuery {
 
 	private static final int DEFAULT_LEVELS = 3; 
 	
-	private DrillPathEntry root;
+	private DrillPathEntry<?> root;
 	
-	private DrillPathEntry queryRoot;
-	
-	private FactTable factTable;
+	private DrillPathValue<?> queryRoot;
 	
 	private int levels = DEFAULT_LEVELS;
+	
+	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,
+			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion[] factCriteria) {
+		super(factTable, factSelections, dimensionCriteria, factCriteria);
+	}
 
-	public DrillPathEntry getRoot() {
+	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,
+			DimensionCriterion<?>[] dimensionCriteria) {
+		super(factTable, factSelections, dimensionCriteria);
+	}
+
+	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections) {
+		super(factTable, factSelections);
+	}
+
+	public DrillPathEntry<?> getRoot() {
 		return root;
 	}
 
-	public void setRoot(DrillPathEntry root) {
+	public void setRoot(DrillPathEntry<?> root) {
 		this.root = root;
 	}
 
-	public DrillPathEntry getQueryRoot() {
+	public DrillPathValue<?> getQueryRoot() {
 		return queryRoot;
 	}
 
-	public void setQueryRoot(DrillPathEntry queryRoot) {
+	public void setQueryRoot(DrillPathValue<?> queryRoot) {
 		this.queryRoot = queryRoot;
 	}
 
@@ -55,22 +65,5 @@ public class HierarchicalQuery implements Query {
 	public void setLevels(int levels) {
 		this.levels = levels;
 	}
-
-	@Override
-	public Locale getLocale() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public FactTable getFactTable() {
-		return factTable;
-	}
-
-	@Override
-	public FactSelection[] getFactSelections() {
-		// TODO Auto-generated method stub
-		return null;
-	} 
 	
 }
