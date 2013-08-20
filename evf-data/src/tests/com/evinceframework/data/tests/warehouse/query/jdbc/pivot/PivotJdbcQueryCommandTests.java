@@ -30,6 +30,7 @@ import com.evinceframework.data.warehouse.query.QueryException;
 import com.evinceframework.data.warehouse.query.SummarizationAttribute;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
 import com.evinceframework.data.warehouse.query.jdbc.PivotJdbcQueryCommand;
+import com.evinceframework.data.warehouse.query.jdbc.SqlQueryBuilder;
 
 public class PivotJdbcQueryCommandTests extends TestCase {
 	
@@ -90,7 +91,7 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 		String sql = queryEngine.generateSqlForTest(query);
 		
 		assertNotNull(sql);
-		assertEquals("select fact.simpleInteger as simpleInteger from fooTable fact", sql);
+		assertEquals("select fact.simpleInteger as fact_simpleInteger from fooTable fact", sql);
 	}
 	
 	public void testQueryEngineLimitSql() throws QueryException {
@@ -109,7 +110,7 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 		String sql = queryEngine.generateSqlForTest(query);
 		
 		assertNotNull(sql);
-		assertEquals("select fact.simpleInteger as simpleInteger from fooTable fact limit ?", sql);
+		assertEquals("select fact.simpleInteger as fact_simpleInteger from fooTable fact limit ?", sql);
 	}
 	
 	public static class TestPivotQueryCommand extends PivotJdbcQueryCommand {
@@ -122,8 +123,9 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 			super(null, dialect, rowLimit);
 		}
 		
-		public String generateSqlForTest(PivotQuery query) throws QueryException {			
-			return this.generateSql(query, new PivotQueryResult(query)).sql;
+		public String generateSqlForTest(PivotQuery query) throws QueryException {	
+			return this.generateSql(query, new PivotQueryResult(query), 
+					new SqlQueryBuilder(query, getDialect())).sql;
 		}
 	}
 }

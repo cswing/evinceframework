@@ -50,7 +50,7 @@ public class DimensionCriterionTests extends TestCase {
 		String sql = queryEngine.generateSqlForTest(query);
 		
 		assertNotNull(sql);
-		assertEquals("select fact.simpleInteger as simpleInteger from fooTable fact inner join dimA dim_0 on dimA1_id=dim_0.dimA_id where dim_0.attr1 = ?", sql);
+		assertEquals("select fact.simpleInteger as fact_simpleInteger from fooTable fact inner join dimA dim_0 on dimA1_id=dim_0.dimA_id where dim_0.attr1 = ?", sql);
 	}
 	
 }
