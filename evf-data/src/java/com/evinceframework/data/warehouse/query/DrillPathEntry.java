@@ -20,6 +20,8 @@ import com.evinceframework.data.warehouse.DimensionalAttribute;
 
 public class DrillPathEntry<T> {
 
+	private T value;
+	
 	public DimensionalAttribute<T> getDimensionalAttribute() {
 		return null;
 	}
@@ -30,6 +32,14 @@ public class DrillPathEntry<T> {
 	
 	public DrillPathEntry<?> next() {
 		return null;
+	}
+	
+	public DrillPathEntry<?> getRootEntry() {
+		return null;
+	}
+	
+	public T getFilterValue() {
+		return value;
 	}
 	
 }

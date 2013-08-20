@@ -15,20 +15,26 @@
  */
 package com.evinceframework.data.warehouse.query.jdbc;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.hibernate.dialect.Dialect;
+import org.hibernate.internal.util.StringHelper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.evinceframework.data.warehouse.query.DimensionCriterion;
+import com.evinceframework.data.warehouse.query.DrillPathData;
 import com.evinceframework.data.warehouse.query.DrillPathEntry;
-import com.evinceframework.data.warehouse.query.DrillPathValue;
 import com.evinceframework.data.warehouse.query.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
@@ -50,7 +56,7 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 
 	@Override
 	protected PreparedStatementCreator createCreator(
-			final HierarchicalQuery query, final HierarchicalQueryResult result) {
+			final HierarchicalQuery query, final HierarchicalQueryResult result, final SqlQueryBuilder sqlBuilder) {
 		
 		return new PreparedStatementCreator() {
 			@Override
@@ -58,17 +64,17 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 				
 				try {
 				
-					String sql = generateSql(query, result);
+					String sql = generateSql(query, result, sqlBuilder);
 					PreparedStatement stmt = con.prepareStatement(sql);
 					int paramIdx = 0;
 					
-					DrillPathValue<?> qRoot = query.getQueryRoot(); 
+					DrillPathEntry<?> qRoot = query.getQueryRoot(); 
 					
 					if(query.getQueryRoot() != null) {
 						// Add dimension/attribute value
 						paramIdx += parameterSupport.setParameterValue(
-								qRoot.getEntry().getDimensionalAttribute().getValueType(), 
-								stmt, qRoot.getValue(), paramIdx);
+								qRoot.getDimensionalAttribute().getValueType(), 
+								stmt, qRoot.getFilterValue(), paramIdx);
 					}
 					
 					// dimension criterion
@@ -94,8 +100,8 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 		};
 	}
 
-	protected String generateSql(final HierarchicalQuery query, final HierarchicalQueryResult result) 
-			throws QueryException {
+	protected String generateSql(final HierarchicalQuery query, final HierarchicalQueryResult result, 
+			final SqlQueryBuilder sqlBuilder) throws QueryException {
 		
 		if(query.getFactSelections().length == 0) {
 			// TODO add message or throw
@@ -112,8 +118,6 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 			// TODO throw
 		}
 		
-		SqlQueryBuilder sqlBuilder = new SqlQueryBuilder(query, getDialect());
-		
 		sqlBuilder.addFactSelection(fact);
 		
 		if(query.getQueryRoot() == null) {
@@ -121,7 +125,7 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 			
 		} else {
 			
-			DrillPathEntry<?> qRoot = query.getQueryRoot().getEntry();
+			DrillPathEntry<?> qRoot = query.getQueryRoot();
 			
 			// If a query root is provided then filter based on the that and get the next X levels  
 			sqlBuilder.processDrillPath(qRoot.next(), query.getLevels());
@@ -136,58 +140,66 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 	
 	@Override
 	protected ResultSetExtractor<HierarchicalQueryResult> createExtractor(
-			final HierarchicalQuery query, final HierarchicalQueryResult result) {
+			final HierarchicalQuery query, final HierarchicalQueryResult result, final SqlQueryBuilder builder) {
 		
 		return new ResultSetExtractor<HierarchicalQueryResult>() {
 			@Override
 			public HierarchicalQueryResult extractData(ResultSet rs) throws SQLException, DataAccessException {
 				
+				Map<String, DrillPathData<BigDecimal>> drillPathMap = new HashMap<String, DrillPathData<BigDecimal>>(); 
+				
+				DrillPathEntry<?> root = query.getRoot();
+				if(query.getQueryRoot() != null) {
+					root = query.getQueryRoot().next();
+				}
+				
 				while(rs.next()) {
-					
-					
-					
+					int i = 0;
+					DrillPathEntry<?> entry = root;
+					DrillPathData<BigDecimal> parentEntry = null;
+					while(entry != null && i++ < query.getLevels()) {
+						DrillPathData<BigDecimal> data = findOrCreateDrillPathData(entry, rs, drillPathMap, builder, parentEntry);
+						BigDecimal value = rs.getBigDecimal(builder.lookupAlias(query.getFactSelections()[0]));
+						data.setValue(data.getValue().add(value));
+						
+						parentEntry = data;
+						entry = entry.next();
+					}
 				}
 				
-				/*
-				
-				DrillPathEntry: {
-					dimension
-					attribute
-					next()
-				}
-				
-				DrillPathValue: {
-					drillPathEntry
-					value
-				}
-				
-				HierarchicalDataEntry: {
-					value: 				23
-					DrillPathEntry: 	
-				}
-				 
-				 var item = data[idx++];
-			if(!item) return;
-
-			// create root customer node
-			var cNode = customerMap[item.customerId]
-			if (!cNode) {
-				cNode = customerMap[item.customerId] = { id: item.customerId, r: 6, tooltip: fnCompanyTooltip, _item: item };
-				nodes.push(cNode);
-				links.push({source: rootNode, target: cNode});
-			}
-
-			var hNode = { id: 'hours hours_' + counter ++, r: item.hours/2.0 };
-			nodes.push(hNode);
-			links.push({source: cNode, target: hNode});
-
-
-			//setTimeout(fnProcessIndex, 10);
-			fnProcessIndex(); 
-				 */
 				return result;
 			}
 		};
+	}
+
+	protected DrillPathData<BigDecimal> findOrCreateDrillPathData(DrillPathEntry<?> main, ResultSet rs, 
+			Map<String, DrillPathData<BigDecimal>> drillPathMap, SqlQueryBuilder builder, 
+			DrillPathData<BigDecimal> parent) throws SQLException {
+		
+		List<String> keys = new ArrayList<String>();
+		DrillPathEntry<?> entry = main.getRootEntry();
+		while(entry != null) {
+			keys.add(String.format("%s.%s[%s]",	
+					entry.getDimension().getForeignKeyColumn(),
+					entry.getDimensionalAttribute().getColumnName(),
+					rs.getObject(builder.lookupAlias(entry.getDimension(), entry.getDimensionalAttribute()))
+			));
+			
+			if(entry == main) {
+				entry = null;
+			} else {
+				entry = entry.next();
+			}
+		}
+		String key = StringHelper.join("::", keys.iterator());
+		
+		DrillPathData<BigDecimal> data = drillPathMap.get(key);
+		if(data == null) {
+			data = new DrillPathData<BigDecimal>(parent, main, key);
+			drillPathMap.put(key, data);
+		}
+			
+		return data;
 	}
 
 }

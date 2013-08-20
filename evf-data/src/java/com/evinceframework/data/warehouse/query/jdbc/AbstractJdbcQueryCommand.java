@@ -16,7 +16,6 @@
 package com.evinceframework.data.warehouse.query.jdbc;
 
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.pagination.LimitHandler;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -47,17 +46,19 @@ public abstract class AbstractJdbcQueryCommand<Q extends Query, R extends QueryR
 
 	protected abstract R createResult(Q query);
 	
-	protected abstract PreparedStatementCreator createCreator(Q query, R result);
+	protected abstract PreparedStatementCreator createCreator(Q query, R result, SqlQueryBuilder sqlBuilder);
 	
-	protected abstract ResultSetExtractor<R> createExtractor(Q query, R result);
+	protected abstract ResultSetExtractor<R> createExtractor(Q query, R result, SqlQueryBuilder sqlBuilder);
 	
 	@Override
 	public R query(Q query) {
 		
 		R result = createResult(query);
 		
+		SqlQueryBuilder sqlBuilder = new SqlQueryBuilder(query, getDialect());
+		
 		return (R) getJdbcTemplate().query(
-				createCreator(query, result), createExtractor(query, result));
+				createCreator(query, result, sqlBuilder), createExtractor(query, result, sqlBuilder));
 	}
 		
 }

@@ -16,7 +16,6 @@
 package com.evinceframework.data.warehouse.query;
 
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.impl.AbstractQuery;
 
 public class HierarchicalQuery extends AbstractQuery {
 
@@ -24,7 +23,7 @@ public class HierarchicalQuery extends AbstractQuery {
 	
 	private DrillPathEntry<?> root;
 	
-	private DrillPathValue<?> queryRoot;
+	private DrillPathEntry<?> queryRoot;
 	
 	private int levels = DEFAULT_LEVELS;
 	
@@ -50,11 +49,11 @@ public class HierarchicalQuery extends AbstractQuery {
 		this.root = root;
 	}
 
-	public DrillPathValue<?> getQueryRoot() {
+	public DrillPathEntry<?> getQueryRoot() {
 		return queryRoot;
 	}
 
-	public void setQueryRoot(DrillPathValue<?> queryRoot) {
+	public void setQueryRoot(DrillPathEntry<?> queryRoot) {
 		this.queryRoot = queryRoot;
 	}
 

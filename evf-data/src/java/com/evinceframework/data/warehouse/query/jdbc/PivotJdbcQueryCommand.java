@@ -64,7 +64,8 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 	}
 
 	@Override
-	protected PreparedStatementCreator createCreator(final PivotQuery query, final PivotQueryResult result) {
+	protected PreparedStatementCreator createCreator(final PivotQuery query, final PivotQueryResult result,
+			final SqlQueryBuilder sqlBuilder) {
 		
 		return new PreparedStatementCreator() {
 			
@@ -74,7 +75,7 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 				SqlQueryBuilder.SqlStatementText sqlResult = null;
 				
 				try {
-					sqlResult = generateSql(query, result);
+					sqlResult = generateSql(query, result, sqlBuilder);
 					
 				} catch (QueryException e) {
 					throw new SQLException(e);
@@ -100,7 +101,8 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 		};
 	}
 
-	protected SqlQueryBuilder.SqlStatementText generateSql(PivotQuery query, PivotQueryResult result) throws QueryException {
+	protected SqlQueryBuilder.SqlStatementText generateSql(PivotQuery query, PivotQueryResult result, 
+			SqlQueryBuilder builder) throws QueryException {
 		
 		/*
 		 A pivot table usually consists of row, column and data (or fact) fields. In this case, the column is 
@@ -112,8 +114,6 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 		if(query.getFactSelections() == null || query.getFactSelections().length == 0)
 			throw new QueryException(messageSourceAccessor.getMessage(
 					QueryEngineMessageSource.MISSING_FACT_SELECTION, LocaleContextHolder.getLocale()));
-		
-		SqlQueryBuilder builder = new SqlQueryBuilder(query, getDialect());
 		
 		// Summarization columns
 		SummarizationAttribute[] summaryAttributes = query.getSummarizations();
@@ -132,7 +132,6 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 				// TODO support grouping by a dimensional attribute and not just a dimension
 			}
 		}
-		
 		
 		builder.addFactSelections(query.getFactSelections());
 		builder.processDimensionCriterion(query);
@@ -178,7 +177,8 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 	}
 	
 	@Override
-	protected ResultSetExtractor<PivotQueryResult> createExtractor(final PivotQuery query, final PivotQueryResult result) {
+	protected ResultSetExtractor<PivotQueryResult> createExtractor(final PivotQuery query, 
+			final PivotQueryResult result, final SqlQueryBuilder sqlBuilder) {
 		
 		return new ResultSetExtractor<PivotQueryResult>() {
 			@Override

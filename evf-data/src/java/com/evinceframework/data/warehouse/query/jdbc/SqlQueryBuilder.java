@@ -16,9 +16,11 @@
 package com.evinceframework.data.warehouse.query.jdbc;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.pagination.LimitHandler;
@@ -54,6 +56,8 @@ public class SqlQueryBuilder {
 	
 	private DimensionJoinAliasLookup dimensionJoinLookup = new DimensionJoinAliasLookup();
 	
+	private SelectionAliasLookup selectionAliasLookup = new SelectionAliasLookup(dimensionJoinLookup);
+	
 	public SqlQueryBuilder(Query query, Dialect dialect) {
 		this.query = query;
 		
@@ -70,6 +74,14 @@ public class SqlQueryBuilder {
 		return "fact";
 	}
 	
+	public String lookupAlias(Dimension dimension, DimensionalAttribute<?> attribute) {
+		return selectionAliasLookup.determineAlias(dimension, attribute);
+	}
+	
+	public String lookupAlias(FactSelection fs) {
+		return selectionAliasLookup.determineAlias(fs);
+	}
+	
 	public void addFactSelections(FactSelection[] selections) {
 		for(FactSelection fs : selections) {
 			addFactSelection(fs);
@@ -77,15 +89,18 @@ public class SqlQueryBuilder {
 	}
 	
 	public void addFactSelection(FactSelection fs) {
+		
+		String selectionAlias = selectionAliasLookup.determineAlias(fs);
+		
 		if(fs.getFunction() == null) {
-			selectFrag.addColumn(getFactTableAlias(), fs.getFact().getColumnName());
+			
+			selectFrag.addColumn(getFactTableAlias(), fs.getFact().getColumnName(), selectionAlias);
 			
 		} else {
 			String qualifiedName = StringHelper.qualify(getFactTableAlias(), fs.getFact().getColumnName());
 			String formula = String.format("%s(%s)", fs.getFunction().getSyntax(), qualifiedName);
-			String formulaAlias = String.format("%s_%s", fs.getFunction().getSyntax(), fs.getFact().getColumnName());
 			
-			selectFrag.addFormula(getFactTableAlias(), formula, formulaAlias);
+			selectFrag.addFormula(getFactTableAlias(), formula, selectionAlias);
 		}
 	}
 	
@@ -106,7 +121,8 @@ public class SqlQueryBuilder {
 		int i = 0;
 		while(entry != null && i++ < levels) {
 			String alias = joinDimension(entry.getDimension());
-			selectFrag.addColumn(alias, entry.getDimensionalAttribute().getColumnName());
+			selectFrag.addColumn(alias, entry.getDimensionalAttribute().getColumnName(),
+					selectionAliasLookup.determineAlias(entry.getDimension(), entry.getDimensionalAttribute()));
 			groupBy.add(StringHelper.qualify(alias, entry.getDimensionalAttribute().getColumnName()));
 			
 			entry = entry.next();
@@ -215,6 +231,69 @@ public class SqlQueryBuilder {
 		}
 		
 		return sqlStatement;
+	}
+	
+	protected class SelectionAliasLookup {
+		
+		private DimensionJoinAliasLookup dimensionJoinLookup;
+		
+		private Set<String> allAliases = new HashSet<String>();
+		
+		private Map<String, FactSelection> factsMappedByAlias = new HashMap<String, FactSelection>(); 
+		
+		private Map<FactSelection, String> aliasesMappedByFacts = new HashMap<FactSelection, String>();
+		
+		private Map<String, Dimension> dimensionsMappedByAlias = new HashMap<String, Dimension>(); 
+		
+		private Map<Dimension, String> aliasesMappedByDimensions = new HashMap<Dimension, String>();
+		
+		public SelectionAliasLookup(DimensionJoinAliasLookup dimensionJoinLookup) {
+			this.dimensionJoinLookup = dimensionJoinLookup;
+		}
+
+		public String determineAlias(FactSelection fs) {
+			
+			if(aliasesMappedByFacts.containsKey(fs))
+				return aliasesMappedByFacts.get(fs);
+			
+			String selectionAlias = fs.getFunction() == null ? 
+					String.format("%s_%s", getFactTableAlias(), fs.getFact().getColumnName()) : 
+						String.format("%s_%s", fs.getFunction().getSyntax(), fs.getFact().getColumnName());
+			
+			String calculatedAlias = calculateAlias(selectionAlias);
+			
+			factsMappedByAlias.put(calculatedAlias, fs);
+			aliasesMappedByFacts.put(fs, calculatedAlias);
+			allAliases.add(calculatedAlias);
+			
+			return calculatedAlias;
+		}
+		
+		public String determineAlias(Dimension dim, DimensionalAttribute<?> attribute) {
+			
+			if(aliasesMappedByDimensions.containsKey(dim))
+				return aliasesMappedByDimensions.get(dim);
+			
+			String dimAlias = dimensionJoinLookup.byDimension(dim);
+			String calculatedAlias = calculateAlias(
+					String.format("%s_%s", dimAlias, attribute.getColumnName()));
+			
+			dimensionsMappedByAlias.put(calculatedAlias, dim);
+			aliasesMappedByDimensions.put(dim, calculatedAlias);
+			allAliases.add(calculatedAlias);
+			
+			return calculatedAlias;
+		}
+		
+		private String calculateAlias(String alias) {
+			String test = alias;
+			int i=0;
+			while(allAliases.contains(test)) {
+				test = String.format("%s_%s", test, ++i);
+			}
+			return test;
+		}
+		
 	}
 	
 	protected class DimensionJoinAliasLookup {

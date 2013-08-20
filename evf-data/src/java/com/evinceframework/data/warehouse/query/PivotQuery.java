@@ -16,7 +16,6 @@
 package com.evinceframework.data.warehouse.query;
 
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.impl.AbstractQuery;
 
 public class PivotQuery extends AbstractQuery {
 

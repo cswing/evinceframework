@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.warehouse.query.impl;
+package com.evinceframework.data.warehouse.query;
 
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.DimensionCriterion;
-import com.evinceframework.data.warehouse.query.FactRangeCriterion;
-import com.evinceframework.data.warehouse.query.FactSelection;
-import com.evinceframework.data.warehouse.query.Query;
 
 public class AbstractQuery implements Query {
 	
