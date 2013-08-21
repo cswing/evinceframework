@@ -32,7 +32,7 @@ public class QueryEngine extends MapBackedClassLookupFactory<QueryCommand<Query,
 		if(query == null)
 			return null;
 		
-		QueryCommand<Query, QueryResult> cmd = findImplementation(query.getClass());
+		QueryCommand<Query, QueryResult> cmd = lookup(query.getClass());
 		if(cmd == null) {
 			throw new QueryException(String.format("Unknown query: %s", query.getClass().getName())); // TODO i18n
 		}
