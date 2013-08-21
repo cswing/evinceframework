@@ -17,15 +17,56 @@ package com.evinceframework.data.warehouse.query;
 
 import com.evinceframework.data.warehouse.Fact;
 
-public interface FactRangeCriterion {
+public class FactRangeCriterion<T extends Number> {
 
-	public Fact<?> getFact();
+	private Fact<T> fact;
 	
-	public Object getUpperBound();
+	private boolean upperBoundInclusive = true;
 	
-	public boolean isUpperBoundInclusive();
+	private T upperBound;
 	
-	public Object getLowerBound();
+	private boolean lowerBoundInclusive = true;
 	
-	public boolean isLowerBoundInclusive();
+	private T lowerBound;
+
+	public FactRangeCriterion(Fact<T> fact) {
+		this.fact = fact;
+	}
+
+	public boolean isUpperBoundInclusive() {
+		return upperBoundInclusive;
+	}
+
+	public void setUpperBoundInclusive(boolean upperBoundInclusive) {
+		this.upperBoundInclusive = upperBoundInclusive;
+	}
+
+	public T getUpperBound() {
+		return upperBound;
+	}
+
+	public void setUpperBound(T upperBound) {
+		this.upperBound = upperBound;
+	}
+
+	public boolean isLowerBoundInclusive() {
+		return lowerBoundInclusive;
+	}
+
+	public void setLowerBoundInclusive(boolean lowerBoundInclusive) {
+		this.lowerBoundInclusive = lowerBoundInclusive;
+	}
+
+	public T getLowerBound() {
+		return lowerBound;
+	}
+
+	public void setLowerBound(T lowerBound) {
+		this.lowerBound = lowerBound;
+	}
+
+	public Fact<T> getFact() {
+		return fact;
+	}
+	
 }

@@ -15,6 +15,10 @@
  */
 package com.evinceframework.data.warehouse.query;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 public class FactSelectionFunction {
 	
 	public static final FactSelectionFunction AVG = new FactSelectionFunction("AVG");
@@ -28,14 +32,36 @@ public class FactSelectionFunction {
 	public static final FactSelectionFunction STD = new FactSelectionFunction("STD");
 	
 	public static final FactSelectionFunction SUM = new FactSelectionFunction("SUM");
+
+	public static final FactSelectionFunction[] ALL_FUNCTIONS = 
+			new FactSelectionFunction[] { AVG, COUNT, MAX, MIN, STD, SUM };
+	
+	private static final Map<String, FactSelectionFunction> functionsMappedByCode;
+	
+	public static FactSelectionFunction byCode(String code) {
+		return functionsMappedByCode == null ? null : functionsMappedByCode.get(code);
+	}
+	
+	static {
+		Map<String, FactSelectionFunction> data = new HashMap<String, FactSelectionFunction>();
+		for(FactSelectionFunction duration : ALL_FUNCTIONS) {
+			if(data.containsKey(duration.getCode()))
+				throw new RuntimeException(String.format("Duplicate function: %s", duration.getCode()));
+		}
+		functionsMappedByCode = Collections.unmodifiableMap(data);
+	}
 	
 	private String syntax;
 	
-	protected FactSelectionFunction(String syntax) {
+	private FactSelectionFunction(String syntax) {
 		this.syntax = syntax;
 	}
-
+	
 	public String getSyntax() {
 		return syntax;
-	}	
+	}
+	
+	public String getCode() {
+		return syntax;
+	}
 }

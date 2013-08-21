@@ -18,7 +18,12 @@ package com.evinceframework.data.web.mvc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -31,12 +36,26 @@ import com.evinceframework.data.warehouse.query.Query;
 
 public class QueryMethodArgumentResolver
 		extends AbstractCachingLookupFactory<String, WebQueryResolver<?>>
-		implements HandlerMethodArgumentResolver {
+		implements HandlerMethodArgumentResolver, BeanFactoryAware, InitializingBean {
 
+	private BeanFactory beanFactory;
+	
+	private ConversionService conversionService;
+	
 	private List<WebQueryResolver<?>> queryResolvers = new ArrayList<WebQueryResolver<?>>();
 	
-	public QueryMethodArgumentResolver() {
-		queryResolvers.add(new HierarchicalQueryResolver());
+	@Override
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;
+	}
+
+	public void setConversionService(ConversionService conversionService) {
+		this.conversionService = conversionService;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		queryResolvers.add(new HierarchicalQueryResolver(beanFactory, conversionService));
 	}
 
 	@Override
