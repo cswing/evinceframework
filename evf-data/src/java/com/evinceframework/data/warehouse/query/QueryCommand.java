@@ -17,6 +17,10 @@ package com.evinceframework.data.warehouse.query;
 
 public interface QueryCommand<Q extends Query, R extends QueryResult> {
 
+	public Class<Q> getQueryType();
+	
+	public Class<R> getResultType();
+	
 	public R query(Q query);
 	
 }

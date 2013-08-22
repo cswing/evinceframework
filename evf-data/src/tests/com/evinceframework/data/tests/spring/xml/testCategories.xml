@@ -9,9 +9,11 @@
 		http://www.evinceframework.com/schema/data/warehouse http://www.evinceframework.com/schema/data/warehouse/spring-warehouse.xsd
 ">
 
+	<bean id="testDataSource" class="com.evinceframework.data.tests.mocks.MockDataSource" />
+
 	<evfData:data-warehouse id="evfData.basic">
 		<evfData:message-source baseName="testMessages" />
-		<evfData:query-engine dialect="org.hibernate.dialect.MySQL5Dialect" />
+		<evfData:jdbc-engine dataSource="testDataSource" dialect="org.hibernate.dialect.MySQL5Dialect" />
 		<evfData:dimension-table table="testDimension">
 			<evfData:dimensional-attribute column="dimAttrA"/>
 		</evfData:dimension-table>
@@ -25,7 +27,7 @@
 
 	<evfData:data-warehouse id="evfData.custom">
 		<evfData:message-source baseName="testMessages" />
-		<evfData:query-engine dialect="org.hibernate.dialect.MySQL5Dialect" />
+		<evfData:jdbc-engine dataSource="testDataSource" dialect="org.hibernate.dialect.MySQL5Dialect" />
 		<evfData:dimension-table table="testDimension">
 			<evfData:dimensional-attribute column="dimAttrA"/>
 		</evfData:dimension-table>

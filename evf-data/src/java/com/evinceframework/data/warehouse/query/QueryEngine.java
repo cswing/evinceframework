@@ -15,18 +15,25 @@
  */
 package com.evinceframework.data.warehouse.query;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.evinceframework.core.factory.MapBackedClassLookupFactory;
+import com.evinceframework.core.factory.AbstractClassLookupFactory;
 import com.evinceframework.data.warehouse.FactTable;
 import com.evinceframework.data.warehouse.impl.FactTableImpl;
 
-public class QueryEngine extends MapBackedClassLookupFactory<QueryCommand<Query, QueryResult>> {
+public class QueryEngine extends AbstractClassLookupFactory<QueryCommand<Query, QueryResult>> {
 
+	private List<QueryCommand<Query, QueryResult>> commands = new ArrayList<QueryCommand<Query, QueryResult>>();
+	
 	private FactTable[] factTables = new FactTable[] {};
 	
+	public QueryEngine(List<QueryCommand<Query, QueryResult>> commands) {
+		this.commands = commands;
+	}
+
 	public QueryResult query(Query query) throws QueryException {
 		
 		if(query == null)
@@ -45,5 +52,20 @@ public class QueryEngine extends MapBackedClassLookupFactory<QueryCommand<Query,
 		assert(factTable.getQueryEngine().equals(this));
 		f.add(factTable);
 		factTables = f.toArray(new FactTable[]{});
+	}
+
+	@Override
+	protected QueryCommand<Query, QueryResult> create(Class<?> clazz) {
+		
+		if(clazz == null)
+			return null;
+		
+		for (QueryCommand<Query, QueryResult> cmd : commands) {
+			if(clazz.equals(cmd.getQueryType())) {
+				return cmd;
+			}
+		}
+		
+		return null;
 	}
 }

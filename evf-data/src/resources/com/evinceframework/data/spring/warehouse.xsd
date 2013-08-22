@@ -13,8 +13,9 @@
 						<xs:attribute name="baseName" use="required" type="xs:string" />
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="query-engine" minOccurs="1" maxOccurs="1">
+				<xs:element name="jdbc-engine" minOccurs="1" maxOccurs="1">
 					<xs:complexType>
+						<xs:attribute name="dataSource" use="required" type="xs:string" />
 						<xs:attribute name="dialect" use="required" type="xs:string" />
 					</xs:complexType>
 				</xs:element>

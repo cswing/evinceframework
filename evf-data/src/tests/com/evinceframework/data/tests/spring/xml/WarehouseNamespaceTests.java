@@ -37,7 +37,7 @@ public class WarehouseNamespaceTests extends TestCase {
 		
 		assertNotNull(appContext);
 		
-		Dialect dialect = appContext.getBean("evfData.basic.dialect", Dialect.class);
+		Dialect dialect = appContext.getBean("evfData.basic.jdbc.dialect", Dialect.class);
 		assertNotNull(dialect);
 		
 		ResourceBundleMessageSource source = appContext.getBean("evfData.basic.messageSource", ResourceBundleMessageSource.class);

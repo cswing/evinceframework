@@ -25,10 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.hibernate.dialect.Dialect;
 import org.hibernate.internal.util.StringHelper;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -45,10 +46,10 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 	
 	private ParameterValueSetterFactory parameterSupport = ParameterValueSetterFactory.DEFAULT_FACTORY;
 	
-	public HierarchicalJdbcQueryCommand(JdbcTemplate jdbcTemplate, Dialect dialect) {
-		super(jdbcTemplate, dialect);
+	public HierarchicalJdbcQueryCommand(DataSource dataSource, Dialect dialect) {
+		super(HierarchicalQuery.class, HierarchicalQueryResult.class, dataSource, dialect);
 	}
-
+	
 	@Override
 	protected HierarchicalQueryResult createResult(HierarchicalQuery query) {
 		return new HierarchicalQueryResult(query);
@@ -84,7 +85,7 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 					}
 					
 					// fact criterion
-					for(FactRangeCriterion frc : query.getFactCriterion()) {
+					for(FactRangeCriterion<?> frc : query.getFactCriterion()) {
 						if (frc.getLowerBound() != null) {
 							paramIdx += parameterSupport.setParameterValue(
 									frc.getFact().getValueType(), stmt, frc.getLowerBound(), paramIdx);

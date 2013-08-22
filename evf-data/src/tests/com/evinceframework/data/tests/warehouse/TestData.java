@@ -15,9 +15,10 @@
  */
 package com.evinceframework.data.tests.warehouse;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import org.hibernate.dialect.MySQL5Dialect;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.StaticMessageSource;
@@ -28,7 +29,10 @@ import com.evinceframework.data.warehouse.impl.DimensionTableImpl;
 import com.evinceframework.data.warehouse.impl.DimensionalAttributeImpl;
 import com.evinceframework.data.warehouse.impl.FactImpl;
 import com.evinceframework.data.warehouse.impl.FactTableImpl;
+import com.evinceframework.data.warehouse.query.Query;
+import com.evinceframework.data.warehouse.query.QueryCommand;
 import com.evinceframework.data.warehouse.query.QueryEngine;
+import com.evinceframework.data.warehouse.query.QueryResult;
 
 public class TestData {
 
@@ -88,8 +92,10 @@ public class TestData {
 		
 		MessageSourceAccessor sourceAccessor = new MessageSourceAccessor(messageSource);
 		
+		List<QueryCommand<Query, QueryResult>> commands = new ArrayList<QueryCommand<Query, QueryResult>>();
+		
 		// queryEngine
-		queryEngine = new QueryEngine(/*new MySQL5Dialect()*/);
+		queryEngine = new QueryEngine(commands);
 		
 		// dimension tables
 		dimensionTableA = new DimensionTableImpl(sourceAccessor, DIMENSION_TABLE_A_NAME, DIMENSION_TABLE_A_DESC, "dimA", "dimA_id");

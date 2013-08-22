@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.MySQL5Dialect;
 
+import com.evinceframework.data.tests.mocks.MockDataSource;
 import com.evinceframework.data.tests.warehouse.TestData;
 import com.evinceframework.data.warehouse.query.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.FactRangeCriterion;
@@ -116,11 +117,11 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 	public static class TestPivotQueryCommand extends PivotJdbcQueryCommand {
 
 		public TestPivotQueryCommand(Dialect dialect) {
-			super(null, dialect, null);
+			super(new MockDataSource(), dialect, null);
 		}
 		
 		public TestPivotQueryCommand(Dialect dialect, Integer rowLimit) {
-			super(null, dialect, rowLimit);
+			super(new MockDataSource(), dialect, rowLimit);
 		}
 		
 		public String generateSqlForTest(PivotQuery query) throws QueryException {	

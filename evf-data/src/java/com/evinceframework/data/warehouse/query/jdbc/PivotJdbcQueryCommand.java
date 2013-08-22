@@ -20,13 +20,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.dialect.Dialect;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -45,12 +46,12 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 	
 	private Integer rowLimit = null;
 	
-	public PivotJdbcQueryCommand(JdbcTemplate jdbcTemplate, Dialect dialect) {
-		this(jdbcTemplate, dialect, DEFAULT_ROW_LIMIT);
+	public PivotJdbcQueryCommand(DataSource dataSource, Dialect dialect) {
+		this(dataSource, dialect, DEFAULT_ROW_LIMIT);
 	}
 
-	public PivotJdbcQueryCommand(JdbcTemplate jdbcTemplate, Dialect dialect, Integer rowLimit) {
-		super(jdbcTemplate, dialect);
+	public PivotJdbcQueryCommand(DataSource dataSource, Dialect dialect, Integer rowLimit) {
+		super(PivotQuery.class, PivotQueryResult.class, dataSource, dialect);
 		this.rowLimit = rowLimit;
 	}
 	

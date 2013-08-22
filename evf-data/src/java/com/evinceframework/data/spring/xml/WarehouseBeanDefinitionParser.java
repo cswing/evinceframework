@@ -19,9 +19,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -37,6 +39,7 @@ import com.evinceframework.data.warehouse.impl.FactCategoryImpl;
 import com.evinceframework.data.warehouse.impl.FactImpl;
 import com.evinceframework.data.warehouse.impl.FactTableImpl;
 import com.evinceframework.data.warehouse.query.QueryEngine;
+import com.evinceframework.data.warehouse.query.jdbc.HierarchicalJdbcQueryCommand;
 
 public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 			
@@ -54,22 +57,10 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 	
 	protected BeanDefinition doParse(Element element, ParserContext parserContext) throws Exception {
 		
-		Element messageSource = DomUtils.getChildElementByTagName(element, "message-source");
-		Element queryEngine = DomUtils.getChildElementByTagName(element, "query-engine");
 		BeanNames beanNames = new BeanNames(element.getAttribute("id"));
 		
-		// Query Engine
-		BeanDefinition engineBean = register(BeanDefinitionBuilder.genericBeanDefinition(
-				queryEngine.getAttribute("dialect")), beanNames.getDialect(), parserContext);
-		
-		BeanDefinitionBuilder engineBuilder = BeanDefinitionBuilder.genericBeanDefinition(QueryEngine.class);
-		//engineBuilder.addConstructorArgReference(beanNames.getDialect());		
-		register(engineBuilder, beanNames.getEngine(), parserContext);
-		
-		// TODO add jdbc element with dialect
-		// TODO add default commands
-		
 		// Message Source & Accessor
+		Element messageSource = DomUtils.getChildElementByTagName(element, "message-source");
 		BeanDefinitionBuilder messageSourceBuilder = 
 				BeanDefinitionBuilder.genericBeanDefinition(ResourceBundleMessageSource.class);
 		messageSourceBuilder.addPropertyValue("basename", messageSource.getAttribute("baseName"));
@@ -79,6 +70,13 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 				BeanDefinitionBuilder.genericBeanDefinition(MessageSourceAccessor.class);
 		messageSourceAccessorBuilder.addConstructorArgReference(beanNames.getMessageSource());
 		register(messageSourceAccessorBuilder, beanNames.getMessageSourceAccessor(), parserContext);
+
+		
+		// Jdbc Query Engine
+		Element jdbcCommands = DomUtils.getChildElementByTagName(element, "jdbc-engine");
+		if(jdbcCommands != null) {
+			createJdbcEngine(jdbcCommands, beanNames, parserContext);
+		}
 		
 		// Dimension Tables
 		parseDimensionTables(DomUtils.getChildElementsByTagName(element, "dimension-table"), beanNames, parserContext);
@@ -86,7 +84,32 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 		// Fact Tables
 		parseFactTables(DomUtils.getChildElementsByTagName(element, "fact-table"), beanNames, parserContext);
 				
-		return engineBean;
+		return null;
+	}
+	
+	protected void createJdbcEngine(Element ele, BeanNames beanNames, ParserContext parserContext) {
+		
+		List<RuntimeBeanReference> commandBeans = new ManagedList<RuntimeBeanReference>();
+		
+		// dialect
+		register(BeanDefinitionBuilder.genericBeanDefinition(ele.getAttribute("dialect")), 
+				beanNames.getDialect(), parserContext);
+		
+		BeanDefinitionBuilder hierarchyBuilder = 
+				BeanDefinitionBuilder.genericBeanDefinition(HierarchicalJdbcQueryCommand.class);
+		hierarchyBuilder.addConstructorArgReference(ele.getAttribute("dataSource"));
+		hierarchyBuilder.addConstructorArgReference(beanNames.getDialect());
+		
+		String beanName = beanNames.getEngineCommandName("jdbc.hierarchical");
+		register(hierarchyBuilder, beanName, parserContext);
+		commandBeans.add(new RuntimeBeanReference(beanName));
+		
+		// <jdbc-engine dataSource="id" dialect="" />
+		
+		// Query Engine
+		BeanDefinitionBuilder engineBuilder = BeanDefinitionBuilder.genericBeanDefinition(QueryEngine.class);
+		engineBuilder.addConstructorArgValue(commandBeans);
+		register(engineBuilder, beanNames.getEngine(), parserContext);
 	}
 	
 	protected BeanDefinition register(BeanDefinitionBuilder builder, String id, ParserContext parserContext) {
@@ -288,11 +311,15 @@ public class WarehouseBeanDefinitionParser implements BeanDefinitionParser {
 		}
 		
 		public String getDialect() {
-			return String.format("%s.dialect", rootId);
+			return String.format("%s.jdbc.dialect", rootId);
 		}
 		
 		public String getEngine() {
 			return String.format("%s.engine", rootId);
+		}
+		
+		public String getEngineCommandName(String command) {
+			return String.format("%s.engine.command.%s", rootId, command);
 		}
 		
 		public String getMessageSource() {

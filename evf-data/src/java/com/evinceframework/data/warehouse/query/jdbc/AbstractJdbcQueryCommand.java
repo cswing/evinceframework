@@ -15,6 +15,8 @@
  */
 package com.evinceframework.data.warehouse.query.jdbc;
 
+import javax.sql.DataSource;
+
 import org.hibernate.dialect.Dialect;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -27,13 +29,29 @@ import com.evinceframework.data.warehouse.query.QueryResult;
 public abstract class AbstractJdbcQueryCommand<Q extends Query, R extends QueryResult>
 		implements QueryCommand<Q,R> {
 
+	private Class<Q> queryType; 
+	
+	private Class<R> resultType;
+	
 	private JdbcTemplate jdbcTemplate;
 	
 	private Dialect dialect;
 	
-	public AbstractJdbcQueryCommand(JdbcTemplate jdbcTemplate, Dialect dialect) {
-		this.jdbcTemplate = jdbcTemplate;
+	public AbstractJdbcQueryCommand(Class<Q> queryType, Class<R> resultType, DataSource dataSource, Dialect dialect) {
+		this.queryType = queryType;
+		this.resultType = resultType;
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		this.dialect = dialect;
+	}
+
+	@Override
+	public Class<Q> getQueryType() {
+		return queryType;
+	}
+
+	@Override
+	public Class<R> getResultType() {
+		return resultType;
 	}
 
 	public JdbcTemplate getJdbcTemplate() {
