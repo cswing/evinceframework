@@ -25,7 +25,7 @@ public class AbstractQuery implements Query {
 	
 	private DimensionCriterion<?>[] dimensionCriteria = new DimensionCriterion[]{};
 	
-	private FactRangeCriterion[] factCriteria = new FactRangeCriterion[]{};
+	private FactRangeCriterion<?>[] factCriteria = new FactRangeCriterion[]{};
 	
 	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections) {
 		this.factTable = factTable;
@@ -40,7 +40,7 @@ public class AbstractQuery implements Query {
 	}
 	
 	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections,
-			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion[] factCriteria) {
+			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion<?>[] factCriteria) {
 		this.factTable = factTable;
 		this.factSelections = factSelections;
 		this.dimensionCriteria = dimensionCriteria;
@@ -63,7 +63,7 @@ public class AbstractQuery implements Query {
 	}
 
 	@Override
-	public FactRangeCriterion[] getFactCriterion() {
+	public FactRangeCriterion<?>[] getFactCriterion() {
 		return factCriteria;
 	}
 
