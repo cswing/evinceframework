@@ -28,14 +28,23 @@ public class HierarchicalQuery extends AbstractQuery {
 	private int levels = DEFAULT_LEVELS;
 	
 	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,
-			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion[] factCriteria) {
+			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion<?>[] factCriteria,
+			DrillPathEntry<?> root) {
+		this(factTable, factSelections, dimensionCriteria, factCriteria, root, root);
+	}
+	
+	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,
+			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion<?>[] factCriteria,
+			DrillPathEntry<?> root, DrillPathEntry<?> queryRoot) {
 		super(factTable, factSelections, dimensionCriteria, factCriteria);
+		this.root = root;
+		this.queryRoot = queryRoot;
 	}
 
-	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,
-			DimensionCriterion<?>[] dimensionCriteria) {
-		super(factTable, factSelections, dimensionCriteria);
-	}
+//	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,
+//			DimensionCriterion<?>[] dimensionCriteria) {
+//		super(factTable, factSelections, dimensionCriteria);
+//	}
 
 	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections) {
 		super(factTable, factSelections);
@@ -45,16 +54,8 @@ public class HierarchicalQuery extends AbstractQuery {
 		return root;
 	}
 
-	public void setRoot(DrillPathEntry<?> root) {
-		this.root = root;
-	}
-
 	public DrillPathEntry<?> getQueryRoot() {
 		return queryRoot;
-	}
-
-	public void setQueryRoot(DrillPathEntry<?> queryRoot) {
-		this.queryRoot = queryRoot;
 	}
 
 	public int getLevels() {

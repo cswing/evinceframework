@@ -42,8 +42,6 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 	
 	public static final int DEFAULT_ROW_LIMIT = 10000;
 	
-	private MessageSourceAccessor messageSourceAccessor = new MessageSourceAccessor(new QueryEngineMessageSource());
-	
 	private Integer rowLimit = null;
 	
 	public PivotJdbcQueryCommand(DataSource dataSource, Dialect dialect) {

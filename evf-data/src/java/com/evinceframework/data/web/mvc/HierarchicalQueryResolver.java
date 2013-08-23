@@ -32,6 +32,7 @@ import com.evinceframework.data.warehouse.DimensionalAttribute;
 import com.evinceframework.data.warehouse.Fact;
 import com.evinceframework.data.warehouse.FactTable;
 import com.evinceframework.data.warehouse.query.DimensionCriterion;
+import com.evinceframework.data.warehouse.query.DrillPathEntry;
 import com.evinceframework.data.warehouse.query.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.FactSelectionFunction;
@@ -86,10 +87,16 @@ public class HierarchicalQueryResolver implements WebQueryResolver<HierarchicalQ
 		idx = 0;
 		while(processFactCriterion(factCriteria, webRequest, factTable, idx++)){}
 		
+		DrillPathEntry<?>[] entries = new DrillPathEntry<?>[2];
+		entries = processDrillPath(webRequest, factTable, idx++);
+		DrillPathEntry<?> root = entries[0];
+		DrillPathEntry<?> queryRoot = entries[1];
+		
 		return new HierarchicalQuery(factTable, 
 				factSelections.toArray(new FactSelection[]{}), 
 				dimensionCriteria.toArray(new DimensionCriterion[]{}), 
-				factCriteria.toArray(new FactRangeCriterion[]{}));
+				factCriteria.toArray(new FactRangeCriterion[]{}),
+				root, queryRoot);
 	}
 	
 	protected boolean processFactSelection(
@@ -235,5 +242,20 @@ public class HierarchicalQueryResolver implements WebQueryResolver<HierarchicalQ
 		factCriterion.add(frc);
 		
 		return true;
+	}
+	
+	protected DrillPathEntry<?>[] processDrillPath(NativeWebRequest webRequest, FactTable factTable, int index) {
+		
+		DrillPathEntry<?>[] entries = new DrillPathEntry<?>[2];
+		int idx = 0;
+		boolean result = true;
+		while(result){
+		
+			
+			
+			result = false;
+		}
+		
+		return entries;
 	}
 }

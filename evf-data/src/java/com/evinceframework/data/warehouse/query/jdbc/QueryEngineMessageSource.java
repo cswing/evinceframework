@@ -27,6 +27,10 @@ public class QueryEngineMessageSource extends ResourceBundleMessageSource {
 	
 	public static final String MISSING_FACT_SELECTION = "engine.missingFactSelection";
 	
+	public static final String ONLY_SINGLE_FACT_SELECTION_SUPPORTED = "engine.singleFactSelectionSupported";
+	
+	public static final String FACT_SELECTION_REQUIRES_FUNCTION = "engine.factSelectionSupportedRequiresFunction";
+	
 	/**
 	 * Default constructor
 	 */

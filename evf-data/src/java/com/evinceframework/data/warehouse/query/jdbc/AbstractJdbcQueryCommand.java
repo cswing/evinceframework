@@ -18,6 +18,7 @@ package com.evinceframework.data.warehouse.query.jdbc;
 import javax.sql.DataSource;
 
 import org.hibernate.dialect.Dialect;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -29,6 +30,8 @@ import com.evinceframework.data.warehouse.query.QueryResult;
 public abstract class AbstractJdbcQueryCommand<Q extends Query, R extends QueryResult>
 		implements QueryCommand<Q,R> {
 
+	protected static final MessageSourceAccessor messageSourceAccessor = new MessageSourceAccessor(new QueryEngineMessageSource());
+	
 	private Class<Q> queryType; 
 	
 	private Class<R> resultType;

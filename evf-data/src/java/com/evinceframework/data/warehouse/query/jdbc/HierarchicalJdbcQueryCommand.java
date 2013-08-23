@@ -29,6 +29,7 @@ import javax.sql.DataSource;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.internal.util.StringHelper;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -104,20 +105,18 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 	protected String generateSql(final HierarchicalQuery query, final HierarchicalQueryResult result, 
 			final SqlQueryBuilder sqlBuilder) throws QueryException {
 		
-		if(query.getFactSelections().length == 0) {
-			// TODO add message or throw
-			//return;
-		}
-		
-		if(query.getFactSelections().length > 1) {
-			// TODO add message or throw
-			//return;
-		}
+		if(query.getFactSelections() == null || query.getFactSelections().length == 0)
+			throw new QueryException(messageSourceAccessor.getMessage(
+					QueryEngineMessageSource.MISSING_FACT_SELECTION, LocaleContextHolder.getLocale()));
+			
+		if(query.getFactSelections().length > 1)
+			throw new QueryException(messageSourceAccessor.getMessage(
+					QueryEngineMessageSource.ONLY_SINGLE_FACT_SELECTION_SUPPORTED, LocaleContextHolder.getLocale()));
 		
 		FactSelection fact = query.getFactSelections()[0];
-		if(fact.getFunction() == null) {
-			// TODO throw
-		}
+		if(fact.getFunction() == null)
+			throw new QueryException(messageSourceAccessor.getMessage(
+					QueryEngineMessageSource.FACT_SELECTION_REQUIRES_FUNCTION, LocaleContextHolder.getLocale()));
 		
 		sqlBuilder.addFactSelection(fact);
 		
@@ -129,7 +128,7 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 			DrillPathEntry<?> qRoot = query.getQueryRoot();
 			
 			// If a query root is provided then filter based on the that and get the next X levels  
-			sqlBuilder.processDrillPath(qRoot.next(), query.getLevels());
+			sqlBuilder.processDrillPath(qRoot.getNextEntry(), query.getLevels());
 			sqlBuilder.addFilter(qRoot.getDimension(), qRoot.getDimensionalAttribute());
 		}
 		
@@ -151,7 +150,7 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 				
 				DrillPathEntry<?> root = query.getRoot();
 				if(query.getQueryRoot() != null) {
-					root = query.getQueryRoot().next();
+					root = query.getQueryRoot().getNextEntry();
 				}
 				
 				while(rs.next()) {
@@ -164,7 +163,7 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 						data.setValue(data.getValue().add(value));
 						
 						parentEntry = data;
-						entry = entry.next();
+						entry = entry.getNextEntry();
 					}
 				}
 				
@@ -189,7 +188,7 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 			if(entry == main) {
 				entry = null;
 			} else {
-				entry = entry.next();
+				entry = entry.getNextEntry();
 			}
 		}
 		String key = StringHelper.join("::", keys.iterator());

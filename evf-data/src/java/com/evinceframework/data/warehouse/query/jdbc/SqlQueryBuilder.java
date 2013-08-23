@@ -125,7 +125,7 @@ public class SqlQueryBuilder {
 					selectionAliasLookup.determineAlias(entry.getDimension(), entry.getDimensionalAttribute()));
 			groupBy.add(StringHelper.qualify(alias, entry.getDimensionalAttribute().getColumnName()));
 			
-			entry = entry.next();
+			entry = entry.getNextEntry();
 		}
 	}
 	

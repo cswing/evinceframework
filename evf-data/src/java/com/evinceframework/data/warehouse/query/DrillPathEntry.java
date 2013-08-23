@@ -22,20 +22,56 @@ public class DrillPathEntry<T> {
 
 	private T value;
 	
-	public DimensionalAttribute<T> getDimensionalAttribute() {
-		return null;
+	private Dimension dimension;
+	
+	private DimensionalAttribute<T> attribute;
+	
+	private DrillPathEntry<?> root;
+	
+	private DrillPathEntry<?> previous;
+	
+	private DrillPathEntry<?> next;
+	
+	public DrillPathEntry(Dimension dimension, DimensionalAttribute<T> attribute) {
+		this.dimension = dimension;
+		this.attribute = attribute;
 	}
 	
+	public DrillPathEntry(Dimension dimension, DimensionalAttribute<T> attribute, DrillPathEntry<?> previous) {
+		this.dimension = dimension;
+		this.attribute = attribute;
+		this.previous = previous;
+		
+		if(this.previous != null) {
+			this.previous.setNext(this);
+			this.root = this.previous.getRootEntry();
+		} else {
+			this.root = this;
+		}
+	}
+
 	public Dimension getDimension() {
-		return null;
+		return dimension;
 	}
 	
-	public DrillPathEntry<?> next() {
-		return null;
+	public DimensionalAttribute<T> getDimensionalAttribute() {
+		return attribute;
+	}
+	
+	public DrillPathEntry<?> getNextEntry() {
+		return next;
+	}
+	
+	public DrillPathEntry<?> getPreviousEntry() {
+		return previous;
+	}
+	
+	private void setNext(DrillPathEntry<?> next) {
+		this.next = next;
 	}
 	
 	public DrillPathEntry<?> getRootEntry() {
-		return null;
+		return root;
 	}
 	
 	public T getFilterValue() {
