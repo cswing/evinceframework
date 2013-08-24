@@ -70,13 +70,13 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 					PreparedStatement stmt = con.prepareStatement(sql);
 					int paramIdx = 0;
 					
-					DrillPathEntry<?> qRoot = query.getQueryRoot(); 
+					DrillPathEntry<?> entry = query.getQueryRoot();
 					
-					if(query.getQueryRoot() != null) {
-						// Add dimension/attribute value
+					// filters from selected drill path
+					while(entry != null) {
 						paramIdx += parameterSupport.setParameterValue(
-								qRoot.getDimensionalAttribute().getValueType(), 
-								stmt, qRoot.getFilterValue(), paramIdx);
+								entry.getDimensionalAttribute().getValueType(), 
+								stmt, entry.getFilterValue(), paramIdx);
 					}
 					
 					// dimension criterion
@@ -125,11 +125,14 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 			
 		} else {
 			
-			DrillPathEntry<?> qRoot = query.getQueryRoot();
+			DrillPathEntry<?> entry = query.getQueryRoot();
 			
 			// If a query root is provided then filter based on the that and get the next X levels  
-			sqlBuilder.processDrillPath(qRoot.getNextEntry(), query.getLevels());
-			sqlBuilder.addFilter(qRoot.getDimension(), qRoot.getDimensionalAttribute());
+			sqlBuilder.processDrillPath(entry.getNextEntry(), query.getLevels());
+			while(entry != null) {
+				sqlBuilder.addFilter(entry.getDimension(), entry.getDimensionalAttribute());
+				entry = entry.getPreviousEntry();
+			}
 		}
 		
 		sqlBuilder.processDimensionCriterion(query);
