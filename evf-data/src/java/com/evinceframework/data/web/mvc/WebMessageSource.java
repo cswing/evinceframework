@@ -43,6 +43,10 @@ public class WebMessageSource  extends ResourceBundleMessageSource {
 		
 		public static final String CRITERIA_VALUE_NOT_SPECIFIED = "invalidQuery.missingCriteriaValue";
 		
-		public static final String INVALID_CRITERIA_TYPE = "invalidQuery.invalidCriteriaType";
+		public static final String INVALID_DIMENSION_CRITERIA_TYPE = "invalidQuery.invalidDimensionCriteriaType";
+		
+		public static final String INVALID_FACT_CRITERIA_TYPE = "invalidQuery.invalidFactCriteriaType";
+		
+		public static final String MULTIPLE_QUERYROOTS_DEFINED = "invalidQuery.multipleQueryRoots";
 	}
 }

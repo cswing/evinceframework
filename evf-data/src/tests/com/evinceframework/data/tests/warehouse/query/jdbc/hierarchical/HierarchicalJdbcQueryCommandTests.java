@@ -46,7 +46,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 				null,
 				new DimensionCriterion[]{},
 				new FactRangeCriterion[]{},
-				root, root
+				root
 			);
 		
 		try {
@@ -66,7 +66,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 				new FactSelection[]{},
 				new DimensionCriterion[]{},
 				new FactRangeCriterion[]{},
-				root, root
+				root
 			);
 		
 		try {
@@ -88,7 +88,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 				},
 				new DimensionCriterion[]{},
 				new FactRangeCriterion[]{},
-				root, root
+				root
 			);
 		
 		try {
@@ -110,14 +110,13 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 				},
 				new DimensionCriterion[]{},
 				new FactRangeCriterion[]{},
-				root,
 				root
 			);
 		
 		String sql = queryEngine.generateSqlForTest(query);
 		
 		assertNotNull(sql);
-		assertEquals("select SUM(fact.simpleInteger) as SUM_simpleInteger from fooTable fact", sql);
+		assertEquals("select SUM(fact.simpleInteger) as SUM_simpleInteger, dim_0.attr1 as dim_0_attr1 from fooTable fact inner join dimA dim_0 on dimA1_id=dim_0.dimA_id group by dim_0.attr1", sql);
 	}
 	
 	public static class TestHierarchicalQueryCommand extends HierarchicalJdbcQueryCommand {

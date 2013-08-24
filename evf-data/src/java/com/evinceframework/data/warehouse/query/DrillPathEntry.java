@@ -33,8 +33,7 @@ public class DrillPathEntry<T> {
 	private DrillPathEntry<?> next;
 	
 	public DrillPathEntry(Dimension dimension, DimensionalAttribute<T> attribute) {
-		this.dimension = dimension;
-		this.attribute = attribute;
+		this(dimension, attribute, null);
 	}
 	
 	public DrillPathEntry(Dimension dimension, DimensionalAttribute<T> attribute, DrillPathEntry<?> previous) {
@@ -76,6 +75,11 @@ public class DrillPathEntry<T> {
 	
 	public T getFilterValue() {
 		return value;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void setFilterValue(Object value) {
+		this.value= (T) value;
 	}
 	
 }

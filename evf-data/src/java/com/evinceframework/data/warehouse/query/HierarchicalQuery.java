@@ -30,7 +30,7 @@ public class HierarchicalQuery extends AbstractQuery {
 	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,
 			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion<?>[] factCriteria,
 			DrillPathEntry<?> root) {
-		this(factTable, factSelections, dimensionCriteria, factCriteria, root, root);
+		this(factTable, factSelections, dimensionCriteria, factCriteria, root, null);
 	}
 	
 	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,

@@ -55,7 +55,7 @@ public class QueryMethodArgumentResolver
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		queryResolvers.add(new HierarchicalQueryResolver(beanFactory, conversionService));
+		queryResolvers.add(new HierarchicalQueryJsonResolver(beanFactory, conversionService));
 	}
 
 	@Override
