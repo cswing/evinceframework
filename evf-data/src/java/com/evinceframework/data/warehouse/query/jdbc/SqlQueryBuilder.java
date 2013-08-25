@@ -138,7 +138,7 @@ public class SqlQueryBuilder {
 	}
 	
 	public void processFactRangeCriterion(Query query) {
-		for(FactRangeCriterion frc : query.getFactCriterion()) {
+		for(FactRangeCriterion<?> frc : query.getFactCriterion()) {
 			
 			if (frc.getLowerBound() != null) {
 				where.add(createSingularWhereClause(
