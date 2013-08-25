@@ -315,7 +315,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		return null;
 	}
 	
-	public static class QueryRequest {
+	protected static class QueryRequest {
 		
 		public String factTable;
 		
@@ -328,14 +328,14 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		public DrillPathRequest[] drillPath;
 	}
 	
-	public static class FactSelectionRequest {
+	protected static class FactSelectionRequest {
 		
 		public String factKey;
 		
 		public String function;
 	}
 	
-	public static class DimensionCriterionRequest {
+	protected static class DimensionCriterionRequest {
 		
 		public String dimensionKey;
 		
@@ -344,7 +344,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		public String filterValue;
 	}
 	
-	public static class FactCriterionRequest {
+	protected static class FactCriterionRequest {
 		
 		public String factKey;
 		
@@ -357,7 +357,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		public boolean isUpperBoundInclusive;
 	}
 
-	public static class DrillPathRequest {
+	protected static class DrillPathRequest {
 		
 		public String dimensionKey;
 		
