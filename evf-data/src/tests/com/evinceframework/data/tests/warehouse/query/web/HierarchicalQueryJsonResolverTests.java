@@ -23,6 +23,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 
+import com.evinceframework.data.warehouse.query.FactSelectionFunction;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.InvalidQueryException;
 import com.evinceframework.data.web.mvc.HierarchicalQueryJsonResolver;
@@ -40,8 +41,25 @@ public class HierarchicalQueryJsonResolverTests extends TestCase {
 				"resolver.xml", HierarchicalQueryJsonResolverTests.class);
 		
 		TestResolver resolver = new TestResolver(appContext);
-		resolver.testParse("{ \"factTable\": \"evfData.basic.factTable.testFacts\" }");
-			
+		
+		HierarchicalQuery query = resolver.testParse(
+				"{ \"factTable\": \"evfData.basic.factTable.testFacts\", "
+				+ "\"factSelections\": [{ \"factKey\": \"factA\" }, { \"factKey\": \"factB\", \"function\":\"SUM\" }] },"
+				+ "\"drillPath\": [{ \"dimensionKey\": \"testDimensionId\", \"attributeKey\":\"dimAttrA\", \"queryRoot\": true, \"filterValue\": \"XYZ\"}] }");
+		
+		assertNotNull(query.getFactTable());
+		assertEquals("testFacts", query.getFactTable().getTableName());
+		
+		assertNotNull(query.getFactSelections());
+		assertEquals(2, query.getFactSelections().length);
+		assertNotNull(query.getFactSelections()[0]);
+		
+		assertEquals("factA", query.getFactSelections()[0].getFact().getColumnName());
+		assertNull(query.getFactSelections()[0].getFunction());
+		
+		assertEquals("factB", query.getFactSelections()[1].getFact().getColumnName());
+		assertEquals(FactSelectionFunction.SUM, query.getFactSelections()[1].getFunction());
+		
 	}
 	
 	public void testNullData() throws Exception {

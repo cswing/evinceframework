@@ -119,11 +119,14 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 									new Object[]{ fsr.factKey, queryRequest.factTable }));
 				}
 				
-				FactSelectionFunction function = FactSelectionFunction.byCode(fsr.function);
-				if(function == null) {
-					throw new InvalidQueryException(
-							messageSource.getMessage(WebMessageSource.InvalidQueryKeys.INVALID_FUNCTION, 
-									new Object[]{ fsr.function, fsr.factKey, queryRequest.factTable }));
+				FactSelectionFunction function = null;
+				if(fsr.function != null) {
+					function = FactSelectionFunction.byCode(fsr.function);
+					if(function == null) {
+						throw new InvalidQueryException(
+								messageSource.getMessage(WebMessageSource.InvalidQueryKeys.INVALID_FUNCTION, 
+										new Object[]{ fsr.function, fsr.factKey, queryRequest.factTable }));
+					}
 				}
 				
 				factSelections.add(new FactSelectionImpl(fact, function));

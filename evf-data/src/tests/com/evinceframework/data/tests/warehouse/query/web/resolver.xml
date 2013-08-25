@@ -21,6 +21,7 @@
 		<evfData:fact-table table="testFacts">
 			<evfData:dimension dimensionTable="testDimension" />
 			<evfData:fact column="factA"></evfData:fact>
+			<evfData:fact column="factB"></evfData:fact>
 		</evfData:fact-table>
 	</evfData:data-warehouse>
 
