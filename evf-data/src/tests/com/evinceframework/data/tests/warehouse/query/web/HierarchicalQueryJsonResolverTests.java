@@ -15,6 +15,9 @@
  */
 package com.evinceframework.data.tests.warehouse.query.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.springframework.context.ApplicationContext;
@@ -23,6 +26,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 
+import com.evinceframework.data.warehouse.query.DrillPathEntry;
 import com.evinceframework.data.warehouse.query.FactSelectionFunction;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.InvalidQueryException;
@@ -44,22 +48,83 @@ public class HierarchicalQueryJsonResolverTests extends TestCase {
 		
 		HierarchicalQuery query = resolver.testParse(
 				"{ \"factTable\": \"evfData.basic.factTable.testFacts\", "
-				+ "\"factSelections\": [{ \"factKey\": \"factA\" }, { \"factKey\": \"factB\", \"function\":\"SUM\" }] },"
-				+ "\"drillPath\": [{ \"dimensionKey\": \"testDimensionId\", \"attributeKey\":\"dimAttrA\", \"queryRoot\": true, \"filterValue\": \"XYZ\"}] }");
+				+ "\"factSelections\": [{ \"factKey\": \"factA\" }, { \"factKey\": \"factB\", \"function\":\"SUM\" }],"
+				+ "\"dimensionCriteria\": [{ \"dimensionKey\": \"testDimensionId\", \"attributeKey\":\"dimAttrA\", \"filterValue\":\"1\" }, "
+					+ "{ \"dimensionKey\": \"testDimension2Id\", \"attributeKey\":\"dimAttr2B\", \"filterValue\":\"2\"}], "
+				+ "\"factCriteria\": [{ \"factKey\": \"factA\", \"lowerBound\": \"1\", \"isLowerBoundInclusive\": true, \"upperBound\": \"5\", \"isUpperBoundInclusive\": true },"
+					+ "{ \"factKey\": \"factB\", \"lowerBound\": \"2\", \"isLowerBoundInclusive\": false, \"upperBound\": \"6\" }],"
+				+ "\"drillPath\": [{ \"dimensionKey\": \"testDimensionId\", \"attributeKey\":\"dimAttrA\", \"queryRoot\": true, \"filterValue\": \"5\"},"
+					+ "{ \"dimensionKey\": \"testDimension2Id\", \"attributeKey\":\"dimAttr2B\", \"filterValue\": \"7\"}] }");
 		
 		assertNotNull(query.getFactTable());
 		assertEquals("testFacts", query.getFactTable().getTableName());
 		
 		assertNotNull(query.getFactSelections());
 		assertEquals(2, query.getFactSelections().length);
-		assertNotNull(query.getFactSelections()[0]);
 		
+		assertNotNull(query.getFactSelections()[0]);
 		assertEquals("factA", query.getFactSelections()[0].getFact().getColumnName());
 		assertNull(query.getFactSelections()[0].getFunction());
 		
+		assertNotNull(query.getFactSelections()[1]);
 		assertEquals("factB", query.getFactSelections()[1].getFact().getColumnName());
 		assertEquals(FactSelectionFunction.SUM, query.getFactSelections()[1].getFunction());
+
+		assertNotNull(query.getDimensionCriterion());
+		assertEquals(2, query.getDimensionCriterion().length);
 		
+		assertNotNull(query.getDimensionCriterion()[0]);
+		assertEquals("testDimensionId", query.getDimensionCriterion()[0].getDimension().getForeignKeyColumn());
+		assertEquals("dimAttrA", query.getDimensionCriterion()[0].getDimensionalAttribute().getColumnName());
+		assertNotNull(query.getDimensionCriterion()[0].getValues());
+		assertEquals(1, query.getDimensionCriterion()[0].getValues().length);
+		assertEquals(1, query.getDimensionCriterion()[0].getValues()[0]);
+		
+		assertNotNull(query.getDimensionCriterion()[1]);
+		assertEquals("testDimension2Id", query.getDimensionCriterion()[1].getDimension().getForeignKeyColumn());
+		assertEquals("dimAttr2B", query.getDimensionCriterion()[1].getDimensionalAttribute().getColumnName());
+		assertNotNull(query.getDimensionCriterion()[1].getValues());
+		assertEquals(1, query.getDimensionCriterion()[1].getValues().length);
+		assertEquals(2, query.getDimensionCriterion()[1].getValues()[0]);
+		
+		assertNotNull(query.getFactCriterion());
+		assertEquals(2, query.getFactCriterion().length);
+		
+		assertNotNull(query.getFactCriterion()[0]);
+		assertEquals("factA", query.getFactCriterion()[0].getFact().getColumnName());
+		assertEquals(1, query.getFactCriterion()[0].getLowerBound());
+		assertEquals(true, query.getFactCriterion()[0].isLowerBoundInclusive());
+		assertEquals(5, query.getFactCriterion()[0].getUpperBound());
+		assertEquals(true, query.getFactCriterion()[0].isUpperBoundInclusive());
+		
+		assertNotNull(query.getFactCriterion()[1]);
+		assertEquals("factB", query.getFactCriterion()[1].getFact().getColumnName());
+		assertEquals(2, query.getFactCriterion()[1].getLowerBound());
+		assertEquals(false, query.getFactCriterion()[1].isLowerBoundInclusive());
+		assertEquals(6, query.getFactCriterion()[1].getUpperBound());
+		assertEquals(false, query.getFactCriterion()[1].isUpperBoundInclusive());
+		
+		assertNotNull(query.getRoot());
+		assertNotNull(query.getQueryRoot());
+		
+		List<DrillPathEntry<?>> entries = new ArrayList<DrillPathEntry<?>>();
+		DrillPathEntry<?> entry = query.getRoot();
+		while(entry != null) {
+			entries.add(entry);
+			entry = entry.getNextEntry();
+		}
+		
+		assertEquals(2, entries.size());
+		
+		assertEquals("testDimensionId", entries.get(0).getDimension().getForeignKeyColumn());
+		assertEquals("dimAttrA", entries.get(0).getDimensionalAttribute().getColumnName());
+		assertEquals(5, entries.get(0).getFilterValue());
+		assertEquals(entries.get(0), query.getRoot());
+		assertEquals(query.getRoot(), query.getQueryRoot());
+		
+		assertEquals("testDimension2Id", entries.get(1).getDimension().getForeignKeyColumn());
+		assertEquals("dimAttr2B", entries.get(1).getDimensionalAttribute().getColumnName());
+		assertEquals(7, entries.get(1).getFilterValue());
 	}
 	
 	public void testNullData() throws Exception {

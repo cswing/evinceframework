@@ -18,8 +18,13 @@
 			<evfData:dimensional-attribute column="dimAttrA" dataType="java.lang.Integer"/>
 			<evfData:dimensional-attribute column="dimAttrB" dataType="java.lang.Integer"/>
 		</evfData:dimension-table>
+		<evfData:dimension-table table="testDimension2">
+			<evfData:dimensional-attribute column="dimAttr2A" dataType="java.lang.Integer"/>
+			<evfData:dimensional-attribute column="dimAttr2B" dataType="java.lang.Integer"/>
+		</evfData:dimension-table>
 		<evfData:fact-table table="testFacts">
 			<evfData:dimension dimensionTable="testDimension" />
+			<evfData:dimension dimensionTable="testDimension2" />
 			<evfData:fact column="factA"></evfData:fact>
 			<evfData:fact column="factB"></evfData:fact>
 		</evfData:fact-table>

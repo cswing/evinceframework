@@ -44,6 +44,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Responsible for turning a json object that is part of the HTTP request into a {@link HierarchicalQuery}.
+ * 
+ * @author Craig Swing
+ *
+ */
 public class HierarchicalQueryJsonResolver implements WebQueryResolver<HierarchicalQuery> {
 
 	private BeanFactory beanFactory;
