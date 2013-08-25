@@ -44,9 +44,11 @@ public class FactSelectionFunction {
 	
 	static {
 		Map<String, FactSelectionFunction> data = new HashMap<String, FactSelectionFunction>();
-		for(FactSelectionFunction duration : ALL_FUNCTIONS) {
-			if(data.containsKey(duration.getCode()))
-				throw new RuntimeException(String.format("Duplicate function: %s", duration.getCode()));
+		for(FactSelectionFunction function : ALL_FUNCTIONS) {
+			if(data.containsKey(function.getCode()))
+				throw new RuntimeException(String.format("Duplicate function: %s", function.getCode()));
+			
+			data.put(function.getCode(), function);
 		}
 		functionsMappedByCode = Collections.unmodifiableMap(data);
 	}
@@ -63,5 +65,30 @@ public class FactSelectionFunction {
 	
 	public String getCode() {
 		return syntax;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((syntax == null) ? 0 : syntax.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FactSelectionFunction other = (FactSelectionFunction) obj;
+		if (syntax == null) {
+			if (other.syntax != null)
+				return false;
+		} else if (!syntax.equals(other.syntax))
+			return false;
+		return true;
 	}
 }
