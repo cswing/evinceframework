@@ -41,11 +41,6 @@ public class HierarchicalQuery extends AbstractQuery {
 		this.queryRoot = queryRoot;
 	}
 
-//	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,
-//			DimensionCriterion<?>[] dimensionCriteria) {
-//		super(factTable, factSelections, dimensionCriteria);
-//	}
-
 	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections) {
 		super(factTable, factSelections);
 	}

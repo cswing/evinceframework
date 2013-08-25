@@ -29,6 +29,8 @@ public class WebMessageSource  extends ResourceBundleMessageSource {
 	
 	public static class InvalidQueryKeys {
 		
+		public static final String INVALID_JSON = "invalidQuery.invalidJson";
+		
 		public static final String FACT_TABLE_NOT_DEFINED = "invalidQuery.factTable.notDefined";
 		
 		public static final String UNKNOWN_FACT_TABLE = "invalidQuery.factTable.unknown";
@@ -48,5 +50,7 @@ public class WebMessageSource  extends ResourceBundleMessageSource {
 		public static final String INVALID_FACT_CRITERIA_TYPE = "invalidQuery.invalidFactCriteriaType";
 		
 		public static final String MULTIPLE_QUERYROOTS_DEFINED = "invalidQuery.multipleQueryRoots";
+		
+		public static final String INVALID_DRILLPATH_CRITERIA_TYPE = "invalidQuery.invalidDrillPAthCriteriaType";
 	}
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -39,6 +40,7 @@ import com.evinceframework.data.warehouse.query.FactSelectionFunction;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.InvalidQueryException;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -69,23 +71,33 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 	@SuppressWarnings("unchecked")
 	protected HierarchicalQuery create(String json) throws Exception {
 		
-		ObjectMapper mapper = new ObjectMapper();
-		TypeReference<QueryRequest> typeRef = new TypeReference<QueryRequest>() {}; 
-		QueryRequest queryRequest = mapper.readValue(json, typeRef);   
+		if(!StringUtils.hasText(json))
+			return null;
+		
+		QueryRequest queryRequest = null;
+				
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			TypeReference<QueryRequest> typeRef = new TypeReference<QueryRequest>() {}; 
+			queryRequest = mapper.readValue(json, typeRef);
+		} catch (JsonProcessingException jpe) {
+			throw new InvalidQueryException(
+					messageSource.getMessage(WebMessageSource.InvalidQueryKeys.INVALID_JSON), jpe);
+		}   
 		
 		// Determine Fact Table
 		if(!StringUtils.hasLength(queryRequest.factTable)) {
 			throw new InvalidQueryException(
 					messageSource.getMessage(WebMessageSource.InvalidQueryKeys.FACT_TABLE_NOT_DEFINED));
 		}
-		
-		FactTable factTable = beanFactory.getBean(queryRequest.factTable, FactTable.class);
-		if(factTable == null) {
+				
+		if(!assertBeanExistance(queryRequest.factTable, FactTable.class)) {
 			throw new InvalidQueryException(
-					messageSource.getMessage(
-							WebMessageSource.InvalidQueryKeys.UNKNOWN_FACT_TABLE, 
+					messageSource.getMessage(WebMessageSource.InvalidQueryKeys.UNKNOWN_FACT_TABLE, 
 							new Object[]{ queryRequest.factTable }));
 		}
+		
+		FactTable factTable = beanFactory.getBean(queryRequest.factTable, FactTable.class);
 		
 		// Fact Selections
 		List<FactSelection> factSelections = new ArrayList<FactSelection>();
@@ -144,13 +156,15 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 									new Object[]{ dcr.attributeKey, dcr.dimensionKey, queryRequest.factTable }));
 				}
 				
-				if (!this.conversionService.canConvert(String.class, attribute.getValueType())) {
+				Object value = null;
+				
+				try {
+					value = this.conversionService.convert(dcr.filterValue, attribute.getValueType());
+				} catch (ConversionException ce) {
 					throw new InvalidQueryException(
 							messageSource.getMessage(WebMessageSource.InvalidQueryKeys.INVALID_DIMENSION_CRITERIA_TYPE, 
-									new Object[]{ dcr.attributeKey, dcr.dimensionKey, queryRequest.factTable }));
+									new Object[]{ dcr.attributeKey, dcr.dimensionKey, queryRequest.factTable }), ce);
 				}
-				
-				Object value = this.conversionService.convert(dcr.filterValue, attribute.getValueType());
 				
 				@SuppressWarnings({ "rawtypes" })
 				DimensionCriterion dc = new DimensionCriterion(dimension, attribute, value);
@@ -158,6 +172,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 			}
 		}
 		
+		// Fact Criterion
 		List<FactRangeCriterion<?>> factCriteria = new ArrayList<FactRangeCriterion<?>>();
 		if(queryRequest.factCriteria != null) {
 			for(FactCriterionRequest fcr : queryRequest.factCriteria) {
@@ -177,20 +192,22 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 									new Object[]{ fcr.factKey, queryRequest.factTable }));
 				}
 				
-				if (!this.conversionService.canConvert(String.class, fact.getValueType())) {
+				try {
+				
+					@SuppressWarnings("rawtypes")
+					FactRangeCriterion frc = new FactRangeCriterion(fact);
+					frc.setLowerBoundInclusive(fcr.isLowerBoundInclusive);
+					frc.setLowerBound((Number) this.conversionService.convert(fcr.lowerBound, fact.getValueType()));
+					frc.setUpperBoundInclusive(fcr.isUpperBoundInclusive);
+					frc.setUpperBound((Number) this.conversionService.convert(fcr.upperBound, fact.getValueType()));
+					
+					factCriteria.add(frc);
+					
+				} catch (ConversionException ce) {
 					throw new InvalidQueryException(
 							messageSource.getMessage(WebMessageSource.InvalidQueryKeys.INVALID_FACT_CRITERIA_TYPE, 
-									new Object[]{ fcr.factKey, queryRequest.factTable }));
+									new Object[]{ fcr.factKey, queryRequest.factTable }), ce);
 				}
-				
-				@SuppressWarnings("rawtypes")
-				FactRangeCriterion frc = new FactRangeCriterion(fact);
-				frc.setLowerBoundInclusive(fcr.isLowerBoundInclusive);
-				frc.setLowerBound((Number) this.conversionService.convert(fcr.lowerBound, fact.getValueType()));
-				frc.setUpperBoundInclusive(fcr.isUpperBoundInclusive);
-				frc.setUpperBound((Number) this.conversionService.convert(fcr.upperBound, fact.getValueType()));
-				
-				factCriteria.add(frc);
 			}
 		}
 		
@@ -204,8 +221,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 				Dimension dimension = findDimension(dpr.dimensionKey, factTable);
 				if(dimension == null) {
 					throw new InvalidQueryException(
-							messageSource.getMessage(
-									WebMessageSource.InvalidQueryKeys.UNKNOWN_DIMENSION, 
+							messageSource.getMessage(WebMessageSource.InvalidQueryKeys.UNKNOWN_DIMENSION, 
 									new Object[]{ dpr.dimensionKey, queryRequest.factTable }));
 				}
 				
@@ -220,8 +236,14 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 				DrillPathEntry<?> dpe = new DrillPathEntry(dimension, attribute, previous);
 				
 				if(StringUtils.hasText(dpr.filterValue)) {
-					Object value = this.conversionService.convert(dpr.filterValue, attribute.getValueType());
-					dpe.setFilterValue(value);
+					try {
+						Object value = this.conversionService.convert(dpr.filterValue, attribute.getValueType());
+						dpe.setFilterValue(value);
+					} catch (ConversionException ce) {
+						throw new InvalidQueryException(
+								messageSource.getMessage(WebMessageSource.InvalidQueryKeys.INVALID_DRILLPATH_CRITERIA_TYPE, 
+										new Object[]{ dpr.dimensionKey, dpr.attributeKey, queryRequest.factTable }));
+					}
 				}
 				
 				if(root == null) {
@@ -247,6 +269,15 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 				dimensionCriteria.toArray(new DimensionCriterion[]{}), 
 				factCriteria.toArray(new FactRangeCriterion[]{}),
 				root, queryRoot);
+	}
+	
+	protected boolean assertBeanExistance(String name, Class<?> clazz) {
+		
+		if(beanFactory.containsBean(name)) {
+			return beanFactory.isTypeMatch(name, clazz);
+		}
+		
+		return false;
 	}
 	
 	protected Dimension findDimension(String key, FactTable factTable) {
