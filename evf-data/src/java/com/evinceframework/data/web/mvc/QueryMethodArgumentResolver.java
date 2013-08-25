@@ -34,6 +34,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import com.evinceframework.core.factory.AbstractCachingLookupFactory;
 import com.evinceframework.data.warehouse.query.Query;
 
+/**
+ * Resolves an http request to different implementations of the {@link Query} interface.  This class will
+ * delegate to implementations of the {@link WebQueryResolver}.
+ * 
+ * @author Craig Swing
+ */
 public class QueryMethodArgumentResolver
 		extends AbstractCachingLookupFactory<String, WebQueryResolver<?>>
 		implements HandlerMethodArgumentResolver, BeanFactoryAware, InitializingBean {

@@ -20,8 +20,10 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.evinceframework.data.warehouse.query.Query;
 import com.evinceframework.data.warehouse.query.QueryEngine;
@@ -29,9 +31,16 @@ import com.evinceframework.data.warehouse.query.QueryException;
 import com.evinceframework.web.mvc.ControllerSupport;
 import com.evinceframework.web.stereotype.ServiceController;
 
+/**
+ * A service controller that provides access to the warehouse query engines.
+ * 
+ * @author Craig Swing
+ *
+ */
 @Controller
 @ServiceController
-public class WarehouseQueryController extends ControllerSupport implements BeanFactoryAware {
+public class WarehouseQueryController 
+		extends ControllerSupport implements BeanFactoryAware {
 
 	private static final String ERROR_VIEW = "warehouse.query.error";
 	
@@ -46,7 +55,8 @@ public class WarehouseQueryController extends ControllerSupport implements BeanF
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/warehouse/query/{engine}")
-	public String query(String engine, Query query, ModelMap model) throws QueryException {
+	public String query(@PathVariable("engine")String engine, @RequestParam("query") Query query, ModelMap model) 
+			throws QueryException {
 		
 		QueryEngine qEngine = beanFactory.getBean(engine, QueryEngine.class);
 		if(qEngine == null) {

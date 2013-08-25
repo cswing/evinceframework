@@ -71,6 +71,9 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 	@Override
 	public HierarchicalQuery create(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+		
+		// TODO use attribute to determine parameter to use 
+		
 		return create(webRequest.getParameter("query"));
 	}
 	
