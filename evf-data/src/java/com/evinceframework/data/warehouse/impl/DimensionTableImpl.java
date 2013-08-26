@@ -80,4 +80,16 @@ public class DimensionTableImpl extends AbstractDataObject implements DimensionT
 			businessKeys = a.toArray(new DimensionalAttribute<?>[]{});
 		}
 	}
+	
+	public DimensionalAttribute<?> findAttribute(String key) {
+		if(key != null) {
+			for(DimensionalAttribute<?> d : getAttributes()) {
+				if (key.equals(d.getColumnName())) {
+					return d;
+				}
+			}
+		}
+		
+		return null;
+	}
 }

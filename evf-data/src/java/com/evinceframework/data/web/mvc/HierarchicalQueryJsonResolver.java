@@ -113,14 +113,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		if (queryRequest.factSelections != null) {
 			for(FactSelectionRequest fsr : queryRequest.factSelections) {
 				
-				Fact<?> fact = null;
-				for(Fact<?> f : factTable.getFacts()) {
-					if (f.getColumnName().equals(fsr.factKey)) {
-						fact = f;
-						break;
-					}
-				}
-				
+				Fact<?> fact = factTable.findFact(fsr.factKey);
 				if(fact == null) {
 					throw new InvalidQueryException(
 							messageSource.getMessage(
@@ -147,7 +140,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		if(queryRequest.dimensionCriteria != null) {
 			for(DimensionCriterionRequest dcr : queryRequest.dimensionCriteria) {
 				
-				Dimension dimension = findDimension(dcr.dimensionKey, factTable);
+				Dimension dimension = factTable.findDimension(dcr.dimensionKey);
 				if(dimension == null) {
 					throw new InvalidQueryException(
 							messageSource.getMessage(
@@ -155,7 +148,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 									new Object[]{ dcr.dimensionKey, queryRequest.factTable }));
 				}
 				
-				DimensionalAttribute<?> attribute = findDimensionalAttribute(dcr.attributeKey, dimension);
+				DimensionalAttribute<?> attribute = dimension.getDimensionTable().findAttribute(dcr.attributeKey);
 				if(attribute == null) {
 					throw new InvalidQueryException(
 							messageSource.getMessage(WebMessageSource.InvalidQueryKeys.UNKNOWN_DIMENSIONAL_ATTR, 
@@ -189,14 +182,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		if(queryRequest.factCriteria != null) {
 			for(FactCriterionRequest fcr : queryRequest.factCriteria) {
 				
-				Fact<?> fact = null;
-				for(Fact<?> f : factTable.getFacts()) {
-					if (f.getColumnName().equals(fcr.factKey)) {
-						fact = f;
-						break;
-					}
-				}
-				
+				Fact<?> fact = factTable.findFact(fcr.factKey);
 				if(fact == null) {
 					throw new InvalidQueryException(
 							messageSource.getMessage(
@@ -230,14 +216,14 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		if(queryRequest.drillPath != null){
 			for(DrillPathRequest dpr : queryRequest.drillPath) {
 				
-				Dimension dimension = findDimension(dpr.dimensionKey, factTable);
+				Dimension dimension = factTable.findDimension(dpr.dimensionKey);
 				if(dimension == null) {
 					throw new InvalidQueryException(
 							messageSource.getMessage(WebMessageSource.InvalidQueryKeys.UNKNOWN_DIMENSION, 
 									new Object[]{ dpr.dimensionKey, queryRequest.factTable }));
 				}
 				
-				DimensionalAttribute<?> attribute = findDimensionalAttribute(dpr.attributeKey, dimension);
+				DimensionalAttribute<?> attribute = dimension.getDimensionTable().findAttribute(dpr.attributeKey);
 				if(attribute == null) {
 					throw new InvalidQueryException(
 							messageSource.getMessage(WebMessageSource.InvalidQueryKeys.UNKNOWN_DIMENSIONAL_ATTR, 
@@ -290,32 +276,6 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		}
 		
 		return false;
-	}
-	
-	protected Dimension findDimension(String key, FactTable factTable) {
-		
-		if(key != null) {
-			for(Dimension d : factTable.getDimensions()) {
-				if (key.equals(d.getForeignKeyColumn())) {
-					return d;
-				}
-			}
-		}
-		
-		return null;
-	}
-	
-	protected DimensionalAttribute<?> findDimensionalAttribute(String key, Dimension dimension) {
-		
-		if(key != null) {
-			for(DimensionalAttribute<?> d : dimension.getDimensionTable().getAttributes()) {
-				if (key.equals(d.getColumnName())) {
-					return d;
-				}
-			}
-		}
-		
-		return null;
 	}
 	
 	protected static class QueryRequest {

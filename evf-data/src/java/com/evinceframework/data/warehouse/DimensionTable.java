@@ -35,4 +35,6 @@ public interface DimensionTable {
 	
 	public DimensionalAttribute<? extends Object>[] getAttributes();
 	
+	public DimensionalAttribute<? extends Object> findAttribute(String key);
+	
 }

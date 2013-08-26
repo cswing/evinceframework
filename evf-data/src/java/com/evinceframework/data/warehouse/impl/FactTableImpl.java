@@ -95,5 +95,29 @@ public class FactTableImpl extends AbstractDataObject implements FactTable {
 		assert(dimension.getFactTable().equals(this));
 		d.add(dimension);
 		dimensions = d.toArray(new Dimension[]{});
-	}	
+	}
+	
+	public Fact<?> findFact(String key) {
+		if(key != null) {
+			for(Fact<?> fact : getFacts()) {
+				if (key.equals(fact.getColumnName())) {
+					return fact;  
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public Dimension findDimension(String key) {
+		if(key != null) {
+			for(Dimension d : getDimensions()) {
+				if (key.equals(d.getForeignKeyColumn())) {
+					return d;
+				}
+			}
+		}
+		
+		return null;
+	}
 }

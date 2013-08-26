@@ -28,4 +28,8 @@ public interface FactTable {
 	public Fact<? extends Object>[] getFacts();
 	
 	public FactCategory[] getCategories();
+	
+	public Fact<?> findFact(String key);
+	
+	public Dimension findDimension(String key);
 }
