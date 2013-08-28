@@ -22,14 +22,13 @@ import org.hibernate.dialect.MySQL5Dialect;
 
 import com.evinceframework.data.tests.mocks.MockDataSource;
 import com.evinceframework.data.tests.warehouse.TestData;
-import com.evinceframework.data.warehouse.query.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.DrillPathEntry;
-import com.evinceframework.data.warehouse.query.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.FactSelectionFunction;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.HierarchicalQueryResult;
 import com.evinceframework.data.warehouse.query.QueryException;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
 import com.evinceframework.data.warehouse.query.jdbc.HierarchicalJdbcQueryCommand;
 import com.evinceframework.data.warehouse.query.jdbc.SqlQueryBuilder;
@@ -44,8 +43,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 		HierarchicalQuery query = new HierarchicalQuery(
 				TestData.factTable,
 				null,
-				new DimensionCriterion[]{},
-				new FactRangeCriterion[]{},
+				new Criterion[]{},
 				root
 			);
 		
@@ -64,8 +62,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 		HierarchicalQuery query = new HierarchicalQuery(
 				TestData.factTable,
 				new FactSelection[]{},
-				new DimensionCriterion[]{},
-				new FactRangeCriterion[]{},
+				new Criterion[]{},
 				root
 			);
 		
@@ -86,8 +83,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 				new FactSelection[]{
 						new FactSelectionImpl(TestData.simpleIntegerFact)
 				},
-				new DimensionCriterion[]{},
-				new FactRangeCriterion[]{},
+				new Criterion[]{},
 				root
 			);
 		
@@ -108,8 +104,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 				new FactSelection[]{
 						new FactSelectionImpl(TestData.simpleIntegerFact, FactSelectionFunction.SUM)
 				},
-				new DimensionCriterion[]{},
-				new FactRangeCriterion[]{},
+				new Criterion[]{},
 				root
 			);
 		

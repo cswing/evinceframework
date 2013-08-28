@@ -16,6 +16,9 @@
 package com.evinceframework.data.warehouse.query;
 
 import com.evinceframework.data.warehouse.FactTable;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
+import com.evinceframework.data.warehouse.query.criterion.DimensionCriterion;
+import com.evinceframework.data.warehouse.query.criterion.FactRangeCriterion;
 
 public class AbstractQuery implements Query {
 	
@@ -23,30 +26,19 @@ public class AbstractQuery implements Query {
 	
 	private FactSelection[] factSelections = new FactSelection[]{};
 	
-	private DimensionCriterion<?>[] dimensionCriteria = new DimensionCriterion[]{};
-	
-	private FactRangeCriterion<?>[] factCriteria = new FactRangeCriterion[]{};
-	
+	private Criterion[] criteria = new Criterion[]{};
+		
 	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections) {
 		this.factTable = factTable;
 		this.factSelections = factSelections;
 	}
 
-	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections, 
-			DimensionCriterion<?>[] dimensionCriteria) {
+	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections, Criterion[] criteria) {
 		this.factTable = factTable;
 		this.factSelections = factSelections;
-		this.dimensionCriteria = dimensionCriteria;
+		this.criteria = criteria;
 	}
 	
-	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections,
-			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion<?>[] factCriteria) {
-		this.factTable = factTable;
-		this.factSelections = factSelections;
-		this.dimensionCriteria = dimensionCriteria;
-		this.factCriteria = factCriteria;
-	}
-
 	@Override
 	public FactTable getFactTable() {
 		return factTable;
@@ -58,13 +50,8 @@ public class AbstractQuery implements Query {
 	}
 
 	@Override
-	public DimensionCriterion<?>[] getDimensionCriterion() {
-		return dimensionCriteria;
-	}
-
-	@Override
-	public FactRangeCriterion<?>[] getFactCriterion() {
-		return factCriteria;
+	public Criterion[] getCriteria() {
+		return criteria;
 	}
 
 }

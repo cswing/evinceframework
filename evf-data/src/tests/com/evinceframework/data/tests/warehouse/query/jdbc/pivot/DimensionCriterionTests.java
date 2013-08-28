@@ -21,12 +21,12 @@ import org.hibernate.dialect.MySQL5Dialect;
 
 import com.evinceframework.data.tests.warehouse.TestData;
 import com.evinceframework.data.tests.warehouse.query.jdbc.pivot.PivotJdbcQueryCommandTests.TestPivotQueryCommand;
-import com.evinceframework.data.warehouse.query.DimensionCriterion;
-import com.evinceframework.data.warehouse.query.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.PivotQuery;
 import com.evinceframework.data.warehouse.query.QueryException;
 import com.evinceframework.data.warehouse.query.SummarizationAttribute;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
+import com.evinceframework.data.warehouse.query.criterion.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
 
 public class DimensionCriterionTests extends TestCase {
@@ -39,10 +39,9 @@ public class DimensionCriterionTests extends TestCase {
 			new FactSelection[] {
 				new FactSelectionImpl(TestData.simpleIntegerFact)
 			},
-			new DimensionCriterion[]{
+			new Criterion[]{
 				new DimensionCriterion<String>(TestData.dimensionA, TestData.dimensionalAttrA1, "testValue")
 			},
-			new FactRangeCriterion[]{},
 			new SummarizationAttribute[]{}
 		);
 		query.setMaximumRowCount(null);

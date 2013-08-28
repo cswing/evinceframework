@@ -32,13 +32,14 @@ import com.evinceframework.data.warehouse.Dimension;
 import com.evinceframework.data.warehouse.DimensionalAttribute;
 import com.evinceframework.data.warehouse.Fact;
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.DrillPathEntry;
-import com.evinceframework.data.warehouse.query.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.FactSelectionFunction;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.InvalidQueryException;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
+import com.evinceframework.data.warehouse.query.criterion.DimensionCriterion;
+import com.evinceframework.data.warehouse.query.criterion.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -136,7 +137,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		}
 		
 		// Dimension Criteria
-		List<DimensionCriterion<?>> dimensionCriteria = new ArrayList<DimensionCriterion<?>>();
+		List<Criterion> criteria = new ArrayList<Criterion>();
 		if(queryRequest.dimensionCriteria != null) {
 			for(DimensionCriterionRequest dcr : queryRequest.dimensionCriteria) {
 				
@@ -173,12 +174,11 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 				
 				@SuppressWarnings({ "rawtypes" })
 				DimensionCriterion dc = new DimensionCriterion(dimension, attribute, value);
-				dimensionCriteria.add(dc);
+				criteria.add(dc);
 			}
 		}
 		
 		// Fact Criterion
-		List<FactRangeCriterion<?>> factCriteria = new ArrayList<FactRangeCriterion<?>>();
 		if(queryRequest.factCriteria != null) {
 			for(FactCriterionRequest fcr : queryRequest.factCriteria) {
 				
@@ -199,7 +199,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 					frc.setUpperBoundInclusive(fcr.isUpperBoundInclusive);
 					frc.setUpperBound((Number) this.conversionService.convert(fcr.upperBound, fact.getValueType()));
 					
-					factCriteria.add(frc);
+					criteria.add(frc);
 					
 				} catch (ConversionException ce) {
 					throw new InvalidQueryException(
@@ -264,8 +264,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		
 		return new HierarchicalQuery(factTable, 
 				factSelections.toArray(new FactSelection[]{}), 
-				dimensionCriteria.toArray(new DimensionCriterion[]{}), 
-				factCriteria.toArray(new FactRangeCriterion[]{}),
+				criteria.toArray(new Criterion[]{}),
 				root, queryRoot);
 	}
 	

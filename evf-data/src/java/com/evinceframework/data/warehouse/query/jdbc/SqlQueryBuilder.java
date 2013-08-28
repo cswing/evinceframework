@@ -34,11 +34,10 @@ import org.hibernate.sql.SelectFragment;
 import com.evinceframework.data.warehouse.Dimension;
 import com.evinceframework.data.warehouse.DimensionalAttribute;
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.DrillPathEntry;
-import com.evinceframework.data.warehouse.query.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.Query;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
 
 public class SqlQueryBuilder {
 
@@ -52,7 +51,9 @@ public class SqlQueryBuilder {
 	
 	private List<String> groupBy = new LinkedList<String>();
 	
-	private List<String> where = new LinkedList<String>();
+	/*package*/ List<String> where = new LinkedList<String>();
+	
+	private SqlQueryCriteriaBuilder criteriaBuilder = new SqlQueryCriteriaBuilder();
 	
 	private DimensionJoinAliasLookup dimensionJoinLookup = new DimensionJoinAliasLookup();
 	
@@ -72,6 +73,10 @@ public class SqlQueryBuilder {
 	
 	public String getFactTableAlias() {
 		return "fact";
+	}
+	
+	public SqlQueryCriteriaBuilder getCriteriaBuilder() {
+		return criteriaBuilder;
 	}
 	
 	public String lookupAlias(Dimension dimension, DimensionalAttribute<?> attribute) {
@@ -105,7 +110,7 @@ public class SqlQueryBuilder {
 	}
 	
 	public void addFilter(Dimension dimension, DimensionalAttribute<?> attribute) {
-		where.add(createSingularWhereClause(joinDimension(dimension), attribute.getColumnName()));
+		where.add(criteriaBuilder.createSingularWhereClause(joinDimension(dimension), attribute.getColumnName()));
 	}
 	
 	/**
@@ -129,54 +134,12 @@ public class SqlQueryBuilder {
 		}
 	}
 	
-	public void processDimensionCriterion(Query query) {
-		for(DimensionCriterion<?> dc : query.getDimensionCriterion()) {
-			String dimensionTableAlias = joinDimension(dc.getDimension());
-			where.add(createWhereInClause(
-					dimensionTableAlias, dc.getDimensionalAttribute().getColumnName(), dc.getValues().length));
+	public void processCriteria(Query query) {
+		for (Criterion c : query.getCriteria()) {
+			criteriaBuilder.processCriterion(this, c);
 		}
 	}
 	
-	public void processFactRangeCriterion(Query query) {
-		for(FactRangeCriterion<?> frc : query.getFactCriterion()) {
-			
-			if (frc.getLowerBound() != null) {
-				where.add(createSingularWhereClause(
-						getFactTableAlias(), frc.getFact().getColumnName(), frc.isLowerBoundInclusive() ? ">=" : ">"));
-			}
-			
-			if (frc.getUpperBound() != null) {
-				where.add(createSingularWhereClause(
-						getFactTableAlias(), frc.getFact().getColumnName(), frc.isUpperBoundInclusive() ? "<=" : "<"));
-			}
-		}
-	}
-	
-	protected String createSingularWhereClause(String alias, String column) {
-		return createSingularWhereClause(alias, column, "=");
-	}
-	
-	protected String createSingularWhereClause(String alias, String column, String comparisonOperator) {
-		return String.format("%s.%s %s ?", alias, column, comparisonOperator);
-	}
-	
-	protected String createWhereInClause(String alias, String column, int parameterCount) {
-		
-		if(parameterCount <= 0)
-			return "";
-		
-		if(parameterCount == 1)
-			return createSingularWhereClause(alias, column);
-		
-		String[] marks = new String[parameterCount];
-		for(int i = 0; i<parameterCount; i++){
-			marks[i] = "?";
-		}
-		
-		return String.format("%s.%s in (%s)", alias, column, StringHelper.join(",", marks));
-	}
-	
-
 	public String joinDimension(Dimension dimension) {
 		
 		String alias = dimensionJoinLookup.byDimension(dimension);

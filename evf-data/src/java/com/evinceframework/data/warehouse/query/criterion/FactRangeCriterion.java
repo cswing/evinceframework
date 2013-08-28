@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.warehouse.query;
+package com.evinceframework.data.warehouse.query.criterion;
 
 import com.evinceframework.data.warehouse.Fact;
 
-public class FactRangeCriterion<T extends Number> {
+public class FactRangeCriterion<T extends Number> implements Criterion {
 
 	private Fact<T> fact;
 	

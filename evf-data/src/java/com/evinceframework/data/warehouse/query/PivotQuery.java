@@ -16,6 +16,7 @@
 package com.evinceframework.data.warehouse.query;
 
 import com.evinceframework.data.warehouse.FactTable;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
 
 public class PivotQuery extends AbstractQuery {
 
@@ -23,11 +24,10 @@ public class PivotQuery extends AbstractQuery {
 	
 	private Integer maximumRowCount = 1000;
 	
-	public PivotQuery(FactTable factTable, FactSelection[] factSelections,
-			DimensionCriterion[] dimensionCriteria, FactRangeCriterion[] factCriteria, 
+	public PivotQuery(FactTable factTable, FactSelection[] factSelections, Criterion[] criteria, 
 			SummarizationAttribute[] summarizations) {
 	
-		super(factTable, factSelections, dimensionCriteria, factCriteria);
+		super(factTable, factSelections, criteria);
 		this.summarizationAttributes = summarizations;
 	}
 

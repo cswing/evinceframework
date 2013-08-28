@@ -26,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.dialect.Dialect;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -133,8 +132,7 @@ public class PivotJdbcQueryCommand extends AbstractJdbcQueryCommand<PivotQuery, 
 		}
 		
 		builder.addFactSelections(query.getFactSelections());
-		builder.processDimensionCriterion(query);
-		builder.processFactRangeCriterion(query); // TODO write tests for this line
+		builder.processCriteria(query);
 		
 		Integer limit = null;
 		

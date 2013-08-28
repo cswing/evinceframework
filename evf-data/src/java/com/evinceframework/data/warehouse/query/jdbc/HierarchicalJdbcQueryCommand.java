@@ -34,10 +34,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import com.evinceframework.data.warehouse.query.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.DrillPathData;
 import com.evinceframework.data.warehouse.query.DrillPathEntry;
-import com.evinceframework.data.warehouse.query.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.HierarchicalQueryResult;
@@ -79,19 +77,9 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 								stmt, entry.getFilterValue(), paramIdx);
 					}
 					
-					// dimension criterion
-					for(DimensionCriterion<?> dc : query.getDimensionCriterion()) {
-						paramIdx += parameterSupport.setParameterValues(dc.getDimensionalAttribute().getValueType(),
-								stmt, dc.getValues(), paramIdx);
-					}
-					
-					// fact criterion
-					for(FactRangeCriterion<?> frc : query.getFactCriterion()) {
-						if (frc.getLowerBound() != null) {
-							paramIdx += parameterSupport.setParameterValue(
-									frc.getFact().getValueType(), stmt, frc.getLowerBound(), paramIdx);
-						}
-					}
+					// criterion
+					paramIdx += sqlBuilder.getCriteriaBuilder()
+							.setParameters(sqlBuilder, query.getCriteria(), stmt, paramIdx);
 					
 					return stmt;
 					
@@ -135,8 +123,7 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 			}
 		}
 		
-		sqlBuilder.processDimensionCriterion(query);
-		sqlBuilder.processFactRangeCriterion(query);
+		sqlBuilder.processCriteria(query);
 		
 		return sqlBuilder.generateSqlText().sql;
 	}

@@ -25,11 +25,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.util.ClassUtils;
 
 import com.evinceframework.data.warehouse.query.DrillPathEntry;
 import com.evinceframework.data.warehouse.query.FactSelectionFunction;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.InvalidQueryException;
+import com.evinceframework.data.warehouse.query.criterion.DimensionCriterion;
+import com.evinceframework.data.warehouse.query.criterion.FactRangeCriterion;
 import com.evinceframework.data.web.mvc.HierarchicalQueryJsonResolver;
 import com.evinceframework.data.web.mvc.WebMessageSource;
 
@@ -70,39 +73,45 @@ public class HierarchicalQueryJsonResolverTests extends TestCase {
 		assertEquals("factB", query.getFactSelections()[1].getFact().getColumnName());
 		assertEquals(FactSelectionFunction.SUM, query.getFactSelections()[1].getFunction());
 
-		assertNotNull(query.getDimensionCriterion());
-		assertEquals(2, query.getDimensionCriterion().length);
+		assertNotNull(query.getCriteria());
+		assertEquals(4, query.getCriteria().length);
 		
-		assertNotNull(query.getDimensionCriterion()[0]);
-		assertEquals("testDimensionId", query.getDimensionCriterion()[0].getDimension().getForeignKeyColumn());
-		assertEquals("dimAttrA", query.getDimensionCriterion()[0].getDimensionalAttribute().getColumnName());
-		assertNotNull(query.getDimensionCriterion()[0].getValues());
-		assertEquals(1, query.getDimensionCriterion()[0].getValues().length);
-		assertEquals(1, query.getDimensionCriterion()[0].getValues()[0]);
+		assertNotNull(query.getCriteria()[0]);
+		assertTrue(ClassUtils.isAssignableValue(DimensionCriterion.class, query.getCriteria()[0]));
+		DimensionCriterion<?> dc = (DimensionCriterion<?>)query.getCriteria()[0];
+		assertEquals("testDimensionId", dc.getDimension().getForeignKeyColumn());
+		assertEquals("dimAttrA", dc.getDimensionalAttribute().getColumnName());
+		assertNotNull(dc.getValues());
+		assertEquals(1, dc.getValues().length);
+		assertEquals(1, dc.getValues()[0]);
 		
-		assertNotNull(query.getDimensionCriterion()[1]);
-		assertEquals("testDimension2Id", query.getDimensionCriterion()[1].getDimension().getForeignKeyColumn());
-		assertEquals("dimAttr2B", query.getDimensionCriterion()[1].getDimensionalAttribute().getColumnName());
-		assertNotNull(query.getDimensionCriterion()[1].getValues());
-		assertEquals(1, query.getDimensionCriterion()[1].getValues().length);
-		assertEquals(2, query.getDimensionCriterion()[1].getValues()[0]);
+		assertNotNull(query.getCriteria()[1]);
+		assertTrue(ClassUtils.isAssignableValue(DimensionCriterion.class, query.getCriteria()[1]));
+		dc = (DimensionCriterion<?>)query.getCriteria()[1];
+		assertEquals("testDimension2Id", dc.getDimension().getForeignKeyColumn());
+		assertEquals("dimAttr2B", dc.getDimensionalAttribute().getColumnName());
+		assertNotNull(dc.getValues());
+		assertEquals(1, dc.getValues().length);
+		assertEquals(2, dc.getValues()[0]);
 		
-		assertNotNull(query.getFactCriterion());
-		assertEquals(2, query.getFactCriterion().length);
 		
-		assertNotNull(query.getFactCriterion()[0]);
-		assertEquals("factA", query.getFactCriterion()[0].getFact().getColumnName());
-		assertEquals(1, query.getFactCriterion()[0].getLowerBound());
-		assertEquals(true, query.getFactCriterion()[0].isLowerBoundInclusive());
-		assertEquals(5, query.getFactCriterion()[0].getUpperBound());
-		assertEquals(true, query.getFactCriterion()[0].isUpperBoundInclusive());
+		assertNotNull(query.getCriteria()[2]);
+		assertTrue(ClassUtils.isAssignableValue(FactRangeCriterion.class, query.getCriteria()[2]));
+		FactRangeCriterion<?> frc = (FactRangeCriterion<?>)query.getCriteria()[2];
+		assertEquals("factA", frc.getFact().getColumnName());
+		assertEquals(1, frc.getLowerBound());
+		assertEquals(true, frc.isLowerBoundInclusive());
+		assertEquals(5, frc.getUpperBound());
+		assertEquals(true, frc.isUpperBoundInclusive());
 		
-		assertNotNull(query.getFactCriterion()[1]);
-		assertEquals("factB", query.getFactCriterion()[1].getFact().getColumnName());
-		assertEquals(2, query.getFactCriterion()[1].getLowerBound());
-		assertEquals(false, query.getFactCriterion()[1].isLowerBoundInclusive());
-		assertEquals(6, query.getFactCriterion()[1].getUpperBound());
-		assertEquals(false, query.getFactCriterion()[1].isUpperBoundInclusive());
+		assertNotNull(query.getCriteria()[3]);
+		assertTrue(ClassUtils.isAssignableValue(FactRangeCriterion.class, query.getCriteria()[3]));
+		frc = (FactRangeCriterion<?>)query.getCriteria()[3];
+		assertEquals("factB", frc.getFact().getColumnName());
+		assertEquals(2, frc.getLowerBound());
+		assertEquals(false, frc.isLowerBoundInclusive());
+		assertEquals(6, frc.getUpperBound());
+		assertEquals(false, frc.isUpperBoundInclusive());
 		
 		assertNotNull(query.getRoot());
 		assertNotNull(query.getQueryRoot());

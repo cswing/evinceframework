@@ -22,13 +22,12 @@ import org.hibernate.dialect.MySQL5Dialect;
 
 import com.evinceframework.data.tests.mocks.MockDataSource;
 import com.evinceframework.data.tests.warehouse.TestData;
-import com.evinceframework.data.warehouse.query.DimensionCriterion;
-import com.evinceframework.data.warehouse.query.FactRangeCriterion;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.PivotQuery;
 import com.evinceframework.data.warehouse.query.PivotQueryResult;
 import com.evinceframework.data.warehouse.query.QueryException;
 import com.evinceframework.data.warehouse.query.SummarizationAttribute;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
 import com.evinceframework.data.warehouse.query.jdbc.PivotJdbcQueryCommand;
 import com.evinceframework.data.warehouse.query.jdbc.SqlQueryBuilder;
@@ -41,8 +40,7 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 		PivotQuery query = new PivotQuery(
 				TestData.factTable,
 				null,
-				new DimensionCriterion[]{},
-				new FactRangeCriterion[]{},
+				new Criterion[]{},
 				new SummarizationAttribute[] {}
 			);
 		
@@ -62,8 +60,7 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 		PivotQuery query = new PivotQuery(
 				TestData.factTable,
 				new FactSelection[]{},
-				new DimensionCriterion[]{},
-				new FactRangeCriterion[]{},
+				new Criterion[]{},
 				new SummarizationAttribute[] {}
 			);
 		query.setMaximumRowCount(null);
@@ -82,8 +79,7 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 		PivotQuery query = new PivotQuery(
 				TestData.factTable,
 				new FactSelection[]{ new FactSelectionImpl(TestData.simpleIntegerFact) },
-				new DimensionCriterion[]{},
-				new FactRangeCriterion[]{},
+				new Criterion[]{},
 				new SummarizationAttribute[] {}
 			); 
 				
@@ -101,8 +97,7 @@ public class PivotJdbcQueryCommandTests extends TestCase {
 		PivotQuery query = new PivotQuery(
 				TestData.factTable,
 				new FactSelection[]{ new FactSelectionImpl(TestData.simpleIntegerFact) },
-				new DimensionCriterion[]{},
-				new FactRangeCriterion[]{},
+				new Criterion[]{},
 				new SummarizationAttribute[] {}
 			);
 		

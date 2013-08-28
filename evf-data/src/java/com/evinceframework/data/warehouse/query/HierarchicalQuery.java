@@ -16,6 +16,7 @@
 package com.evinceframework.data.warehouse.query;
 
 import com.evinceframework.data.warehouse.FactTable;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
 
 public class HierarchicalQuery extends AbstractQuery {
 
@@ -27,16 +28,16 @@ public class HierarchicalQuery extends AbstractQuery {
 	
 	private int levels = DEFAULT_LEVELS;
 	
-	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,
-			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion<?>[] factCriteria,
-			DrillPathEntry<?> root) {
-		this(factTable, factSelections, dimensionCriteria, factCriteria, root, null);
+	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections, 
+			Criterion[] criteria, DrillPathEntry<?> root) {
+		
+		this(factTable, factSelections, criteria, root, null);
 	}
 	
-	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections,
-			DimensionCriterion<?>[] dimensionCriteria, FactRangeCriterion<?>[] factCriteria,
+	public HierarchicalQuery(FactTable factTable, FactSelection[] factSelections, Criterion[] criteria,
 			DrillPathEntry<?> root, DrillPathEntry<?> queryRoot) {
-		super(factTable, factSelections, dimensionCriteria, factCriteria);
+		super(factTable, factSelections, criteria);
+		
 		this.root = root;
 		this.queryRoot = queryRoot;
 	}

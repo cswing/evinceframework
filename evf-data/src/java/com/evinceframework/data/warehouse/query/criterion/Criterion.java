@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.warehouse.query;
+package com.evinceframework.data.warehouse.query.criterion;
 
-import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.criterion.Criterion;
-
-public interface Query {
-	
-	public FactTable getFactTable();
-	
-	public FactSelection[] getFactSelections();
-	
-	public Criterion[] getCriteria();
-	
-}
+/**
+ * A marker interface that identifies objects that can be used to specify a 
+ * set of criteria when querying the data warehouse.
+ * 
+ * @author Craig Swing
+ *
+ */
+public interface Criterion {}
