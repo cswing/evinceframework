@@ -16,7 +16,7 @@
 package com.evinceframework.data.warehouse.query;
 
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.criterion.Criterion;
+import com.evinceframework.data.warehouse.query.criterion.Expression;
 
 public interface Query {
 	
@@ -24,6 +24,6 @@ public interface Query {
 	
 	public FactSelection[] getFactSelections();
 	
-	public Criterion[] getCriteria();
+	public Expression[] getCriteria();
 	
 }

@@ -26,7 +26,7 @@ import com.evinceframework.data.warehouse.query.FactSelectionFunction;
 import com.evinceframework.data.warehouse.query.PivotQuery;
 import com.evinceframework.data.warehouse.query.QueryException;
 import com.evinceframework.data.warehouse.query.SummarizationAttribute;
-import com.evinceframework.data.warehouse.query.criterion.Criterion;
+import com.evinceframework.data.warehouse.query.criterion.Expression;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
 import com.evinceframework.data.warehouse.query.impl.SummarizationAttributeImpl;
 
@@ -40,7 +40,7 @@ public class SummarizationAttributeImplTests extends TestCase {
 			new FactSelection[] {
 				new FactSelectionImpl(TestData.simpleIntegerFact, FactSelectionFunction.SUM)
 			},
-			new Criterion[]{},
+			new Expression[]{},
 			new SummarizationAttribute[] {
 				new SummarizationAttributeImpl(TestData.dimensionA)
 			}

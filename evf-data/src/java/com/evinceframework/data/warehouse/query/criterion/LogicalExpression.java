@@ -20,25 +20,25 @@ package com.evinceframework.data.warehouse.query.criterion;
  * 
  * @author Craig Swing
  */
-public abstract class LogicalExpression implements Criterion {
+public abstract class LogicalExpression implements Expression {
 	
-	private Criterion rhs;
+	private Expression rhs;
 	
-	private Criterion lhs;
+	private Expression lhs;
 	
 	private String expression;
 
-	private LogicalExpression(Criterion lhs, Criterion rhs, String expression) {
+	private LogicalExpression(Expression lhs, Expression rhs, String expression) {
 		this.rhs = rhs;
 		this.lhs = lhs;
 		this.expression = expression;
 	}
 
-	public Criterion getRightHandCriterion() {
+	public Expression getRightHandExpression() {
 		return rhs;
 	}
 
-	public Criterion getLeftHandCriterion() {
+	public Expression getLeftHandExpression() {
 		return lhs;
 	}
 
@@ -46,39 +46,21 @@ public abstract class LogicalExpression implements Criterion {
 		return expression;
 	}
 	
-	public static LogicalExpression and(Criterion lh, Criterion rh, Criterion ... others) {
-		
-		LogicalExpression le = new LogicalExpression.And(lh, rh);
-		
-		for(Criterion c : others) {
-			le = and(le, c);
-		}
-		
-		return le;
-	}
-	
-	public static LogicalExpression or(Criterion lh, Criterion rh, Criterion ... others) {
-		
-		LogicalExpression le = new LogicalExpression.Or(lh, rh);
-		
-		for(Criterion c : others) {
-			le = or(le, c);
-		}
-		
-		return le;
-	}
-
 	public static class And extends LogicalExpression {
 		
-		private And(Criterion lhs, Criterion rhs) {
-			super(lhs, rhs, "AND");
+		public static final String OPERATOR = "AND";
+		
+		/* package */ And(Expression lhs, Expression rhs) {
+			super(lhs, rhs, OPERATOR);
 		}
 	}
 	
 	public static class Or extends LogicalExpression {
 		
-		private Or(Criterion lhs, Criterion rhs) {
-			super(lhs, rhs, "OR");
+		public static final String OPERATOR = "OR";
+		
+		/* package */ Or(Expression lhs, Expression rhs) {
+			super(lhs, rhs, OPERATOR);
 		}
 	}
 }

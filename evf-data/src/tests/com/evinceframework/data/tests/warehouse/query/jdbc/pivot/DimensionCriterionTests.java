@@ -25,8 +25,8 @@ import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.PivotQuery;
 import com.evinceframework.data.warehouse.query.QueryException;
 import com.evinceframework.data.warehouse.query.SummarizationAttribute;
-import com.evinceframework.data.warehouse.query.criterion.Criterion;
-import com.evinceframework.data.warehouse.query.criterion.DimensionCriterion;
+import com.evinceframework.data.warehouse.query.criterion.Expression;
+import com.evinceframework.data.warehouse.query.criterion.Expressions;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
 
 public class DimensionCriterionTests extends TestCase {
@@ -39,8 +39,8 @@ public class DimensionCriterionTests extends TestCase {
 			new FactSelection[] {
 				new FactSelectionImpl(TestData.simpleIntegerFact)
 			},
-			new Criterion[]{
-				new DimensionCriterion<String>(TestData.dimensionA, TestData.dimensionalAttrA1, "testValue")
+			new Expression[]{
+				Expressions.eq(TestData.dimensionA, TestData.dimensionalAttrA1, "testValue")
 			},
 			new SummarizationAttribute[]{}
 		);

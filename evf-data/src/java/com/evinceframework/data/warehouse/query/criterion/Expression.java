@@ -15,27 +15,6 @@
  */
 package com.evinceframework.data.warehouse.query.criterion;
 
-import com.evinceframework.data.warehouse.Fact;
-
-public class FactRangeCriterion<T extends Number> extends AbstractCriterion {
-
-	private Fact<T> fact;
+public interface Expression {
 	
-	private T value;
-
-	@SuppressWarnings("unchecked")
-	/* package */ FactRangeCriterion(ComparisonOperator operator, Fact<T> fact, Object value) {
-		super(operator);
-		
-		this.fact = fact;
-		this.value = (T) value;
-	}
-	
-	public Fact<T> getFact() {
-		return fact;
-	}
-
-	public T getValue() {
-		return value;
-	}
 }

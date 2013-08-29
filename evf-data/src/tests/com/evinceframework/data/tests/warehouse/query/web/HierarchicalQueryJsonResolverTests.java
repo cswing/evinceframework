@@ -31,6 +31,7 @@ import com.evinceframework.data.warehouse.query.DrillPathEntry;
 import com.evinceframework.data.warehouse.query.FactSelectionFunction;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.InvalidQueryException;
+import com.evinceframework.data.warehouse.query.criterion.ComparisonOperator;
 import com.evinceframework.data.warehouse.query.criterion.DimensionCriterion;
 import com.evinceframework.data.warehouse.query.criterion.FactRangeCriterion;
 import com.evinceframework.data.web.mvc.HierarchicalQueryJsonResolver;
@@ -74,7 +75,7 @@ public class HierarchicalQueryJsonResolverTests extends TestCase {
 		assertEquals(FactSelectionFunction.SUM, query.getFactSelections()[1].getFunction());
 
 		assertNotNull(query.getCriteria());
-		assertEquals(4, query.getCriteria().length);
+		assertEquals(6, query.getCriteria().length);
 		
 		assertNotNull(query.getCriteria()[0]);
 		assertTrue(ClassUtils.isAssignableValue(DimensionCriterion.class, query.getCriteria()[0]));
@@ -99,19 +100,33 @@ public class HierarchicalQueryJsonResolverTests extends TestCase {
 		assertTrue(ClassUtils.isAssignableValue(FactRangeCriterion.class, query.getCriteria()[2]));
 		FactRangeCriterion<?> frc = (FactRangeCriterion<?>)query.getCriteria()[2];
 		assertEquals("factA", frc.getFact().getColumnName());
-		assertEquals(1, frc.getLowerBound());
-		assertEquals(true, frc.isLowerBoundInclusive());
-		assertEquals(5, frc.getUpperBound());
-		assertEquals(true, frc.isUpperBoundInclusive());
+		assertEquals(ComparisonOperator.GREATER_THAN_OR_EQUALS, frc.getOperator());
+		assertEquals(1, frc.getValue());
+		
 		
 		assertNotNull(query.getCriteria()[3]);
 		assertTrue(ClassUtils.isAssignableValue(FactRangeCriterion.class, query.getCriteria()[3]));
 		frc = (FactRangeCriterion<?>)query.getCriteria()[3];
+		assertEquals("factA", frc.getFact().getColumnName());
+		assertEquals(ComparisonOperator.LESS_THAN_OR_EQUALS, frc.getOperator());
+		assertEquals(5, frc.getValue());
+		
+		
+		assertNotNull(query.getCriteria()[4]);
+		assertTrue(ClassUtils.isAssignableValue(FactRangeCriterion.class, query.getCriteria()[4]));
+		frc = (FactRangeCriterion<?>)query.getCriteria()[4];
 		assertEquals("factB", frc.getFact().getColumnName());
-		assertEquals(2, frc.getLowerBound());
-		assertEquals(false, frc.isLowerBoundInclusive());
-		assertEquals(6, frc.getUpperBound());
-		assertEquals(false, frc.isUpperBoundInclusive());
+		assertEquals(ComparisonOperator.GREATER_THAN, frc.getOperator());
+		assertEquals(2, frc.getValue());
+		
+		
+		assertNotNull(query.getCriteria()[5]);
+		assertTrue(ClassUtils.isAssignableValue(FactRangeCriterion.class, query.getCriteria()[5]));
+		frc = (FactRangeCriterion<?>)query.getCriteria()[5];
+		assertEquals("factB", frc.getFact().getColumnName());
+		assertEquals(ComparisonOperator.LESS_THAN, frc.getOperator());
+		assertEquals(6, frc.getValue());
+		
 		
 		assertNotNull(query.getRoot());
 		assertNotNull(query.getQueryRoot());

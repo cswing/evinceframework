@@ -16,9 +16,7 @@
 package com.evinceframework.data.warehouse.query;
 
 import com.evinceframework.data.warehouse.FactTable;
-import com.evinceframework.data.warehouse.query.criterion.Criterion;
-import com.evinceframework.data.warehouse.query.criterion.DimensionCriterion;
-import com.evinceframework.data.warehouse.query.criterion.FactRangeCriterion;
+import com.evinceframework.data.warehouse.query.criterion.Expression;
 
 public class AbstractQuery implements Query {
 	
@@ -26,14 +24,14 @@ public class AbstractQuery implements Query {
 	
 	private FactSelection[] factSelections = new FactSelection[]{};
 	
-	private Criterion[] criteria = new Criterion[]{};
+	private Expression[] criteria = new Expression[]{};
 		
 	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections) {
 		this.factTable = factTable;
 		this.factSelections = factSelections;
 	}
 
-	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections, Criterion[] criteria) {
+	protected AbstractQuery(FactTable factTable, FactSelection[] factSelections, Expression[] criteria) {
 		this.factTable = factTable;
 		this.factSelections = factSelections;
 		this.criteria = criteria;
@@ -50,7 +48,7 @@ public class AbstractQuery implements Query {
 	}
 
 	@Override
-	public Criterion[] getCriteria() {
+	public Expression[] getCriteria() {
 		return criteria;
 	}
 

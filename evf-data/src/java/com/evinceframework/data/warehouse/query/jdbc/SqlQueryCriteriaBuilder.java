@@ -24,13 +24,15 @@ import org.hibernate.internal.util.StringHelper;
 
 import com.evinceframework.core.factory.AbstractClassLookupFactory;
 import com.evinceframework.data.warehouse.query.QueryException;
-import com.evinceframework.data.warehouse.query.criterion.Criterion;
+import com.evinceframework.data.warehouse.query.criterion.ComparisonOperator;
 import com.evinceframework.data.warehouse.query.criterion.DimensionCriterion;
+import com.evinceframework.data.warehouse.query.criterion.Expression;
 import com.evinceframework.data.warehouse.query.criterion.FactRangeCriterion;
+import com.evinceframework.data.warehouse.query.criterion.LogicalExpression;
 import com.evinceframework.data.warehouse.query.jdbc.SqlQueryCriteriaBuilder.CriterionProcessor;
 
 public class SqlQueryCriteriaBuilder 
-		extends AbstractClassLookupFactory<CriterionProcessor<? extends Criterion>> {
+		extends AbstractClassLookupFactory<CriterionProcessor<? extends Expression>> {
 
 	private ParameterValueSetterFactory parameterSupport = ParameterValueSetterFactory.DEFAULT_FACTORY;
 	
@@ -43,7 +45,7 @@ public class SqlQueryCriteriaBuilder
 	}
 
 	@Override
-	protected CriterionProcessor<? extends Criterion> create(Class<?> clazz) {
+	protected CriterionProcessor<? extends Expression> create(Class<?> clazz) {
 		
 		if(clazz != null) {
 			for(CriterionProcessor<?> delegate : delegates) {
@@ -55,26 +57,50 @@ public class SqlQueryCriteriaBuilder
 		return null;
 	}
 	
-	public void processCriterion(SqlQueryBuilder sqlBuilder, Criterion criterion) {
+	public String createWhereClause(SqlQueryBuilder sqlBuilder, Expression[] criteria) {
 		
-		if(criterion == null)
-			return;
+		if(criteria == null)
+			return null;
 		
-		CriterionProcessor<?> processor = lookup(criterion.getClass());
-		processor.process(sqlBuilder, criterion);
+		List<String> clauses = new ArrayList<String>();
+		
+		for(Expression c : criteria) {
+			CriterionProcessor<?> processor = lookup(c.getClass());
+			String clause = processor.processCriterion(sqlBuilder, c);
+			if(clause != null)
+				clauses.add(clause);	
+		}
+		
+		return joinWhereClauses(clauses);
 	}
 	
-	public int setParameters(SqlQueryBuilder sqlBuilder, Criterion[] criteria, PreparedStatement stmt, int paramIdx) 
+	public int setParameters(SqlQueryBuilder sqlBuilder, Expression[] criteria, PreparedStatement stmt, int paramIdx) 
 			throws SQLException, QueryException {
 		
 		int idx = paramIdx;
 		
-		for(Criterion criterion : criteria) {
+		for(Expression criterion : criteria) {
 			CriterionProcessor<?> processor = lookup(criterion.getClass());
-			idx += processor.setParameters(sqlBuilder, criterion, stmt, idx);
+			idx += processor.setCriterionParameters(sqlBuilder, criterion, stmt, idx);
 		}
 		
 		return idx;
+	}
+	
+	public String joinWhereClauses(List<String> clauses) {
+		return joinClauses(clauses, LogicalExpression.And.OPERATOR);
+	}
+	
+	protected String joinClauses(List<String> clauses, String logicalOperator) {
+		
+		if(clauses.size() == 0)
+			return null;
+		
+		if(clauses.size() == 1)
+			return clauses.get(0);
+		
+		return String.format("(%s)", StringHelper.join(
+				String.format(" %s ", logicalOperator), clauses.toArray(new String[]{})));
 	}
 	
 	public String createSingularWhereClause(String alias, String column) {
@@ -101,22 +127,27 @@ public class SqlQueryCriteriaBuilder
 		return String.format("%s.%s in (%s)", alias, column, StringHelper.join(",", marks));
 	}
 
-	public static abstract class CriterionProcessor<T extends Criterion> {
+	private static String getSqlComparison(ComparisonOperator operator) {
+		
+		return "";
+	}
+	
+	public static abstract class CriterionProcessor<T extends Expression> {
 		
 		public abstract Class<?> getCriterionClass();
 		
 		@SuppressWarnings("unchecked")
-		public void process(SqlQueryBuilder sqlBuilder, Criterion criterion) {
-			onProcess(sqlBuilder, (T) criterion);
+		public String processCriterion(SqlQueryBuilder sqlBuilder, Expression criterion) {
+			return onProcess(sqlBuilder, (T) criterion);
 		}
 		
 		@SuppressWarnings("unchecked")
-		public int setParameters(SqlQueryBuilder sqlBuilder, Criterion criterion, PreparedStatement stmt, int paramIdx) 
+		public int setCriterionParameters(SqlQueryBuilder sqlBuilder, Expression criterion, PreparedStatement stmt, int paramIdx) 
 				throws SQLException, QueryException {
 			return onSetParameters(sqlBuilder, (T) criterion, stmt, paramIdx);
 		}
 		
-		public abstract void onProcess(SqlQueryBuilder sqlBuilder, T criterion);
+		public abstract String onProcess(SqlQueryBuilder sqlBuilder, T criterion);
 		
 		public abstract int onSetParameters(SqlQueryBuilder sqlBuilder, T criterion, PreparedStatement stmt, int paramIdx) 
 				throws SQLException, QueryException;
@@ -130,10 +161,9 @@ public class SqlQueryCriteriaBuilder
 		}
 		
 		@Override
-		public void onProcess(SqlQueryBuilder sqlBuilder, DimensionCriterion<?> dc) {
-			sqlBuilder.where.add(
-					createWhereInClause(sqlBuilder.joinDimension(dc.getDimension()), 
-							dc.getDimensionalAttribute().getColumnName(), dc.getValues().length));
+		public String onProcess(SqlQueryBuilder sqlBuilder, DimensionCriterion<?> dc) {
+			return createWhereInClause(sqlBuilder.joinDimension(dc.getDimension()), 
+					dc.getDimensionalAttribute().getColumnName(), dc.getValues().length);
 		}
 		
 		@Override
@@ -153,34 +183,51 @@ public class SqlQueryCriteriaBuilder
 		}
 		
 		@Override
-		public void onProcess(SqlQueryBuilder sqlBuilder, FactRangeCriterion<?> frc) {
-
-			if (frc.getLowerBound() != null) {
-				sqlBuilder.where.add(createSingularWhereClause(
-						sqlBuilder.getFactTableAlias(), frc.getFact().getColumnName(), frc.isLowerBoundInclusive() ? ">=" : ">"));
-			}
-			
-			if (frc.getUpperBound() != null) {
-				sqlBuilder.where.add(createSingularWhereClause(
-						sqlBuilder.getFactTableAlias(), frc.getFact().getColumnName(), frc.isUpperBoundInclusive() ? "<=" : "<"));
-			}
+		public String onProcess(SqlQueryBuilder sqlBuilder, FactRangeCriterion<?> frc) {
+			return createSingularWhereClause(
+					sqlBuilder.getFactTableAlias(), frc.getFact().getColumnName(),
+					getSqlComparison(frc.getOperator()));
 		}
 		
 		@Override
 		public int onSetParameters(SqlQueryBuilder sqlBuilder, FactRangeCriterion<?> frc, PreparedStatement stmt, int paramIdx) 
 				throws SQLException, QueryException {
 			
-			if (frc.getLowerBound() != null) {
-				paramIdx += parameterSupport.setParameterValue(
-						frc.getFact().getValueType(), stmt, frc.getLowerBound(), paramIdx);
-			}
-
-			if (frc.getUpperBound() != null) {
-				paramIdx += parameterSupport.setParameterValue(
-						frc.getFact().getValueType(), stmt, frc.getUpperBound(), paramIdx);
-			}
-			
-			return 0;
+			return parameterSupport.setParameterValue(
+					frc.getFact().getValueType(), stmt, frc.getValue(), paramIdx);
 		}
 	}
+	
+	public class LogicalExpressionProcessor extends CriterionProcessor<LogicalExpression> {
+
+		@Override
+		public Class<?> getCriterionClass() {
+			return LogicalExpression.class;
+		}
+
+		@Override
+		public String onProcess(SqlQueryBuilder sqlBuilder, LogicalExpression criterion) {
+			
+			List<String> clauses = new ArrayList<String>(); 
+			clauses.add(processCriterion(sqlBuilder, criterion.getLeftHandExpression()));
+			clauses.add(processCriterion(sqlBuilder, criterion.getRightHandExpression()));
+			return joinClauses(clauses, criterion.getExpression());
+		}
+
+		@Override
+		public int onSetParameters(SqlQueryBuilder sqlBuilder, LogicalExpression criterion,
+				PreparedStatement stmt, int paramIdx) throws SQLException, QueryException {
+			
+			int pi = paramIdx;
+			
+			pi += setParameters(sqlBuilder, new Expression[] {
+				criterion.getLeftHandExpression(),
+				criterion.getRightHandExpression()
+			}, stmt, paramIdx);
+			
+			return pi;
+				
+		}
+	}
+
 }

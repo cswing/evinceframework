@@ -15,11 +15,20 @@
  */
 package com.evinceframework.data.warehouse.query.criterion;
 
-/**
- * A marker interface that identifies objects that can be used to specify a 
- * set of criteria when querying the data warehouse.
- * 
- * @author Craig Swing
- *
- */
-public interface Criterion {}
+public class ComparisonOperator {
+
+	public static final ComparisonOperator EQUALS = new ComparisonOperator();
+	
+	public static final ComparisonOperator NOT_EQUALS = new ComparisonOperator();
+	
+	public static final ComparisonOperator GREATER_THAN = new ComparisonOperator();
+	
+	public static final ComparisonOperator GREATER_THAN_OR_EQUALS = new ComparisonOperator();
+	
+	public static final ComparisonOperator LESS_THAN = new ComparisonOperator();
+	
+	public static final ComparisonOperator LESS_THAN_OR_EQUALS = new ComparisonOperator();
+	
+	private ComparisonOperator() {}
+	
+}

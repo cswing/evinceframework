@@ -37,7 +37,6 @@ import com.evinceframework.data.warehouse.FactTable;
 import com.evinceframework.data.warehouse.query.DrillPathEntry;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.Query;
-import com.evinceframework.data.warehouse.query.criterion.Criterion;
 
 public class SqlQueryBuilder {
 
@@ -135,9 +134,9 @@ public class SqlQueryBuilder {
 	}
 	
 	public void processCriteria(Query query) {
-		for (Criterion c : query.getCriteria()) {
-			criteriaBuilder.processCriterion(this, c);
-		}
+		String clause = criteriaBuilder.createWhereClause(this, query.getCriteria());
+		if(clause != null)
+			where.add(clause);
 	}
 	
 	public String joinDimension(Dimension dimension) {
@@ -177,8 +176,7 @@ public class SqlQueryBuilder {
 			select.setGroupByClause(StringHelper.join(",", groupBy.toArray(new String[]{})));
 		
 		if (where.size() > 0)
-			select.setWhereClause(StringHelper.join(" AND ", where.toArray(new String[]{})));
-		
+			select.setWhereClause(criteriaBuilder.joinWhereClauses(where));
 		
 		SqlStatementText sqlStatement = new SqlStatementText();
 		sqlStatement.sql = select.toStatementString(); 

@@ -18,7 +18,7 @@ package com.evinceframework.data.warehouse.query.criterion;
 import com.evinceframework.data.warehouse.Dimension;
 import com.evinceframework.data.warehouse.DimensionalAttribute;
 
-public class DimensionCriterion<T> implements Criterion {
+public class DimensionCriterion<T> extends AbstractCriterion {
 
 	private Dimension dimension;
 	
@@ -27,11 +27,13 @@ public class DimensionCriterion<T> implements Criterion {
 	private T[] values;
 	
 	@SuppressWarnings("unchecked")
-	public DimensionCriterion(Dimension dimension, DimensionalAttribute<T> attribute, T value) {
-		this(dimension, attribute, (T[])new Object[]{ value });
+	/* package */ DimensionCriterion(ComparisonOperator operator, Dimension dimension, DimensionalAttribute<T> attribute, T value) {
+		this(operator, dimension, attribute, (T[])new Object[]{ value });
 	}
 	
-	public DimensionCriterion(Dimension dimension, DimensionalAttribute<T> attribute, T[] values) {
+	/* package */ DimensionCriterion(ComparisonOperator operator, Dimension dimension, DimensionalAttribute<T> attribute, T[] values) {
+		super(operator);
+		
 		this.dimension = dimension;
 		this.attribute = attribute;
 		this.values = values;
