@@ -25,7 +25,8 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public abstract class AbstractCachingLookupFactory<LOOKUP_TYPE extends Object, VALUE_TYPE extends Object> {
+public abstract class AbstractCachingLookupFactory<LOOKUP_TYPE, VALUE_TYPE> 
+		implements LookupFactory<LOOKUP_TYPE, VALUE_TYPE>{
 
 	protected Log logger = LogFactory.getLog(getClass()); 
 	
