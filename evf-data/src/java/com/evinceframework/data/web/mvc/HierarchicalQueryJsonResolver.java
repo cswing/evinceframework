@@ -37,7 +37,7 @@ import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.FactSelectionFunction;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.InvalidQueryException;
-import com.evinceframework.data.warehouse.query.criterion.Expression;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
 import com.evinceframework.data.warehouse.query.criterion.Expressions;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -136,7 +136,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		}
 		
 		// Dimension Criteria
-		List<Expression> criteria = new ArrayList<Expression>();
+		List<Criterion> criteria = new ArrayList<Criterion>();
 		if(queryRequest.dimensionCriteria != null) {
 			for(DimensionCriterionRequest dcr : queryRequest.dimensionCriteria) {
 				
@@ -270,7 +270,7 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 		
 		return new HierarchicalQuery(factTable, 
 				factSelections.toArray(new FactSelection[]{}), 
-				criteria.toArray(new Expression[]{}),
+				criteria.toArray(new Criterion[]{}),
 				root, queryRoot);
 	}
 	

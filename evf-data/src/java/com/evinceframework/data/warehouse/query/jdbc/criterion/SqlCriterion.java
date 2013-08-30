@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.evinceframework.data.warehouse.query;
+package com.evinceframework.data.warehouse.query.jdbc.criterion;
 
-import com.evinceframework.data.warehouse.FactTable;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import com.evinceframework.data.warehouse.query.QueryException;
 import com.evinceframework.data.warehouse.query.criterion.Criterion;
 
-public interface Query {
+public interface SqlCriterion {
+
+	public String createWhereClause(SqlCriterionContext context, Criterion expression);
 	
-	public FactTable getFactTable();
-	
-	public FactSelection[] getFactSelections();
-	
-	public Criterion[] getCriteria();
-	
+	public int setExpressionParameters(SqlCriterionContext context, Criterion expression, PreparedStatement stmt,
+			int paramIdx) throws SQLException, QueryException;
+
+	public Class<?> getCriterionClass();
+
 }

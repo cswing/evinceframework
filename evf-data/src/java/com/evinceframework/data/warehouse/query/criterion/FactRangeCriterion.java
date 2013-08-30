@@ -24,7 +24,7 @@ public class FactRangeCriterion<T extends Number> extends AbstractCriterion {
 	private T value;
 
 	@SuppressWarnings("unchecked")
-	/* package */ FactRangeCriterion(ComparisonOperator operator, Fact<T> fact, Object value) {
+	protected FactRangeCriterion(ComparisonOperator operator, Fact<T> fact, Object value) {
 		super(operator);
 		
 		this.fact = fact;

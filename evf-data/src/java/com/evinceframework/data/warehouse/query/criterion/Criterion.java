@@ -15,6 +15,6 @@
  */
 package com.evinceframework.data.warehouse.query.criterion;
 
-public interface Expression {
+public interface Criterion {
 	
 }

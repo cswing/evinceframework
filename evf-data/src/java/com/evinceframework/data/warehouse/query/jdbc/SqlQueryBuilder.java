@@ -15,6 +15,8 @@
  */
 package com.evinceframework.data.warehouse.query.jdbc;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -37,6 +39,12 @@ import com.evinceframework.data.warehouse.FactTable;
 import com.evinceframework.data.warehouse.query.DrillPathEntry;
 import com.evinceframework.data.warehouse.query.FactSelection;
 import com.evinceframework.data.warehouse.query.Query;
+import com.evinceframework.data.warehouse.query.QueryException;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
+import com.evinceframework.data.warehouse.query.criterion.LogicalExpression;
+import com.evinceframework.data.warehouse.query.jdbc.criterion.AbstractSqlCriterion;
+import com.evinceframework.data.warehouse.query.jdbc.criterion.SqlCriterion;
+import com.evinceframework.data.warehouse.query.jdbc.criterion.SqlCriterionContext;
 
 public class SqlQueryBuilder {
 
@@ -52,7 +60,7 @@ public class SqlQueryBuilder {
 	
 	/*package*/ List<String> where = new LinkedList<String>();
 	
-	private SqlQueryCriteriaBuilder criteriaBuilder = new SqlQueryCriteriaBuilder();
+	private SqlCriterionContext context;
 	
 	private DimensionJoinAliasLookup dimensionJoinLookup = new DimensionJoinAliasLookup();
 	
@@ -64,6 +72,8 @@ public class SqlQueryBuilder {
 		this.dialect = dialect;
 		this.selectFrag = new SelectFragment();
 		this.joinFrag = dialect.createOuterJoinFragment();
+		
+		this.context = new SqlCriterionContext(this);
 	}
 	
 	public FactTable getFactTable() {
@@ -72,10 +82,6 @@ public class SqlQueryBuilder {
 	
 	public String getFactTableAlias() {
 		return "fact";
-	}
-	
-	public SqlQueryCriteriaBuilder getCriteriaBuilder() {
-		return criteriaBuilder;
 	}
 	
 	public String lookupAlias(Dimension dimension, DimensionalAttribute<?> attribute) {
@@ -108,9 +114,9 @@ public class SqlQueryBuilder {
 		}
 	}
 	
-	public void addFilter(Dimension dimension, DimensionalAttribute<?> attribute) {
-		where.add(criteriaBuilder.createSingularWhereClause(joinDimension(dimension), attribute.getColumnName()));
-	}
+//	public void addFilter(Dimension dimension, DimensionalAttribute<?> attribute) {
+//		where.add(criteriaBuilder.createSingularWhereClause(joinDimension(dimension), attribute.getColumnName()));
+//	}
 	
 	/**
 	 * Start with the entry passed into the method and for it and each child:		
@@ -134,9 +140,44 @@ public class SqlQueryBuilder {
 	}
 	
 	public void processCriteria(Query query) {
-		String clause = criteriaBuilder.createWhereClause(this, query.getCriteria());
-		if(clause != null)
-			where.add(clause);
+		for (Criterion exp : query.getCriteria()) {
+			String clause = createWhereClause(this.context, exp);
+			if(clause != null)
+				where.add(clause);	
+		}
+	}
+	
+	public String createWhereClause(SqlCriterionContext context, Criterion expression) {
+		
+		if(expression == null)
+			return null;
+		
+		SqlCriterion criterion = context.getCriterionFactory().lookup(expression.getClass());
+		
+		if(criterion == null)
+			return null;
+		
+		return criterion.createWhereClause(context, expression);
+	}
+	
+	public int setParameters(Criterion[] criteria, PreparedStatement stmt, int paramIdx) 
+			throws SQLException, QueryException {
+		return this.setParameters(this.context, criteria, stmt, paramIdx);
+	}
+	
+	public int setParameters(SqlCriterionContext context, Criterion[] criteria, PreparedStatement stmt, int paramIdx) 
+			throws SQLException, QueryException {
+		
+		int idx = paramIdx;
+		
+		for(Criterion expression : criteria) {
+			SqlCriterion criterion = context.getCriterionFactory().lookup(expression.getClass());
+			
+			if(criterion != null)
+				idx += criterion.setExpressionParameters(context, expression, stmt, idx);
+		}
+		
+		return idx;
 	}
 	
 	public String joinDimension(Dimension dimension) {
@@ -176,8 +217,8 @@ public class SqlQueryBuilder {
 			select.setGroupByClause(StringHelper.join(",", groupBy.toArray(new String[]{})));
 		
 		if (where.size() > 0)
-			select.setWhereClause(criteriaBuilder.joinWhereClauses(where));
-		
+			select.setWhereClause(AbstractSqlCriterion.joinClauses(where, LogicalExpression.And.OPERATOR));
+					
 		SqlStatementText sqlStatement = new SqlStatementText();
 		sqlStatement.sql = select.toStatementString(); 
 		

@@ -28,7 +28,7 @@ import com.evinceframework.data.warehouse.query.FactSelectionFunction;
 import com.evinceframework.data.warehouse.query.HierarchicalQuery;
 import com.evinceframework.data.warehouse.query.HierarchicalQueryResult;
 import com.evinceframework.data.warehouse.query.QueryException;
-import com.evinceframework.data.warehouse.query.criterion.Expression;
+import com.evinceframework.data.warehouse.query.criterion.Criterion;
 import com.evinceframework.data.warehouse.query.impl.FactSelectionImpl;
 import com.evinceframework.data.warehouse.query.jdbc.HierarchicalJdbcQueryCommand;
 import com.evinceframework.data.warehouse.query.jdbc.SqlQueryBuilder;
@@ -43,7 +43,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 		HierarchicalQuery query = new HierarchicalQuery(
 				TestData.factTable,
 				null,
-				new Expression[]{},
+				new Criterion[]{},
 				root
 			);
 		
@@ -62,7 +62,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 		HierarchicalQuery query = new HierarchicalQuery(
 				TestData.factTable,
 				new FactSelection[]{},
-				new Expression[]{},
+				new Criterion[]{},
 				root
 			);
 		
@@ -83,7 +83,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 				new FactSelection[]{
 						new FactSelectionImpl(TestData.simpleIntegerFact)
 				},
-				new Expression[]{},
+				new Criterion[]{},
 				root
 			);
 		
@@ -104,7 +104,7 @@ public class HierarchicalJdbcQueryCommandTests extends TestCase {
 				new FactSelection[]{
 						new FactSelectionImpl(TestData.simpleIntegerFact, FactSelectionFunction.SUM)
 				},
-				new Expression[]{},
+				new Criterion[]{},
 				root
 			);
 		

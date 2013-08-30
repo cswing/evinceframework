@@ -20,25 +20,25 @@ package com.evinceframework.data.warehouse.query.criterion;
  * 
  * @author Craig Swing
  */
-public abstract class LogicalExpression implements Expression {
+public abstract class LogicalExpression implements Criterion {
 	
-	private Expression rhs;
+	private Criterion rhs;
 	
-	private Expression lhs;
+	private Criterion lhs;
 	
 	private String expression;
 
-	private LogicalExpression(Expression lhs, Expression rhs, String expression) {
+	private LogicalExpression(Criterion lhs, Criterion rhs, String expression) {
 		this.rhs = rhs;
 		this.lhs = lhs;
 		this.expression = expression;
 	}
 
-	public Expression getRightHandExpression() {
+	public Criterion getRightHandCriterion() {
 		return rhs;
 	}
 
-	public Expression getLeftHandExpression() {
+	public Criterion getLeftHandCriterion() {
 		return lhs;
 	}
 
@@ -50,7 +50,7 @@ public abstract class LogicalExpression implements Expression {
 		
 		public static final String OPERATOR = "AND";
 		
-		/* package */ And(Expression lhs, Expression rhs) {
+		/* package */ And(Criterion lhs, Criterion rhs) {
 			super(lhs, rhs, OPERATOR);
 		}
 	}
@@ -59,7 +59,7 @@ public abstract class LogicalExpression implements Expression {
 		
 		public static final String OPERATOR = "OR";
 		
-		/* package */ Or(Expression lhs, Expression rhs) {
+		/* package */ Or(Criterion lhs, Criterion rhs) {
 			super(lhs, rhs, OPERATOR);
 		}
 	}

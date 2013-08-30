@@ -24,19 +24,15 @@ public class DimensionCriterion<T> extends AbstractCriterion {
 	
 	private DimensionalAttribute<T> attribute;
 	
-	private T[] values;
+	private T value;
 	
-	@SuppressWarnings("unchecked")
-	/* package */ DimensionCriterion(ComparisonOperator operator, Dimension dimension, DimensionalAttribute<T> attribute, T value) {
-		this(operator, dimension, attribute, (T[])new Object[]{ value });
-	}
+	protected DimensionCriterion(ComparisonOperator operator, Dimension dimension, DimensionalAttribute<T> attribute, T value) {
 	
-	/* package */ DimensionCriterion(ComparisonOperator operator, Dimension dimension, DimensionalAttribute<T> attribute, T[] values) {
 		super(operator);
 		
 		this.dimension = dimension;
 		this.attribute = attribute;
-		this.values = values;
+		this.value = value;
 	}
 
 	public Dimension getDimension() {
@@ -47,7 +43,7 @@ public class DimensionCriterion<T> extends AbstractCriterion {
 		return attribute;
 	}
 	
-	public T[] getValues() {
-		return values;
+	public T getValue() {
+		return value;
 	}
 }

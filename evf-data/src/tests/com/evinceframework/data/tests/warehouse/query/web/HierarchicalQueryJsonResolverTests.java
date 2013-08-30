@@ -82,18 +82,16 @@ public class HierarchicalQueryJsonResolverTests extends TestCase {
 		DimensionCriterion<?> dc = (DimensionCriterion<?>)query.getCriteria()[0];
 		assertEquals("testDimensionId", dc.getDimension().getForeignKeyColumn());
 		assertEquals("dimAttrA", dc.getDimensionalAttribute().getColumnName());
-		assertNotNull(dc.getValues());
-		assertEquals(1, dc.getValues().length);
-		assertEquals(1, dc.getValues()[0]);
+		assertNotNull(dc.getValue());
+		assertEquals(1, dc.getValue());
 		
 		assertNotNull(query.getCriteria()[1]);
 		assertTrue(ClassUtils.isAssignableValue(DimensionCriterion.class, query.getCriteria()[1]));
 		dc = (DimensionCriterion<?>)query.getCriteria()[1];
 		assertEquals("testDimension2Id", dc.getDimension().getForeignKeyColumn());
 		assertEquals("dimAttr2B", dc.getDimensionalAttribute().getColumnName());
-		assertNotNull(dc.getValues());
-		assertEquals(1, dc.getValues().length);
-		assertEquals(2, dc.getValues()[0]);
+		assertNotNull(dc.getValue());
+		assertEquals(2, dc.getValue());
 		
 		
 		assertNotNull(query.getCriteria()[2]);

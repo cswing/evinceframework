@@ -78,8 +78,7 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 					}
 					
 					// criterion
-					paramIdx += sqlBuilder.getCriteriaBuilder()
-							.setParameters(sqlBuilder, query.getCriteria(), stmt, paramIdx);
+					paramIdx += sqlBuilder.setParameters(query.getCriteria(), stmt, paramIdx);
 					
 					return stmt;
 					
@@ -117,10 +116,12 @@ public class HierarchicalJdbcQueryCommand extends AbstractJdbcQueryCommand<Hiera
 			
 			// If a query root is provided then filter based on the that and get the next X levels  
 			sqlBuilder.processDrillPath(entry.getNextEntry(), query.getLevels());
-			while(entry != null) {
-				sqlBuilder.addFilter(entry.getDimension(), entry.getDimensionalAttribute());
-				entry = entry.getPreviousEntry();
-			}
+//			while(entry != null) {
+//				sqlBuilder.addFilter(entry.getDimension(), entry.getDimensionalAttribute());
+//				entry = entry.getPreviousEntry();
+//			}
+			
+			// TODO DrillPAthEntry should be creating an expression
 		}
 		
 		sqlBuilder.processCriteria(query);

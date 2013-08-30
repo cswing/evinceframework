@@ -28,32 +28,32 @@ import com.evinceframework.data.warehouse.Fact;
 public class Expressions {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression eq(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
+	public static Criterion eq(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
 		return new DimensionCriterion(ComparisonOperator.EQUALS, dimension, attribute, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression notEq(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
+	public static Criterion notEq(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
 		return new DimensionCriterion(ComparisonOperator.NOT_EQUALS, dimension, attribute, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression greaterThen(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
+	public static Criterion greaterThen(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
 		return new DimensionCriterion(ComparisonOperator.GREATER_THAN, dimension, attribute, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression greaterThenOrEqual(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
+	public static Criterion greaterThenOrEqual(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
 		return new DimensionCriterion(ComparisonOperator.GREATER_THAN_OR_EQUALS, dimension, attribute, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression lessThen(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
+	public static Criterion lessThen(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
 		return new DimensionCriterion(ComparisonOperator.LESS_THAN, dimension, attribute, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression lessThenOrEqual(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
+	public static Criterion lessThenOrEqual(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
 		return new DimensionCriterion(ComparisonOperator.LESS_THAN_OR_EQUALS, dimension, attribute, value);
 	}
 	
@@ -61,53 +61,53 @@ public class Expressions {
 	// FactCriterion
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression eq(Fact<?> fact, Object value) {
+	public static Criterion eq(Fact<?> fact, Object value) {
 		return new FactRangeCriterion(ComparisonOperator.EQUALS, fact, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression notEq(Fact<?> fact, Object value) {
+	public static Criterion notEq(Fact<?> fact, Object value) {
 		return new FactRangeCriterion(ComparisonOperator.NOT_EQUALS, fact, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression greaterThen(Fact<?> fact, Object value) {
+	public static Criterion greaterThen(Fact<?> fact, Object value) {
 		return new FactRangeCriterion(ComparisonOperator.GREATER_THAN, fact, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression greaterThenOrEqual(Fact<?> fact, Object value) {
+	public static Criterion greaterThenOrEqual(Fact<?> fact, Object value) {
 		return new FactRangeCriterion(ComparisonOperator.GREATER_THAN_OR_EQUALS, fact, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression lessThen(Fact<?> fact, Object value) {
+	public static Criterion lessThen(Fact<?> fact, Object value) {
 		return new FactRangeCriterion(ComparisonOperator.LESS_THAN, fact, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Expression lessThenOrEqual(Fact<?> fact, Object value) {
+	public static Criterion lessThenOrEqual(Fact<?> fact, Object value) {
 		return new FactRangeCriterion(ComparisonOperator.LESS_THAN_OR_EQUALS, fact, value);
 	}
 	
 	// Logical operators
 	
-	public static Expression and(Expression lh, Expression rh, Expression ... others) {
+	public static Criterion and(Criterion lh, Criterion rh, Criterion ... others) {
 		
-		Expression le = new LogicalExpression.And(lh, rh);
+		Criterion le = new LogicalExpression.And(lh, rh);
 		
-		for(Expression expr : others) {
+		for(Criterion expr : others) {
 			le = and(le, expr);
 		}
 		
 		return le;
 	}
 	
-	public static Expression or(Expression lh, Expression rh, Expression ... others) {
+	public static Criterion or(Criterion lh, Criterion rh, Criterion ... others) {
 		
-		Expression le = new LogicalExpression.Or(lh, rh);
+		Criterion le = new LogicalExpression.Or(lh, rh);
 		
-		for(Expression expr : others) {
+		for(Criterion expr : others) {
 			le = or(le, expr);
 		}
 		

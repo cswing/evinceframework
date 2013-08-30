@@ -15,7 +15,7 @@
  */
 package com.evinceframework.data.warehouse.query.criterion;
 
-public class AbstractCriterion implements Expression {
+public class AbstractCriterion implements Criterion {
 
 	private ComparisonOperator operator;
 	
