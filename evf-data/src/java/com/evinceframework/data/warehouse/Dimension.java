@@ -35,4 +35,5 @@ public interface Dimension {
 	
 	public String getForeignKeyColumn();
 	
+	public DimensionalAttribute<? extends Object> findAttribute(String key);
 }

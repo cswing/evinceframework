@@ -19,6 +19,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 
 import com.evinceframework.data.warehouse.Dimension;
 import com.evinceframework.data.warehouse.DimensionTable;
+import com.evinceframework.data.warehouse.DimensionalAttribute;
 import com.evinceframework.data.warehouse.FactTable;
 
 public class DimensionImpl extends AbstractDataObject implements Dimension {
@@ -67,6 +68,11 @@ public class DimensionImpl extends AbstractDataObject implements Dimension {
 	@Override
 	public String getForeignKeyColumn() {
 		return foreignKeyColumn;
+	}
+
+	@Override
+	public DimensionalAttribute<? extends Object> findAttribute(String key) {
+		return dimensionTable.findAttribute(key);
 	}
 
 }
