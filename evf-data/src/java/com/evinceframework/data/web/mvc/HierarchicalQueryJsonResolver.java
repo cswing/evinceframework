@@ -190,20 +190,20 @@ public class HierarchicalQueryJsonResolver implements WebQueryResolver<Hierarchi
 				try {
 				
 					if(fcr.isLowerBoundInclusive) {
-						criteria.add(Expressions.greaterThenOrEqual(fact, 
+						criteria.add(Expressions.greaterThanOrEqual(fact, 
 								this.conversionService.convert(fcr.lowerBound, fact.getValueType())));
 						
 					} else {
-						criteria.add(Expressions.greaterThen(fact, 
+						criteria.add(Expressions.greaterThan(fact, 
 								this.conversionService.convert(fcr.lowerBound, fact.getValueType())));
 					}
 					
 					if(fcr.isUpperBoundInclusive) {
-						criteria.add(Expressions.lessThenOrEqual(fact, 
+						criteria.add(Expressions.lessThanOrEqual(fact, 
 								this.conversionService.convert(fcr.upperBound, fact.getValueType())));
 						
 					} else {
-						criteria.add(Expressions.lessThen(fact, 
+						criteria.add(Expressions.lessThan(fact, 
 								this.conversionService.convert(fcr.upperBound, fact.getValueType())));
 					}
 					

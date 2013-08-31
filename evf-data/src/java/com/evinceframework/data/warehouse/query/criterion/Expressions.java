@@ -38,22 +38,22 @@ public class Expressions {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Criterion greaterThen(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
+	public static Criterion greaterThan(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
 		return new DimensionCriterion(ComparisonOperator.GREATER_THAN, dimension, attribute, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Criterion greaterThenOrEqual(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
+	public static Criterion greaterThanOrEqual(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
 		return new DimensionCriterion(ComparisonOperator.GREATER_THAN_OR_EQUALS, dimension, attribute, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Criterion lessThen(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
+	public static Criterion lessThan(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
 		return new DimensionCriterion(ComparisonOperator.LESS_THAN, dimension, attribute, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Criterion lessThenOrEqual(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
+	public static Criterion lessThanOrEqual(Dimension dimension, DimensionalAttribute<?> attribute, Object value) {
 		return new DimensionCriterion(ComparisonOperator.LESS_THAN_OR_EQUALS, dimension, attribute, value);
 	}
 	
@@ -71,22 +71,22 @@ public class Expressions {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Criterion greaterThen(Fact<?> fact, Object value) {
+	public static Criterion greaterThan(Fact<?> fact, Object value) {
 		return new FactRangeCriterion(ComparisonOperator.GREATER_THAN, fact, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Criterion greaterThenOrEqual(Fact<?> fact, Object value) {
+	public static Criterion greaterThanOrEqual(Fact<?> fact, Object value) {
 		return new FactRangeCriterion(ComparisonOperator.GREATER_THAN_OR_EQUALS, fact, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Criterion lessThen(Fact<?> fact, Object value) {
+	public static Criterion lessThan(Fact<?> fact, Object value) {
 		return new FactRangeCriterion(ComparisonOperator.LESS_THAN, fact, value);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Criterion lessThenOrEqual(Fact<?> fact, Object value) {
+	public static Criterion lessThanOrEqual(Fact<?> fact, Object value) {
 		return new FactRangeCriterion(ComparisonOperator.LESS_THAN_OR_EQUALS, fact, value);
 	}
 	
