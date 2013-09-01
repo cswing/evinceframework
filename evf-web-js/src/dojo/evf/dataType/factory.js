@@ -14,10 +14,11 @@
  * limitations under the License.
  */
  define([
+ 	'dojo/_base/lang',
  	'dojo/on',
 	'dojo/store/Memory',
 	'evf/dataType/_Binding'
-], function(on, Memory, DefaultBinding) {
+], function(lang, on, Memory, DefaultBinding) {
 
 	/*=====
 	evf.dataType.__DataTypeDefinition = declare(null, {
@@ -115,7 +116,11 @@
 	exports.createWidget = function(key, node, context, dataObject, bindingKey, observable) {
 
 		var dataType = exports.findDataType(key);
-		var widget = dataType.createWidget(node, context);
+
+		var params = lang.mixin({
+			value: lang.getObject(bindingKey, false, dataObject)
+		}, context || {});
+		var widget = dataType.createWidget(node, params);
 
 		var requiresBinding = dataObject && bindingKey;
 		if(requiresBinding) {
