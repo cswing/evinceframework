@@ -30,6 +30,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.springframework.util.StringUtils;
 
+import com.evinceframework.DomainEnumerator;
 import com.evinceframework.core.factory.MapBackedClassLookupFactory;
 import com.evinceframework.data.QueryParameters;
 import com.evinceframework.data.QueryResult;
@@ -38,6 +39,7 @@ import com.evinceframework.web.dojo.json.conversion.ClassPrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.DatePrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.DateTimePrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.DefaultPrimitiveWriter;
+import com.evinceframework.web.dojo.json.conversion.DomainEnumeratorConverter;
 import com.evinceframework.web.dojo.json.conversion.InterfaceConverter;
 import com.evinceframework.web.dojo.json.conversion.LocalDatePrimitiveWriter;
 import com.evinceframework.web.dojo.json.conversion.LocalDateTimePrimitiveWriter;
@@ -150,6 +152,7 @@ public class JsonStoreEngine extends MapBackedClassLookupFactory<JsonObjectConve
 		
 		setDefaultImplementation(new PojoConverter());
 		getLookupMap().put(Map.class, new MapConverter());
+		getLookupMap().put(DomainEnumerator.class, new DomainEnumeratorConverter());
 		getLookupMap().put(UserMessage.class, new UserMessage.JsonConverter());
 		getLookupMap().put(Navigator.class, new Navigator.JsonConverter());
 		getLookupMap().put(NavigationCategory.class, new NavigationCategory.JsonConverter());
