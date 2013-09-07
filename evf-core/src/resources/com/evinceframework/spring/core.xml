@@ -8,6 +8,6 @@
                            	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	
-	<bean id="evf.core.conversion.DomainEnumerator" class="com.evinceframework.DomainEnumeratorConverter" />
+	<bean id="evf.core.conversion.DomainEnumerator" class="com.evinceframework.DomainEnumeratorConverterFactory" />
 			                       	
 </beans>

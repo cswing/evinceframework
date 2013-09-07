@@ -24,7 +24,7 @@ import org.springframework.util.StringUtils;
 
 import com.evinceframework.core.factory.AbstractCachingLookupFactory;
 
-public class DomainEnumeratorConverter implements Converter<String, DomainEnumerator> {
+public class DomainEnumeratorConverter<T extends DomainEnumerator> implements Converter<String, T> {
 
 	public static final String SEPERATOR = "::";
 	
@@ -33,7 +33,8 @@ public class DomainEnumeratorConverter implements Converter<String, DomainEnumer
 	private static final MethodLookupFactory METHOD_LOOKUP_FACTORY = new MethodLookupFactory();
 	
 	@Override
-	public DomainEnumerator convert(String source) {
+	@SuppressWarnings("unchecked")
+	public T convert(String source) {
 		
 		String[] values = StringUtils.split(source, SEPERATOR);
 		
@@ -61,7 +62,7 @@ public class DomainEnumeratorConverter implements Converter<String, DomainEnumer
 		
 		try {
 			
-			return (DomainEnumerator) method.invoke(null, values[1]);
+			return (T) method.invoke(null, values[1]);
 			
 		} catch (IllegalArgumentException e) {
 			throw new InvalidConversionException("Unexpected factory lookup exception", e);
@@ -87,7 +88,7 @@ public class DomainEnumeratorConverter implements Converter<String, DomainEnumer
 		}
 	}
 	
-	public class InvalidConversionException extends RuntimeException {
+	public static class InvalidConversionException extends RuntimeException {
 
 		private static final long serialVersionUID = 502981243515276314L;
 

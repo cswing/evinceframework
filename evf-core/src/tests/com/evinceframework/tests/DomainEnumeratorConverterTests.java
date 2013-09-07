@@ -25,13 +25,11 @@ import com.evinceframework.DomainEnumerator;
 import com.evinceframework.DomainEnumeratorConverter;
 
 public class DomainEnumeratorConverterTests extends TestCase {
-
-	private static final DomainEnumeratorConverter CONVERTER = new DomainEnumeratorConverter();
 	
 	public void testInvalidFormat() {
 		
 		try {
-			CONVERTER.convert("Invalid Format");
+			new DomainEnumeratorConverter<TestEnumerator>().convert("Invalid Format");
 			fail();
 		} catch (DomainEnumeratorConverter.InvalidConversionException e) {
 			assertTrue(e.getMessage().startsWith("Invalid format"));
@@ -42,7 +40,7 @@ public class DomainEnumeratorConverterTests extends TestCase {
 	public void testNoSuchClass() {
 		
 		try {
-			CONVERTER.convert("java.langXXX.String::X");
+			new DomainEnumeratorConverter<TestEnumerator>().convert("java.langXXX.String::X");
 			fail();
 		} catch (DomainEnumeratorConverter.InvalidConversionException e) {
 			assertEquals("Invalid Domain Object - java.langXXX.String", e.getMessage());
@@ -53,7 +51,7 @@ public class DomainEnumeratorConverterTests extends TestCase {
 	public void testInvalidClass() {
 		
 		try {
-			CONVERTER.convert("java.lang.String::X");
+			new DomainEnumeratorConverter<TestEnumerator>().convert("java.lang.String::X");
 			fail();
 		} catch (DomainEnumeratorConverter.InvalidConversionException e) {
 			assertEquals("Invalid Domain Object - java.lang.String", e.getMessage());
@@ -63,7 +61,7 @@ public class DomainEnumeratorConverterTests extends TestCase {
 	
 	public void testNoFactoryMethod() {
 		try {
-			CONVERTER.convert("com.evinceframework.tests.DomainEnumeratorConverterTests$NoFactoryMethod::X");
+			new DomainEnumeratorConverter<NoFactoryMethod>().convert("com.evinceframework.tests.DomainEnumeratorConverterTests$NoFactoryMethod::X");
 			fail();
 		} catch (DomainEnumeratorConverter.InvalidConversionException e) {
 			assertEquals("No factory lookup method - com.evinceframework.tests.DomainEnumeratorConverterTests$NoFactoryMethod",
@@ -73,7 +71,8 @@ public class DomainEnumeratorConverterTests extends TestCase {
 	
 	public void testFactoryMethod() {
 		assertEquals(TestEnumerator.TEST_A, 
-				CONVERTER.convert("com.evinceframework.tests.DomainEnumeratorConverterTests$TestEnumerator::TEST_A"));
+				new DomainEnumeratorConverter<TestEnumerator>().convert(
+						"com.evinceframework.tests.DomainEnumeratorConverterTests$TestEnumerator::TEST_A"));
 	}
 	
 	public abstract static class BaseDomainEnumerator implements DomainEnumerator {
