@@ -188,6 +188,23 @@ project('evf-data') {
 	}
 }
 
+project('evf-rest') {
+	dependencies {
+		testCompile 'junit:junit:4.8.+'
+		testCompile 'emma:emma:2.1.5320'
+		//testCompile 'javancss:javancss:32.53'
+
+		compile 'commons-logging:commons-logging:1.1.+'
+		compile 'commons-codec:commons-codec:1.8'
+		compile "joda-time:joda-time:${jodatime_version}"
+		
+		compile "org.springframework:spring-webmvc:${spring_version}"
+        compile "org.springframework:spring-beans:${spring_version}"
+        compile "org.springframework:spring-core:${spring_version}"
+        
+	}
+}
+
 /*
 project('evf-web-js') {
     
