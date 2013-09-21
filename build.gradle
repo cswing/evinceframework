@@ -111,7 +111,9 @@ project('evf-core') {
 
         compile group: 'log4j', name: 'log4j', version: '1.2.+'
         compile group: 'commons-logging', name: 'commons-logging', version: '1.1.+'
+        compile "joda-time:joda-time:${jodatime_version}"
         compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.0-api', version: '1.0.+'
+        compile 'org.jadira.usertype:usertype.core:3.0.+'
         compile group: 'org.springframework', name: 'spring-beans', version: "${spring_version}"
         compile group: 'org.springframework', name: 'spring-core', version: "${spring_version}"
         compile "org.springframework:spring-orm:${spring_version}"
@@ -197,11 +199,16 @@ project('evf-rest') {
 		compile 'commons-logging:commons-logging:1.1.+'
 		compile 'commons-codec:commons-codec:1.8'
 		compile "joda-time:joda-time:${jodatime_version}"
-		
+        compile 'javax.servlet:servlet-api:2.5'
+		compile "com.fasterxml.jackson.core:jackson-databind:2.2.+"
+        compile "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.2.+"
+        
 		compile "org.springframework:spring-webmvc:${spring_version}"
         compile "org.springframework:spring-beans:${spring_version}"
         compile "org.springframework:spring-core:${spring_version}"
+        compile 'org.springframework.security:spring-security-web:3.1.+'
         
+        compile project(':evf-web')
 	}
 }
 
