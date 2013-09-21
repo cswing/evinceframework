@@ -19,6 +19,8 @@ import java.lang.reflect.Array;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.http.HttpStatus;
+
 import com.evinceframework.web.messaging.UserMessage;
 import com.evinceframework.web.messaging.exceptions.UserMessageTransform;
 
@@ -37,6 +39,8 @@ public abstract class AbstractUserMessageTransform implements UserMessageTransfo
 
 	private String viewName = DEFAULT_VIEW_NAME;
 	
+	private HttpStatus status = HttpStatus.BAD_REQUEST;
+	
 	@Override
 	public UserMessage[] transform(Throwable t) {
 		Set<UserMessage> messages = new HashSet<UserMessage>();		
@@ -51,6 +55,15 @@ public abstract class AbstractUserMessageTransform implements UserMessageTransfo
 
 	public void setViewName(String viewName) {
 		this.viewName = viewName;
+	}
+	
+	@Override
+	public HttpStatus getHttpStatus() {
+		return status;
+	}
+
+	public void setHttpStatus(HttpStatus status) {
+		this.status = status;
 	}
 
 	/**

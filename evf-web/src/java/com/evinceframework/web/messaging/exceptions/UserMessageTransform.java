@@ -15,6 +15,8 @@
  */
 package com.evinceframework.web.messaging.exceptions;
 
+import org.springframework.http.HttpStatus;
+
 import com.evinceframework.web.messaging.UserMessage;
 
 /**
@@ -42,4 +44,10 @@ public interface UserMessageTransform {
 	 */
 	public String getViewName();
 	
+	/**
+	 * The http status code that is associated with the {@link Throwable}.
+	 * 
+	 * @return
+	 */
+	public HttpStatus getHttpStatus();
 }
